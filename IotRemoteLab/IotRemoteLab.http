@@ -1,0 +1,6 @@
+@IotRemoteLab_HostAddress = http://localhost:5154
+
+GET {{IotRemoteLab_HostAddress}}
+Accept: application/json
+
+###
