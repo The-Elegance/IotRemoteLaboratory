@@ -1,9 +1,8 @@
-﻿using IotRemoteLab.Domain.Stand.Mcu;
-
-namespace IotRemoteLab.Domain.Stand.Benchboards
+﻿namespace IotRemoteLab.Domain.Stand.Benchboards
 {
     public class BenchboardPort
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// Тип порта: ввод, вывод.
         /// </summary>

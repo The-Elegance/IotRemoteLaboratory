@@ -2,6 +2,7 @@
 {
     public class Benchboard
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// Название стендовой платы
         /// </summary>

@@ -4,6 +4,7 @@ namespace IotRemoteLab.Domain.Stand
 {
     public class Stand
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// Микроконтроллер.
         /// </summary>

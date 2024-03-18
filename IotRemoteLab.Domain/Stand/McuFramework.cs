@@ -2,6 +2,7 @@
 {
     public class McuFramework
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// Название фреймворка.
         /// </summary>
