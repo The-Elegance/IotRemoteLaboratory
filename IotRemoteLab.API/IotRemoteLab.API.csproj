@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\IotRemoteLab.Domain\IotRemoteLab.Domain.csproj" />
   </ItemGroup>
 
 </Project>
