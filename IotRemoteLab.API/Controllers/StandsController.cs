@@ -1,3 +1,4 @@
+using IotRemoteLab.Domain.Stand;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers
@@ -12,20 +13,20 @@ namespace IotRemoteLab.API.Controllers
             return Ok();
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetStand(Guid id)
         {
             return Ok();
         }
 
         [HttpPost]
-        public IActionResult Add(object stand)
+        public IActionResult Add(Stand stand)
         {
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Update(object stand)
+        public IActionResult Update(Stand stand)
         {
             return Ok();
         }
