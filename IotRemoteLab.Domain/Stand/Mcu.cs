@@ -2,7 +2,7 @@
 {
     public class Mcu
     {
-        public Guid Id { get; set; 
+        public Guid Id { get; set; } 
         /// <summary>
         /// Название микроконтроллера.
         /// </summary>

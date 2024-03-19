@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.Domain", "IotR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.API", "IotRemoteLab.API\IotRemoteLab.API.csproj", "{96ACE61D-48BC-4BAF-B83C-B2B89A94A529}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{0455C945-C0E2-4476-B012-0F630B2BD7EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.Blazor", "IotRemoteLab.Blazor\IotRemoteLab.Blazor.csproj", "{2EDC3858-0264-4814-B226-AEF848544A1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +25,16 @@ Global
 		{96ACE61D-48BC-4BAF-B83C-B2B89A94A529}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96ACE61D-48BC-4BAF-B83C-B2B89A94A529}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96ACE61D-48BC-4BAF-B83C-B2B89A94A529}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EDC3858-0264-4814-B226-AEF848544A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EDC3858-0264-4814-B226-AEF848544A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EDC3858-0264-4814-B226-AEF848544A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EDC3858-0264-4814-B226-AEF848544A1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2EDC3858-0264-4814-B226-AEF848544A1A} = {0455C945-C0E2-4476-B012-0F630B2BD7EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3DA06C2F-0A47-4AD3-9291-AB9703DA48C9}
