@@ -1,10 +1,10 @@
-﻿using MQTTnet.Client.Connecting;
+﻿using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
-using MQTTnet.Client;
-using MQTTnet;
 
-namespace IotRemoteLaboratory.Mqtt.Core
+namespace IotRemoteLab.Mqtt
 {
     public abstract class MqttMember
     {
