@@ -1,5 +1,28 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    line-height: normal;
+}
+
+:root {
+    /* fonts */
+    --font-inter: Inter;
+    /* font sizes */
+    --font-size-base: 16px;
+    --font-size-xl: 20px;
+    /* Colors */
+    --brand-color: #bfb2ff;
+    --color-white: #fff;
+    --color-dimgray: #6a6a6a;
+    /* Gaps */
+    --gap-5xs: 8px;
+    --gap-9xs: 4px;
+    /* Paddings */
+    --padding-base: 16px;
+    --padding-xs: 12px;
+    --padding-3xs: 10px;
+    /* Border radiuses */
+    --br-3xs: 10px;
 }
 
 h1:focus {
