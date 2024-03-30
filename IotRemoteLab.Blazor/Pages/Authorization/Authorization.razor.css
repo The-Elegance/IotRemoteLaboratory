@@ -1,0 +1,215 @@
+﻿body {
+    margin: 0;
+    line-height: normal;
+}
+
+:root {
+    /* fonts */
+    --font-inter: Inter;
+    /* font sizes */
+    --font-size-base: 16px;
+    --font-size-xl: 20px;
+    /* Colors */
+    --brand-color: #bfb2ff;
+    --color-white: #fff;
+    --color-dimgray: #6a6a6a;
+    /* Gaps */
+    --gap-5xs: 8px;
+    --gap-9xs: 4px;
+    /* Paddings */
+    --padding-base: 16px;
+    --padding-xs: 12px;
+    --padding-3xs: 10px;
+    /* Border radiuses */
+    --br-3xs: 10px;
+}
+
+.iot-remote-laboratory {
+    position: absolute;
+    width: 262px;
+    top: 0;
+    left: 0;
+}
+
+.logoname {
+    width: 261px;
+    height: 29px;
+}
+
+.log-in,
+.logoname {
+    position: relative;
+}
+
+.welcome-back-please {
+    position: relative;
+    width: 312px;
+    font-size: var(--font-size-base);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--gap-5xs);
+    font-size: 36px;
+}
+
+.label {
+    align-self: stretch;
+    position: relative;
+}
+
+.your-login-here {
+    position: relative;
+    font-weight: 500;
+}
+
+.labled-textbox,
+.textbox {
+    align-self: stretch;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.textbox {
+    border-radius: var(--br-3xs);
+    background-color: var(--color-dimgray);
+    height: 52px;
+    flex-direction: row;
+    align-items: center;
+    padding: var(--padding-xs) var(--padding-3xs);
+    box-sizing: border-box;
+    font-size: var(--font-size-xl);
+}
+
+.labled-textbox {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-9xs);
+}
+
+.bullet-icon {
+    width: 16px;
+    position: relative;
+    height: 16px;
+    object-fit: contain;
+}
+
+.combobox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-5xs);
+}
+
+.forgot-password {
+    position: relative;
+    font-weight: 500;
+    color: var(--brand-color);
+    text-align: center;
+}
+
+.addtional-funcs,
+.button-sing-in {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.button-sing-in {
+    border-radius: var(--br-3xs);
+    background-color: var(--brand-color);
+    height: 52px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px var(--padding-base);
+    box-sizing: border-box;
+    text-align: center;
+    font-size: var(--font-size-xl);
+    color: #000;
+}
+
+.all-iconsadd {
+    width: 24px;
+    position: relative;
+    height: 24px;
+}
+
+.ghost-button {
+    align-self: stretch;
+    border-radius: var(--br-3xs);
+    border: 2px solid var(--brand-color);
+    box-sizing: border-box;
+    height: 52px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-base) 32px var(--padding-base) var(--padding-base);
+    gap: var(--gap-5xs);
+    font-size: var(--font-size-xl);
+}
+
+.create-an-account {
+    color: var(--brand-color);
+}
+
+.dont-have-an-container {
+    align-self: stretch;
+    position: relative;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+}
+
+.login-field,
+.login-form {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.login-form {
+    height: 420px;
+    gap: 28px;
+    font-size: var(--font-size-base);
+}
+
+.login-field {
+    flex: 1;
+    background-color: #333;
+    padding: 128px 201px;
+    gap: 32px;
+}
+
+.login-field-icon {
+    align-self: stretch;
+    flex: 1;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 100%;
+}
+
+.authorization {
+    width: 100%;
+    position: relative;
+    background-color: #2c2c2c;
+    height: 1000px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+    font-size: 24px;
+    color: var(--color-white);
+    font-family: var(--font-inter);
+}
