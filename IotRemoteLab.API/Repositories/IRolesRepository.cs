@@ -1,5 +1,5 @@
 ﻿using IotRemoteLab.Domain.User;
-using IotRemoteLab.Migrations;
+using IotRemoteLab.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Repositories;

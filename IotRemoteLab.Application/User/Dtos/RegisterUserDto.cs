@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IotRemoteLab.Domain.User.Dtos;
+namespace IotRemoteLab.Application.User.Dtos;
 
 public record RegisterUserDto(
     [Required] [EmailAddress]  string Email,

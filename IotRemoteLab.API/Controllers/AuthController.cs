@@ -1,5 +1,5 @@
 ﻿using IotRemoteLab.API.Services;
-using IotRemoteLab.Domain.User.Dtos;
+using IotRemoteLab.Application.User.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

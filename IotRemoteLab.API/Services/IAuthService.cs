@@ -1,4 +1,4 @@
-using IotRemoteLab.Domain.User.Dtos;
+using IotRemoteLab.Application.User.Dtos;
 
 namespace IotRemoteLab.API.Services;
 

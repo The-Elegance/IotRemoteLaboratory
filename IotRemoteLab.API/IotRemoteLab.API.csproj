@@ -19,8 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IotRemoteLab.Application\IotRemoteLab.Application.csproj" />
     <ProjectReference Include="..\IotRemoteLab.Domain\IotRemoteLab.Domain.csproj" />
-    <ProjectReference Include="..\IotRemoteLab.Migrations\IotRemoteLab.Migrations.csproj" />
+    <ProjectReference Include="..\IotRemoteLab.Persistence\IotRemoteLab.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

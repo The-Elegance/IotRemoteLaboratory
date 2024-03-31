@@ -3,7 +3,7 @@ using IotRemoteLab.API;
 using IotRemoteLab.API.Hubs;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.API.Services;
-using IotRemoteLab.Migrations;
+using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -75,7 +75,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
-{
+{   
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 

@@ -1,10 +1,9 @@
-﻿using System;
+﻿#nullable disable
+
 using IotRemoteLab.Domain.User;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
-namespace IotRemoteLab.API.Migrations
+namespace IotRemoteLab.Persistence.PostgresMigrations
 {
     /// <inheritdoc />
     public partial class Auth : Migration
@@ -17,9 +16,7 @@ namespace IotRemoteLab.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    NormalizedName = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,13 +96,12 @@ namespace IotRemoteLab.API.Migrations
                 new[]
                 {
                     "Id",
-                    "Name",
-                    "NormalizedName"
+                    "Name"
                 },
                 new object[,]
                 {
-                    {Guid.NewGuid(), Roles.Student, Roles.Student.ToLower()},
-                    {Guid.NewGuid(), Roles.Admin, Roles.Admin.ToLower()},
+                    {Guid.NewGuid(), Roles.Student},
+                    {Guid.NewGuid(), Roles.Admin},
                     
                 });
         }

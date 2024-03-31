@@ -2,13 +2,12 @@
 using IotRemoteLab.Domain.User;
 using Microsoft.EntityFrameworkCore;
 
-namespace IotRemoteLab.Migrations;
+namespace IotRemoteLab.Persistence;
 
 public class ApplicationContext : DbContext
 {
     public ApplicationContext(DbContextOptions options) : base(options)
     {
-            
     }
     
     public DbSet<User> Users => Set<User>();
