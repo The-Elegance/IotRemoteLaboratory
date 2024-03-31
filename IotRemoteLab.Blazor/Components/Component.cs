@@ -13,7 +13,8 @@ namespace IotRemoteLab.Blazor.Components
         [Parameter]
         public bool Visible { get; set; } = true;
 
-
+        [Parameter]
+        public string? Name { get; set; }
         public string UniqueId { get; set; }
 
 

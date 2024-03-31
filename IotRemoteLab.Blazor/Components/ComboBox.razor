@@ -1,0 +1,94 @@
+﻿﻿<style>
+     .combobox {
+         border: 1px solid #1e1e1e;
+         border-radius: 5px;
+         background: #2c2c2c;
+         position: relative;
+         cursor: pointer;
+     }
+
+         .combobox:before {
+             display: block;
+             content: '';
+             position: absolute;
+             top: 50%;
+             margin-top: -5px;
+             right: 12px;
+             height: 6px;
+             width: 6px;
+             border-bottom: 2px solid var(--font-color-active);
+             border-right: 2px solid var(--font-color-active);
+             transform: rotate(45deg);
+             transition: .3s;
+         }
+
+         .combobox.-visible:before {
+             transform: rotate(225deg);
+             margin-top: -2px;
+             transition: .3s;
+         }
+
+     .combobox__item {
+         padding: 8px 32px 8px 16px;
+         font-size: 14px;
+         font-weight: 500;
+         line-height: 1.3;
+     }
+
+         .combobox__item.-selected {
+             color: var(--font-color-active);
+         }
+
+     .combobox__items {
+         display: none;
+         position: absolute;
+         top: calc(100% + 5px);
+         border: 1px solid #1e1e1e;
+         background: #2C2C2C;
+         border-radius: 5px;
+         width: 100%;
+     }
+
+         .combobox__items .combobox__item:first-child {
+             border-radius: 5px 5px 0px 0px;
+         }
+
+         .combobox__items .combobox__item:last-child {
+             border-radius: 0px 0px 5px 5px;
+         }
+
+         .combobox__items .combobox__item:hover {
+             background: #333;
+         }
+
+     .combobox.-visible .combobox__items {
+         display: block;
+     }
+
+     .combobox__header {
+     }
+</style>
+
+
+@inherits Component
+
+@if (Visible)
+{
+    <div id="@(Name ?? GetId())" name="@Name" class="combobox @(IsDropDownOpen ? "-visible" : "")">
+
+        <div class="combobox__header" @onclick="@HeaderClick">
+            <div class="combobox__item">
+                @SelectedItem?.ToString()
+            </div>
+        </div>
+
+        <div class="combobox__items">
+            @foreach (var i in Items)
+            {
+                <div class="combobox__item @(SelectedItem == i ? "-selected" : "")" @onclick="@(e => SelectItem(i))">
+                    @i?.ToString()
+                </div>
+            }
+        </div>
+    </div>
+}

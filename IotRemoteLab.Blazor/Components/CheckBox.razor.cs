@@ -8,8 +8,6 @@ namespace IotRemoteLab.Blazor.Components
         #region Parameters
 
 
-        [Parameter]
-        public string? Name { get; set; }
         /// <summary>
         /// Состояние checkbox.
         /// </summary>
