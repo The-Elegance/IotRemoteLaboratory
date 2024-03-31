@@ -2,7 +2,7 @@
 
 namespace IotRemoteLab.Blazor.Components
 {
-    public class Component : ComponentBase
+    public abstract class Component : ComponentBase
     {
         #region Properties
 

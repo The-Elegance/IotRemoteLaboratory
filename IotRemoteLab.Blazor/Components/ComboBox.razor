@@ -74,7 +74,7 @@
 
 @if (Visible)
 {
-    <div id="@(Name ?? GetId())" name="@Name" class="combobox @(IsDropDownOpen ? "-visible" : "")">
+    <div id="@(Name ?? GetId())" name="@Name" class="combobox @(IsDropDownOpen ? "-visible" : "")" @attributes="Attributes">
 
         <div class="combobox__header" @onclick="@HeaderClick">
             <div class="combobox__item">
