@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+      - db:/docker-entrypoint-initdb.d/create_tables.sql
+    networks:
+      - dev
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 1234:8080
+    networks:
+      - dev
+
+
+volumes:
+  db:
+    driver: "local"
+networks:
+  dev:
+    driver: bridge

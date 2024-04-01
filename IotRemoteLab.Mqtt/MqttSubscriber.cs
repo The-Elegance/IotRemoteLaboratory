@@ -1,11 +1,11 @@
-﻿using MQTTnet.Client.Connecting;
+﻿using System.Text;
+using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
-using MQTTnet.Client;
-using MQTTnet;
-using System.Text;
 
-namespace IotRemoteLaboratory.Mqtt.Core
+namespace IotRemoteLab.Mqtt
 {
     public sealed class MqttSubscriber : MqttMember
     {

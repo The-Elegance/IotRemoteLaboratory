@@ -1,5 +1,4 @@
-﻿using IotRemoteLab.Domain.Stand;
-using IotRemoteLab.Domain.Stand.Benchboards;
+﻿using IotRemoteLab.Domain.Stand.Benchboards;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers
