@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components;
+using IotRemoteLab.Blazor.Services;
+using System.Net.Http.Json;
 
 namespace IotRemoteLab.Blazor.Components
 {
@@ -16,7 +18,7 @@ namespace IotRemoteLab.Blazor.Components
         /// Выполняет код, string - code, action - выполняется при завершении работы метода.
         /// </summary>
         [Parameter]
-        public Action<string, Action> ExecuteCode { get; set; }
+        public Action<string, Action<string>> ExecuteCode { get; set; }
 
         private uint _currentFontSize = 14;
         [Parameter]
@@ -40,13 +42,40 @@ namespace IotRemoteLab.Blazor.Components
             }
         }
 
+        [Inject]
+        public MonacoEditorService Service { get; set; }
+        [Inject]
+        public HttpClient HttpClient { get; set; }
+
+
+        #endregion Properties
+
+
+        #region Constructors
+
+
+        public MonacoEditor() { }
+
+
+        #endregion Constructors
+
+
+        #region Private Methods
+
 
         /// <summary>
-        /// Сохраняет код с ide и запускает его.
+        /// Отправляет код из ide на сервер, выводит результат сборки.
         /// </summary>
         public async void RunClick()
         {
+            IsReadonly = !IsReadonly;
+            _output = string.Empty;
 
+            var latestCode = Service.GetCode("container").Result;
+            ExecuteCode?.Invoke(latestCode, (res) => 
+            {
+                _output = res;
+            });
         }
 
         /// <summary>
@@ -56,24 +85,46 @@ namespace IotRemoteLab.Blazor.Components
         /// <returns></returns>
         public async Task FileUploaded(InputFileChangeEventArgs e)
         {
+            var browserFile = e.File;
 
+            if (browserFile == null)
+                return;
+
+            var fileSize = browserFile.Size;
+            var fileType = browserFile.ContentType;
+            var fileName = browserFile.Name;
+            var lastModified = browserFile.LastModified;
+
+            try
+            {
+                var fileStream = browserFile.OpenReadStream(MaxFileSize);
+
+                var tempFileName = Path.GetTempFileName();
+                var extension = Path.GetExtension(fileName);
+                var targetFilePath = Path.ChangeExtension(tempFileName, extension);
+
+                // save temp file
+                var targetStream = new FileStream(targetFilePath, FileMode.Create);
+                // copy to target file
+                await fileStream.CopyToAsync(targetStream);
+                targetStream.Close();
+
+                // TODO: Code executor
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
-
-
-        #endregion Properties
-
-
-        #region Private Methods
-
 
         private void ChangeReadonlyMode()
         {
-            
+            Service.ReadonlyMode("container", IsReadonly);
         }
 
         public void ChangedFontSize()
         {
-
+            Service.ChangeFontSize("container", CurrentFontSize);
         }
 
 
@@ -108,6 +159,14 @@ namespace IotRemoteLab.Blazor.Components
         protected override void OnAfterRender(bool firstRender)
         {
             base.OnAfterRender(firstRender);
+            Service.Reload("container");
+            if (firstRender) 
+            {
+                Service.Initialize("container", @"void setup() { 
+                    Serial.begin(9600); //initialize serial communication
+                    pinMode(ledPin, OUTPUT); //define ledPin as an output
+                }", "cpp", (s) => { });
+            }
         }
 
 
