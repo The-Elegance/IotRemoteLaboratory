@@ -7,6 +7,10 @@ namespace IotRemoteLab.API.Hubs
 {
     public class StandHub : Hub
     {
+        public async Task SendToTopic(string topic, string args) 
+        {
+            await Clients.All.SendAsync("StandStateChanged", topic, args);
+        }
         public async Task AddFramework(McuFramework framework)
         {
             await Clients.All.SendAsync("FrameworkAdded", framework);

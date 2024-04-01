@@ -14,6 +14,10 @@ namespace IotRemoteLab.Domain.Stand
         /// </summary>
         public McuFramework Framework { get => Mcu.Framework; }
         /// <summary>
+        /// Url (Доменное имя)
+        /// </summary>
+        public string Url { get; set; }
+        /// <summary>
         /// Наличие стендовой платы
         /// </summary>
         public bool HasBenchboard { get; set; }

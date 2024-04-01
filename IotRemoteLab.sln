@@ -11,6 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.Blazor", "IotRemoteLab.Blazor\IotRemoteLab.Blazor.csproj", "{2EDC3858-0264-4814-B226-AEF848544A1A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{2EB42A89-0223-4639-BC55-C9809FB2C436}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.Mqtt", "IotRemoteLab.Mqtt\IotRemoteLab.Mqtt.csproj", "{BAB52239-42F9-4AA6-9F91-DF4F15F0B609}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.Persistence", "IotRemoteLab.Persistence\IotRemoteLab.Persistence.csproj", "{751A7905-DA61-4421-AE05-C5E1D2A7CD50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.Application", "IotRemoteLab.Application\IotRemoteLab.Application.csproj", "{6541833F-F2D0-4883-92D2-DD9519F17D34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,12 +37,25 @@ Global
 		{2EDC3858-0264-4814-B226-AEF848544A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EDC3858-0264-4814-B226-AEF848544A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EDC3858-0264-4814-B226-AEF848544A1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAB52239-42F9-4AA6-9F91-DF4F15F0B609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAB52239-42F9-4AA6-9F91-DF4F15F0B609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAB52239-42F9-4AA6-9F91-DF4F15F0B609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAB52239-42F9-4AA6-9F91-DF4F15F0B609}.Release|Any CPU.Build.0 = Release|Any CPU
+		{751A7905-DA61-4421-AE05-C5E1D2A7CD50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{751A7905-DA61-4421-AE05-C5E1D2A7CD50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{751A7905-DA61-4421-AE05-C5E1D2A7CD50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{751A7905-DA61-4421-AE05-C5E1D2A7CD50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6541833F-F2D0-4883-92D2-DD9519F17D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6541833F-F2D0-4883-92D2-DD9519F17D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6541833F-F2D0-4883-92D2-DD9519F17D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6541833F-F2D0-4883-92D2-DD9519F17D34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2EDC3858-0264-4814-B226-AEF848544A1A} = {0455C945-C0E2-4476-B012-0F630B2BD7EA}
+		{BAB52239-42F9-4AA6-9F91-DF4F15F0B609} = {2EB42A89-0223-4639-BC55-C9809FB2C436}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3DA06C2F-0A47-4AD3-9291-AB9703DA48C9}
