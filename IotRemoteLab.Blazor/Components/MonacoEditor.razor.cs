@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components;
 using IotRemoteLab.Blazor.Services;
-using System.Net.Http.Json;
 
 namespace IotRemoteLab.Blazor.Components
 {

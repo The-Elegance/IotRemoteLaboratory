@@ -27,13 +27,23 @@
     }
 
         .editor__monacoeditor .code-container {
-            height: 300px;
+            height: 100%;
             border: 1px solid #1E1E1E;
             overflow: hidden;
         }
 
+        .editor__monacoeditor .monaco-editor.no-user-select {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .editor__monacoeditor .overflow-guard {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
     .editor__output {
-        radius-border: 8px;
+        border-radius: 8px;
         flex: 0 0 200px;
         border: 1px solid #1E1E1E;
         background: #2C2C2C;
