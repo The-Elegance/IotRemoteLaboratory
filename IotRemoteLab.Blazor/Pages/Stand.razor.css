@@ -20,7 +20,7 @@
 
 .stand-workflow__right {
     background: #333;
-    flex: 1 0 0;
+    flex: 0 0 calc(65% - 16px);
 }
 
 @media (max-width: 1199px) {
