@@ -1,0 +1,64 @@
+﻿@page "/benchForm"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand.Benchboards
+@using IotRemoteLab.Domain.Stand
+@using System.Collections
+
+<h3>NewBenchForm</h3>
+
+<RadzenTemplateForm Data="@stand" Submit="@((Stand args) => { Submit(args); })">
+    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenStack>
+                <RadzenFieldset Text="Микронконтроллер">
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="Название" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="8">
+                            <RadzenDropDown AllowClear="true" Placeholder="Select something" Data="@mcus" TextProperty="Name" @bind-Value="bench" Style="width: 100%;"></RadzenDropDown>
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="Pattern" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="8">
+                            <RadzenDropDown AllowClear="true" Placeholder="Select something" Data="@mcus" TextProperty="Name" @bind-Value="bench" Style="width: 100%;"></RadzenDropDown>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenTemplateForm>
+
+@code {
+    Stand stand = new Stand()
+    {
+
+    };
+
+    Benchboard bench = new Benchboard() { };
+
+    List<Benchboard> mcus = new List<Benchboard>()
+    {
+        new Benchboard() {Name = "fram1", Ports = new List<BenchboardPort>()},
+        new Benchboard() {Name = "fram2", Ports = new List<BenchboardPort>()},
+        new Benchboard() {Name = "fram3", Ports = new List<BenchboardPort>()}
+    };
+
+    void Submit(Stand arg)
+    {
+        //
+    }
+
+    void Cancel()
+    {
+        //
+    }
+}

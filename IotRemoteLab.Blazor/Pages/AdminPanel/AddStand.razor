@@ -1,0 +1,199 @@
+﻿@page "/addStand"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using IotRemoteLab.Domain.Stand.Benchboards
+@using System.Collections
+
+<h1>AddStand</h1>
+
+
+<RadzenTemplateForm Data="@stand" Submit="@((Stand args) => { Submit(); })">
+    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-3">
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenStack>
+                <RadzenFieldset Text="Микронконтроллер">
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="Название микроконтроллера" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenDropDown Data="@mcu" @bind-Value=@value Style="width: 100%; max-width: 500px;"></RadzenDropDown>
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="1">
+                            <RadzenButton Text="Клак" ButtonStyle="ButtonStyle.Secondary" Click=@OpenOrder />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="url" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenTextBox @bind-Value="@valueText1" Style="width: 100%; max-width: 500px;" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="стендовая плата" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenToggleButton @bind-Value=@valueT Shade="Shade.Light" Text="@(valueT ? "True" : "False" )" ButtonStyle="ButtonStyle.Primary"
+                                                ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "False" }})" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    @if(valueT == true)
+                    {
+                        <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="стендовая плата2" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenDropDown Data="@stendPl" @bind-Value=@value1 Style="width: 100%; max-width: 500px;"></RadzenDropDown>
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="1">
+                            <RadzenButton Text="Клак" ButtonStyle="ButtonStyle.Secondary" Click=@OpenOrder />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    }
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="подсветка стенда" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenToggleButton @bind-Value=@valueT2 Shade="Shade.Light" Text="@(valueT2 ? "True" : "False" )" ButtonStyle="ButtonStyle.Primary"
+                                                ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "False" }})" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    @if(valueT2 == true)
+                    {
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="подсветка стенда2-ШИМ" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="5">
+                                <RadzenTextBox @bind-Value="@valueText2" Style="width: 100%; max-width: 500px;" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="подсветка стенда3-число" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="5">
+                                <RadzenTextBox @bind-Value="@valueText3" Style="width: 100%; max-width: 500px;" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    }
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="последовательный порт" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenToggleButton @bind-Value=@valueT3 Shade="Shade.Light" Text="@(valueT3 ? "True" : "False" )" ButtonStyle="ButtonStyle.Primary"
+                                                ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "False" }})" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    @if (valueT3 == true)
+                    {
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="последовательный порт2" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="5">
+                                <RadzenTextBox @bind-Value="@valueText4" Style="width: 100%; max-width: 500px;" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    }
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="веб камера" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenToggleButton @bind-Value=@valueT4 Shade="Shade.Light" Text="@(valueT4 ? "True" : "False" )" ButtonStyle="ButtonStyle.Primary"
+                                                ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "False" }})" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    @if (valueT4 == true)
+                    {
+                        <RadzenRow AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="12" SizeMD="4">
+                                <RadzenLabel Text="Ссылка на трансляцию" />
+                            </RadzenColumn>
+                            <RadzenColumn Size="12" SizeMD="5">
+                                <RadzenTextBox @bind-Value="@valueText5" Style="width: 100%; max-width: 500px;" />
+                            </RadzenColumn>
+                        </RadzenRow>
+                    }
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" Click="@Submit" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    Stand stand = new Stand()
+    {
+
+    };
+
+    string value = "";
+    string value1 = "";
+    string valueText1 = "";
+    string valueText2 = "";
+    string valueText3 = "";
+    string valueText4 = "";
+    string valueText5 = "";
+    bool valueT = false;
+    bool valueT2 = false;
+    bool valueT3 = false;
+    bool valueT4 = false;
+
+    List<string> mcu = new List<string>()
+    {
+        "тык1", "тык2", "тык3"
+    };
+
+    List<string> stendPl = new List<string>()
+    {
+        "тык11", "тык22", "тык33"
+    };
+
+    void Submit()
+    {
+        //
+    }
+
+    void Cancel()
+    {
+        //
+    }
+
+    private void OnClick(string text)
+    {
+        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "ToggleButton Clicked", Detail = text });
+    }
+
+    int orderID = 10248;
+
+    public async Task OpenOrder()
+    {
+        await DialogService.OpenAsync<NewMcuForm>($"Order {orderID}",
+               new Dictionary<string, object>(),
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+
+    public async Task OpenOrder2()
+    {
+        await DialogService.OpenAsync<NewBenchForm>($"Order {orderID}",
+               new Dictionary<string, object>(),
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+}
