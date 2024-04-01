@@ -1,0 +1,88 @@
+﻿@page "/mcuForm"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using System.Collections
+
+<h3>Test</h3>
+<RadzenTemplateForm Data="@_mcu">
+    <RadzenRow Gap="2rem" Class="rz-p-0 rz-p-lg-4">
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenStack>
+                <RadzenFieldset Text="Микронконтроллер">
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="Название микроконтр" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="8">
+                            <RadzenTextBox @bind-Value="@_mcu.Name" Style="width: 100%; max-width: 500px;" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="Фрейм" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="8">
+                            <RadzenTextBox @bind-Value="@valueText2" Style="width: 100%; max-width: 500px;" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="1">
+                            <RadzenButton Text="Клак" ButtonStyle="ButtonStyle.Secondary" Click=@OpenOrder />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="Скрипт" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="8">
+                            <RadzenTextBox @bind-Value="@_mcu.AssemblyScriptFile" Style="width: 100%; max-width: 500px;" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenColumn Size="12" SizeMD="4">
+                            <RadzenLabel Text="Скрипт развертывания ПО на стенде" />
+                        </RadzenColumn>
+                        <RadzenColumn Size="12" SizeMD="8">
+                            <RadzenTextBox @bind-Value="@_mcu.DeployScriptFile" Style="width: 100%; max-width: 500px;" />
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenFieldset>
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" Click="@Submit" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    string valueText = "";
+    string valueText2 = "";
+    string valueText3 = "";
+    string valueText4 = "";
+    string valueText5 = "";
+
+    private Mcu _mcu = new();
+
+    void Submit()
+    {
+        
+    }
+
+    void Cancel()
+    {
+        //
+    }
+
+    int orderID = 10248;
+
+    public async Task OpenOrder()
+    {
+        await DialogService.OpenAsync<NewFrameworkForm>($"Order {orderID}",
+               new Dictionary<string, object>(),
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+}
