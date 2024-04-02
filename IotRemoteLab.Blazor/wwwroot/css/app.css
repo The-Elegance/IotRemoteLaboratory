@@ -3,12 +3,14 @@
     --font-inter: Inter;
     /* font sizes */
     --font-size-base: 16px;
-    --font-size-xl: 20px;
+    --font-size-md: 24px;
+    --font-size-xl: 36px;
     /* Colors */
-    --brand-color: #bfb2ff;
+    --brand-color: #8c80cc;
     --color-white: #fff;
-    --color-cornflowerblue-100: #8c80cc;
+    --color-cornflowerblue-100: #bfb2ff;
     --color-dimgray: #6a6a6a;
+    --dark-background-color: #333333;
     /* Gaps */
     --gap-5xs: 8px;
     --gap-9xs: 4px;
@@ -16,13 +18,19 @@
     --padding-81xl: 100px;
     --padding-sm: 14px;
     --padding-xl: 20px;
+    /* Border radius  */
+    --br-3xs: 10px;
 }
 
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    font-family: var(--font-inter);
     margin: 0;
     line-height: normal;
+    background-color: var(--dark-background-color);
 }
+
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
