@@ -13,38 +13,15 @@ html, body {
     /* Colors */
     --brand-color: #bfb2ff;
     --color-white: #fff;
+    --color-cornflowerblue-100: #8c80cc;
     --color-dimgray: #6a6a6a;
     /* Gaps */
     --gap-5xs: 8px;
     --gap-9xs: 4px;
     /* Paddings */
-    --padding-base: 16px;
-    --padding-xs: 12px;
-    --padding-3xs: 10px;
-    /* Border radiuses */
-    --br-3xs: 10px;
-}
-
-h1:focus {
-    outline: none;
-}
-
-a, .btn-link {
-    color: #0071c1;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-.content {
-    padding-top: 1.1rem;
+    --padding-81xl: 100px;
+    --padding-sm: 14px;
+    --padding-xl: 20px;
 }
 
 .valid.modified:not([type=checkbox]) {
