@@ -98,6 +98,7 @@
 .checkboxWrapper {
     display: flex;
     column-gap: 8px;
+    accent-color: var(--brand-color);
 }
 
 .text {
