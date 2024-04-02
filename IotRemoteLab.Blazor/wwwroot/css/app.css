@@ -1,5 +1,39 @@
+:root {
+    /* fonts */
+    --font-inter: Inter;
+    /* font sizes */
+    --font-size-base: 16px;
+    --font-size-xl: 20px;
+    /* Colors */
+    --brand-color: #bfb2ff;
+    --color-white: #fff;
+    --color-cornflowerblue-100: #8c80cc;
+    --color-dimgray: #6a6a6a;
+    /* Gaps */
+    --gap-5xs: 8px;
+    --gap-9xs: 4px;
+    /* Paddings */
+    --padding-81xl: 100px;
+    --padding-sm: 14px;
+    --padding-xl: 20px;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    line-height: normal;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
 }
 
 #blazor-error-ui {

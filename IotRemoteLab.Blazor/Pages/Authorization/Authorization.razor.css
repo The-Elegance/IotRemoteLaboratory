@@ -1,0 +1,361 @@
+﻿/* Основное */
+.iot-remote-laboratory {
+    margin: 0;
+    position: relative;
+    font-size: inherit;
+    line-height: 29.43px;
+    font-weight: 700;
+    font-family: inherit;
+}
+
+.log-in,
+.welcome-back-please {
+    position: relative;
+    font-family: var(--font-inter);
+    color: var(--color-white);
+    text-align: left;
+}
+
+.log-in {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 107px;
+    white-space: nowrap;
+}
+
+.welcome-back-please {
+    font-size: var(--font-size-base);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--gap-5xs);
+}
+
+.label {
+    align-self: stretch;
+    position: relative;
+    font-size: var(--font-size-base);
+    font-family: var(--font-inter);
+    color: var(--color-white);
+    text-align: left;
+}
+
+.labled-textbox,
+.textbox {
+    align-self: stretch;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.textbox {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background-color: var(--color-dimgray);
+    height: 52px;
+    border-radius: var(--br-3xs);
+    flex-direction: row;
+    align-items: center;
+    padding: var(--padding-sm) 10px;
+    box-sizing: border-box;
+    font-family: var(--font-inter);
+    font-weight: 500;
+    font-size: var(--font-size-xl);
+    color: var(--color-white);
+    min-width: 250px;
+}
+
+.labled-textbox {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-9xs);
+    flex-shrink: 0;
+}
+
+.label1 {
+    align-self: stretch;
+    position: relative;
+    font-size: var(--font-size-base);
+    font-family: var(--font-inter);
+    color: var(--color-white);
+    text-align: left;
+}
+
+.labled-textbox1,
+.textbox1 {
+    align-self: stretch;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.textbox1 {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background-color: var(--color-dimgray);
+    height: 52px;
+    border-radius: var(--br-3xs);
+    flex-direction: row;
+    align-items: center;
+    padding: var(--padding-sm) 9px;
+    box-sizing: border-box;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-xl);
+    color: var(--color-white);
+    min-width: 250px;
+}
+
+.labled-textbox1 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-9xs);
+    flex-shrink: 0;
+}
+
+.bullet {
+    accent-color: #333;
+    margin: 0;
+    height: 16px;
+    width: 16px;
+    position: relative;
+}
+
+.this-is-check {
+    position: relative;
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    font-family: var(--font-inter);
+    color: var(--color-white);
+    text-align: left;
+}
+
+.combobox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-5xs);
+}
+
+.forgot-password {
+    width: 129px;
+    position: relative;
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    font-family: var(--font-inter);
+    color: var(--brand-color);
+    text-align: center;
+    display: inline-block;
+    min-width: 129px;
+}
+
+.addtional-funcs {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.sing-in {
+    width: 65px;
+    position: relative;
+    font-size: var(--font-size-xl);
+    font-family: var(--font-inter);
+    color: #000;
+    text-align: center;
+    display: inline-block;
+    min-width: 65px;
+}
+
+.button-sing-in {
+    cursor: pointer;
+    border: 0;
+    padding: var(--padding-sm) var(--padding-xl);
+    background-color: var(--brand-color);
+    align-self: stretch;
+    border-radius: var(--br-3xs);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+    .button-sing-in:hover {
+        background-color: var(--color-cornflowerblue-100);
+    }
+
+.all-iconsadd {
+    height: 24px;
+    width: 24px;
+    position: relative;
+    min-height: 24px;
+}
+
+.content {
+    position: relative;
+    font-size: var(--font-size-xl);
+    font-family: var(--font-inter);
+    color: var(--color-white);
+    text-align: left;
+}
+
+.ghost-button {
+    cursor: pointer;
+    border: 2px solid var(--brand-color);
+    padding: var(--padding-sm) 36px var(--padding-sm) var(--padding-xl);
+    background-color: transparent;
+    align-self: stretch;
+    border-radius: var(--br-3xs);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-5xs);
+}
+
+    .ghost-button:hover {
+        background-color: rgba(140, 128, 204, 0.09);
+        border: 2px solid var(--color-cornflowerblue-100);
+        box-sizing: border-box;
+    }
+
+.dont-have-an {
+    color: var(--color-white);
+}
+
+.create-an-account {
+    color: var(--brand-color);
+}
+
+.dont-have-an-container {
+    align-self: stretch;
+    position: relative;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    font-family: var(--font-inter);
+    text-align: center;
+    cursor: pointer;
+}
+
+.login-field,
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.login-form {
+    margin: 0;
+    align-self: stretch;
+    padding: 0;
+    gap: 28px;
+}
+
+.login-field {
+    flex: 0.5813;
+    background-color: #333;
+    padding: 128px 201px 391px;
+    box-sizing: border-box;
+    gap: 32px;
+    min-width: 624px;
+    max-width: 100%;
+}
+
+.login-field-icon {
+    height: 1000px;
+    flex: 1;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    min-width: 624px;
+}
+
+.authorization {
+    width: 100%;
+    position: relative;
+    background-color: #2c2c2c;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    letter-spacing: normal;
+    row-gap: 20px;
+    text-align: left;
+    font-size: 24px;
+    color: var(--color-white);
+    font-family: var(--font-inter);
+}
+
+@media screen and (max-width: 1525px) {
+
+    .login-field,
+    .login-field-icon {
+        flex: 1;
+    }
+
+    .authorization {
+        flex-wrap: wrap;
+    }
+}
+
+@media screen and (max-width: 1225px) {
+    .login-field {
+        padding-left: var(--padding-81xl);
+        padding-right: var(--padding-81xl);
+        box-sizing: border-box;
+    }
+}
+
+/*@media screen and (max-width: 850px) {*/
+@media screen and (max-width: 850px) {
+    .log-in {
+        font-size: 29px;
+    }
+
+    .login-field {
+        gap: 16px 32px;
+        padding: 83px 50px 254px;
+        box-sizing: border-box;
+    }
+
+    .login-field,
+    .login-field-icon {
+        min-width: 100%;
+    }
+}
+
+@media screen and (max-width: 1900px) {
+    .iot-remote-laboratory {
+        font-size: 19px;
+    }
+
+    .log-in {
+        font-size: 22px;
+    }
+
+    .addtional-funcs {
+        flex-wrap: wrap;
+    }
+
+    .content,
+    .sing-in {
+        font-size: var(--font-size-base);
+    }
+
+    .login-form {
+        height: auto;
+    }
+
+    .login-field {
+        padding-top: 54px;
+    }
+}
