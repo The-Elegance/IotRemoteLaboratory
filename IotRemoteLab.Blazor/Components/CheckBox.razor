@@ -1,0 +1,67 @@
+﻿﻿<style>
+    .checkbox {
+        position: relative;
+        cursor: pointer;
+    }
+
+        .checkbox input {
+            display: none;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            position: absolute;
+            top: -9999px;
+        }
+
+        .checkbox span {
+            padding-left: 20px;
+            position: relative;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1;
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Chrome/Safari/Opera */
+            -khtml-user-select: none; /* Konqueror */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+        }
+
+        .checkbox input:checked + span::after {
+            display: block;
+        }
+
+        .checkbox span::before {
+            display: block;
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--bs-purple);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .checkbox span::after {
+            display: none;
+            content: '';
+            width: 8px;
+            height: 4px;
+            position: absolute;
+            left: 3px;
+            top: 4px;
+            border-left: 2px solid var(--bs-purple);
+            border-bottom: 2px solid var(--bs-purple);
+            transform: rotate(-50deg);
+        }
+</style>
+
+@inherits Component
+
+@if (Visible)
+{
+    <label class="checkbox" id="@(Name ?? GetId())" name="@Name" @attributes="Attributes">
+        <input @bind="@IsChecked" type="checkbox" @onclick="CheckboxChanged">
+        <span>@Text</span>
+    </label>
+}

@@ -1,0 +1,24 @@
+﻿@inherits Component
+
+<div id="@(Name ?? GetId())" class="video-block">
+    <div class="video-block_player">
+        <button id="watch" @onclick=StartStream>Start</button>
+        <button @onclick=StopStream>Stop</button>
+
+        <div class="container" id="stream">
+
+            <div class="row hide" id="info">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-info-circle"></i></h3>
+                    </div>
+                    <div class="panel-body">
+                        <pre id="metadata" style="word-break: break-word;"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" id="videos">
+            </div>
+        </div>
+    </div>
+</div>
