@@ -75,8 +75,9 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
-{   
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        x => x.MigrationsAssembly("IotRemoteLab.Persistence") );
 });
 
 builder.Services.AddSignalR();
