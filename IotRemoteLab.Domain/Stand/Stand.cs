@@ -32,11 +32,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Яркость подсветки, значения 0-100.
         /// </summary>
-        public uint LigthingBrightnessLevel { get; set; }
+        public uint LightingBrightnessLevel { get; set; }
         /// <summary>
         /// Порт подсветки на Raspberry Pi. 
         /// </summary>
-        public uint LigthingRaspberryPiPort { get; set; }
+        public uint LightingRaspberryPiPort { get; set; }
         /// <summary>
         /// Наличие последовательного порта.
         /// </summary>
