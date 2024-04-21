@@ -9,5 +9,5 @@ public record User
     [Required] public  string Name{ get; set; }
     public  string? Surname{ get; set; }
     [Required] public  string? GroupNumber{ get; set; }
-    [Required] public  IReadOnlyList<Role> Roles { get; set; }
+    [Required] public  IReadOnlyList<Role.Role> Roles { get; set; }
 }

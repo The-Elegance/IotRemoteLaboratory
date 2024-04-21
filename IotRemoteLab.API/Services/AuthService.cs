@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Application.User.Dtos;
+using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.User;
 
 namespace IotRemoteLab.API.Services;
@@ -27,7 +28,7 @@ public class AuthService : IAuthService
     {
         var existed = await _usersRepository.GetUserByEmailAsync(registerUserDto.Email);
         
-        if (existed != null)
+        if (!existed.IsSuccess)
             return Result.Fail<string>("Пользователь с такой почтой уже существует");
         
         //TODO: можно автомапер заюзать
@@ -40,10 +41,13 @@ public class AuthService : IAuthService
 
     public async Task<Result<string>> LoginUserAsync(LoginUserDto loginUserDto)
     {
-        var user = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
-        if (user == null)
+        var res = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
+        
+        if (!res.IsSuccess)
             return Result.Fail<string>("Такого пользователя не существует");
 
+        var user = res.Value;
+        
         if (IsPasswordVerified(loginUserDto.Password, user.PasswordHash))
             return Result.Fail<string>("Неправильный пароль");
 
@@ -69,7 +73,7 @@ public class AuthService : IAuthService
             Name = userDto.Name,
             Surname = userDto.Surname,
             GroupNumber = userDto.GroupNumber,
-            Roles = new[] { role }
+            Roles = new[] { role.GetValueOrThrow()}
         };
     }
     
