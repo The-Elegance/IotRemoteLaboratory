@@ -16,16 +16,11 @@ public class UsersRepository : IUsersRepository
 
     public async Task<User?> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var a = await _applicationContext
-            .Users
-            .Include(u => u.Roles)
-            .SingleOrDefaultAsync(user => user.Id == id, cancellationToken)
+        return await _applicationContext
+                .Users
+                .Include(u => u.Roles)
+                .SingleOrDefaultAsync(user => user.Id == id, cancellationToken)
             ;
-        
-        
-        
-        
-        return a;
     }
 
     public async Task<bool> AddAsync(User entity, CancellationToken cancellationToken = default)
