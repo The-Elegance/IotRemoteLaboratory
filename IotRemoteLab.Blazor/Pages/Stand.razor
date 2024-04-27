@@ -1,5 +1,9 @@
-﻿@page "/stand"
+﻿@page "/stand/{Id:guid}"
+@inject HttpClient _httpClient;
+@using IotRemoteLab.Domain
+@using Microsoft.AspNetCore.SignalR.Client
 @layout BlankLayout
+@inject HubConnection _hubConnection
 
 <div class="stand-workflow">
     <div class="stand-workflow__left">
@@ -10,10 +14,11 @@
                 </div>
 
                 <div class="workflow-box__combobox">
-                    <IotRemoteLab.Blazor.Components.ComboBox SelectedItem="null" Items="@UartList" />
+                    <IotRemoteLab.Blazor.Components.ComboBox @bind-SelectedItem="@Service.SelectedUart" Items="@Service.AvailableUarts" />
                 </div>
             </div>
             <div class="workflow-box__item">
+
                 <div class="stream-frame">
                     @if (false)
                     {
@@ -28,14 +33,23 @@
                 @* <IotRemoteLaboratory.Components.Controls.StreamFrame /> *@
             </div>
 
-            <div class="workflow-box__item workflow-box-grid">
-                
-                        <div class="workflow-box-buttons">
-                        @foreach (var button in new List<object>(0))
-                        {
-                            <IotRemoteLab.Blazor.Components.CheckBox Text="test" StateChanged="@OnButtonStateChanged" IsChecked="false" />
-                        }
+            <div class="workflow-box__item workflow-box-grid">         
+                <div class="workflow-box-buttons">
+                    @foreach (var button in Service.StandButton)
+                    {
+                        <IotRemoteLab.Blazor.Components.CheckBox Text="@button.Name" StateChanged="@OnButtonStateChanged" IsChecked="@button.IsChecked" />
+                    }
+                </div>
+
+                <div class="workflow-box-leds">
+                    @foreach (var led in Service.StandLeds)
+                    {
+                        <div class="stand-led">
+                            <div class="stand-led__light @(led.IsEnable ? "-enable" : "")" />
+                            <span class="stand-led__name">@led.Name</span>
                         </div>
+                    }
+                </div>
             </div>
 
             <div class="workflow-box__item -stretch">
@@ -47,7 +61,7 @@
 
         <div class="workflow-box">
             <div class="workflow-box__item -stretch">
-                <IotRemoteLab.Blazor.Components.MonacoEditor />
+                <IotRemoteLab.Blazor.Components.MonacoEditor DefaultBoilerplateCode="@_defaultBoilderplateCode" />
             </div>
         </div>
     </div>

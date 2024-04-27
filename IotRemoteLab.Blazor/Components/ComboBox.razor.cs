@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using IotRemoteLab.Blazor.Tools;
+using Microsoft.AspNetCore.Components;
 
 namespace IotRemoteLab.Blazor.Components
 {
-    public partial class ComboBox : Component
+    public partial class ComboBox<TItem> : Component
     {
         #region Parameters
 
@@ -11,19 +12,36 @@ namespace IotRemoteLab.Blazor.Components
         /// Список элементов в списке.
         /// </summary>
         [Parameter]
-        public List<object> Items { get; set; } = [];
+        public List<TItem> Items { get; set; } = [];
+        private TItem? _selectedItem;
+        [Parameter]
+        public TItem? SelectedItem 
+        { 
+            get => _selectedItem; set 
+            {
+                if (_selectedItem.Equals(value)) {
+                    return;
+                }
+
+                _selectedItem = value;
+                SelectedItemChanged.InvokeAsync(value);
+            }
+        }
+        /// <summary>
+        /// Вы
+        /// </summary>
+        [Parameter]
+        public EventCallback<TItem> SelectedItemChanged { get; set; }
         /// <summary>
         /// Состояние выпадающего меню (открыто/закрыто)
         /// </summary>
         [Parameter]
-        public bool IsDropDownOpen { get; set; }
+        public bool IsDropDownOpen { get; set; } = false;
         /// <summary>
         /// Оставляет меню открытым когда пользователь выбрал элемент.
         /// </summary>
         [Parameter]
-        public bool IsStaysOpen { get; set; }
-        [Parameter]
-        public object SelectedItem { get; set; }
+        public bool IsStaysOpen { get; set; } = false;
 
 
         #endregion Parameters
@@ -37,7 +55,7 @@ namespace IotRemoteLab.Blazor.Components
             if (Items.Count > 0)
                 SelectedItem = Items[0];
             else
-                SelectedItem = "Not Selected";
+                SelectedItem = default;
         }
 
 
@@ -52,7 +70,7 @@ namespace IotRemoteLab.Blazor.Components
             base.OnAfterRender(firstRender);
             if (firstRender)
             {
-                SelectedItem = Items[0];
+                SelectedItem = Items.Count == 0 ? default : Items[0];
                 InvokeAsync(StateHasChanged);
             }
         }
@@ -76,15 +94,20 @@ namespace IotRemoteLab.Blazor.Components
         /// Делает элемент из выпадающего списка который выбрал пользователь, выбранным.
         /// </summary>
         /// <param name="item">Элемент который выбрал пользователь</param>
-        void SelectItem(object? item)
+        void SelectItem(TItem? item)
         {
-            SelectedItem = item ?? "Not Selected";
-
+            SelectedItem = item;
             if (!IsStaysOpen)
                 IsDropDownOpen = false;
         }
 
 
         #endregion Private Methods
+
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace IotRemoteLab.Blazor.Components
         void CheckboxChanged(MouseEventArgs e)
         {
             IsChecked = !IsChecked;
-            StateChanged.InvokeAsync(Tuple.Create<string, bool>(Text, IsChecked));
+            StateChanged.InvokeAsync(Tuple.Create(Text, IsChecked));
             InvokeAsync(StateHasChanged);
         }
 

@@ -1,25 +1,18 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components;
 using IotRemoteLab.Blazor.Services;
+using Microsoft.AspNetCore.SignalR.Client;
+using IotRemoteLab.Domain.Code;
 
 namespace IotRemoteLab.Blazor.Components
 {
-    public partial class MonacoEditor : Component
+    public partial class MonacoEditor
     {
-        const int MaxFileSize = 5000 * 1024;
+        private BoilerplateCode _defaultBoilerplateCode = new BoilerplateCode("cpp", "17", string.Empty);
+        private bool _isReadonly = false;
+        private uint _currentFontSize = 14;
         private string _output = string.Empty;
 
-
-        #region Properties
-
-
-        /// <summary>
-        /// Выполняет код, string - code, action - выполняется при завершении работы метода.
-        /// </summary>
-        [Parameter]
-        public Action<string, Action<string>> ExecuteCode { get; set; }
-
-        private uint _currentFontSize = 14;
         [Parameter]
         public uint CurrentFontSize
         {
@@ -30,7 +23,6 @@ namespace IotRemoteLab.Blazor.Components
             }
         }
 
-        private bool _isReadonly = false;
         [Parameter]
         public bool IsReadonly
         {
@@ -41,22 +33,46 @@ namespace IotRemoteLab.Blazor.Components
             }
         }
 
+        [Parameter]
+        public BoilerplateCode DefaultBoilerplateCode
+        {
+            get => _defaultBoilerplateCode; set
+            {
+                _defaultBoilerplateCode = value;
+                try
+                {
+                    if (Service.GetCode("container").Result == string.Empty)
+                    {
+                        Service.SetCode("container", value.Value);
+                    }
+                }
+                catch { }
+            }
+        }
+    }
+
+    public partial class MonacoEditor : Component
+    {
+        private int _codeVersion;
+        private int _otherCodeVersion;
+
+        #region Properties
+
+
         [Inject]
         public MonacoEditorService Service { get; set; }
         [Inject]
         public HttpClient HttpClient { get; set; }
 
 
+        /// <summary>
+        /// Выполняет код, string - code, action - выполняется при завершении работы метода.
+        /// </summary>
+        [Parameter]
+        public Action<string, Action<string>> ExecuteCode { get; set; }
+
+        
         #endregion Properties
-
-
-        #region Constructors
-
-
-        public MonacoEditor() { }
-
-
-        #endregion Constructors
 
 
         #region Private Methods
@@ -84,36 +100,36 @@ namespace IotRemoteLab.Blazor.Components
         /// <returns></returns>
         public async Task FileUploaded(InputFileChangeEventArgs e)
         {
-            var browserFile = e.File;
+            //var browserFile = e.File;
 
-            if (browserFile == null)
-                return;
+            //if (browserFile == null)
+            //    return;
 
-            var fileSize = browserFile.Size;
-            var fileType = browserFile.ContentType;
-            var fileName = browserFile.Name;
-            var lastModified = browserFile.LastModified;
+            //var fileSize = browserFile.Size;
+            //var fileType = browserFile.ContentType;
+            //var fileName = browserFile.Name;
+            //var lastModified = browserFile.LastModified;
 
-            try
-            {
-                var fileStream = browserFile.OpenReadStream(MaxFileSize);
+            //try
+            //{
+            //    var fileStream = browserFile.OpenReadStream(MaxFileSize);
 
-                var tempFileName = Path.GetTempFileName();
-                var extension = Path.GetExtension(fileName);
-                var targetFilePath = Path.ChangeExtension(tempFileName, extension);
+            //    var tempFileName = Path.GetTempFileName();
+            //    var extension = Path.GetExtension(fileName);
+            //    var targetFilePath = Path.ChangeExtension(tempFileName, extension);
 
-                // save temp file
-                var targetStream = new FileStream(targetFilePath, FileMode.Create);
-                // copy to target file
-                await fileStream.CopyToAsync(targetStream);
-                targetStream.Close();
+            //    // save temp file
+            //    var targetStream = new FileStream(targetFilePath, FileMode.Create);
+            //    // copy to target file
+            //    await fileStream.CopyToAsync(targetStream);
+            //    targetStream.Close();
 
-                // TODO: Code executor
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            //    // TODO: Code executor
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
         }
 
         private void ChangeReadonlyMode()
@@ -161,11 +177,26 @@ namespace IotRemoteLab.Blazor.Components
             Service.Reload("container");
             if (firstRender) 
             {
-                Service.Initialize("container", @"void setup() { 
-                    Serial.begin(9600); //initialize serial communication
-                    pinMode(ledPin, OUTPUT); //define ledPin as an output
-                }", "cpp", (s) => { });
+                // TODO: !!! IMPORTANT !!! оставляю пока синхронизацию ide, но решение имеет кучу проблем.
+                // В будущем найти какое-нибудь иное решение, ибо доработать данный подход.
+                Service.Initialize("container", DefaultBoilerplateCode.Value, DefaultBoilerplateCode.LanguageName, OnIdeCodeChanged);
+                _hubConnection.On<string>("OnCodeUpdated", OnCodeUpdated);
             }
+        }
+
+        private async void OnIdeCodeChanged(string s)
+        {
+            _codeVersion = s.GetHashCode();
+            if (_codeVersion != _otherCodeVersion)
+            {
+                await _hubConnection.SendAsync("CodeUpdate", s);
+            }
+        }
+
+        private void OnCodeUpdated(string obj)
+        {
+            _otherCodeVersion = obj.GetHashCode();
+            Service.SetCode("container", obj);
         }
 
 

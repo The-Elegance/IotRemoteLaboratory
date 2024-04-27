@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IotRemoteLab.Domain\IotRemoteLab.Domain.csproj" />
+    <ProjectReference Include="..\IotRemoteLab.Mqtt\IotRemoteLab.Mqtt.csproj" />
   </ItemGroup>
 
 </Project>

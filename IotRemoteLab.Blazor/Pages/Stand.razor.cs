@@ -1,85 +1,113 @@
-﻿namespace IotRemoteLab.Blazor.Pages
+﻿
+using IotRemoteLab.Blazor.Services;
+using IotRemoteLab.Domain.Code;
+using IotRemoteLab.Domain.Stand;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Net.Http.Json;
+
+namespace IotRemoteLab.Blazor.Pages
 {
     public partial class Stand
     {
-        private List<object> UartList = new()
+        /// <summary>
+        /// Id стенда.
+        /// </summary>
+        [Parameter]
+        public Guid Id { get; set; }
+
+        private StandService Service;
+
+        /// <summary>
+        /// Стандратный Boilderplace Code для прошивки.
+        /// </summary>
+        private BoilerplateCode _defaultBoilderplateCode;
+
+
+        /// <summary>
+        /// Имеет ли стенд камеру.
+        /// </summary>
+        private bool HasCamera;
+        /// <summary>
+        /// Включена ли веб-трансляция.
+        /// </summary>
+        private bool CameraEnableState;
+        /// <summary>
+        /// Ссылка на трансляцию.
+        /// </summary>
+        private Uri CameraUri;
+
+        /// <summary>
+        /// Данные в терминала
+        /// </summary>
+        private List<string> TerminalLines { get; set; } = [];
+
+
+        #region Public & Protected Methods
+
+
+        protected override async Task OnInitializedAsync()
         {
-            "UART 1.1","UART 1.2","UART 1.3","UART 1.4"
-        };
+            await base.OnInitializedAsync();
 
-        // выбор скорость обмена данными (combobox);
+            Service = new StandService(_httpClient, _hubConnection, Id);
+            await Service.Init();
+            Service.StandStateChanged += Service_StandStateChanged;
+            await InvokeAsync(StateHasChanged);
+        }
 
-        private bool CameraState { get; set; }
-        private List<string> TerminalLines { get; set; } = new();
-        private uint FontSize = 14;
 
+        #endregion Public & Protected Methods
+
+
+        #region Private Method
+
+
+        /// <summary>
+        /// Отправляет сообщение из консоли на сервер.
+        /// </summary>
+        /// <param name="command">Команда</param>
         void TerminalSendMessage(string command)
         {
             if (command?.Length == 0)
                 return;
 
             // SignalR send message
+            //TerminalLines.Add(command);
         }
 
-        void OnButtonStateChanged(Tuple<string, bool> tuple)
+
+        async void OnButtonStateChanged(Tuple<string, bool> tuple)
         {
             //SignalR send message
             //Publisher.PublishMessageAsync(Topics.LedButtonState.Replace("+", stand.Id.ToString()).Replace("#", tuple.Item1), tuple.Item2 ? 1.ToString() : 0.ToString());
+            //await _hubConnection.SendAsync("SendToTopic", "ButtonStateChanged", tuple.Item1);
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        private void Service_StandStateChanged()
         {
-            if (firstRender)
-            {
-
-                //if (!Publisher.IsConnected)
-                //    Publisher.Connect();
-                //if (!Subscriber.IsConnected)
-                //    Subscriber.Connect();
-
-                //Subscriber.MessageReceivedEvent += (topic, value) =>
-                //{
-                //    if (topic.Contains("/gpio/led/"))
-                //    {
-                //        var buttonPort = topic.Replace("/lab/stand/0/gpio/led/", "");
-                //        foreach (var buttonRow in stand.McuPlatform.ListRowsButtons)
-                //        {
-                //            if (buttonRow.First().Title.EndsWith("_") != buttonPort.EndsWith("_"))
-                //                continue;
-
-                //            foreach (var button in buttonRow)
-                //            {
-                //                if (button.Title == buttonPort)
-                //                {
-                //                    if (value == "1")
-                //                        button.IsActive = true;
-                //                    else
-                //                        button.IsActive = false;
-                //                }
-                //            }
-                //        }
-                //    }
-                //    else if (topic.Contains("/serial/out"))
-                //    {
-                //        TerminalLines.Add(value);
-                //    }
-                //    else if (topic.Contains("/serial/in"))
-                //    {
-                //        TerminalLines.Add($"[Server]{value}");
-                //    }
-
-                //    InvokeAsync(StateHasChanged);
-                //};
-            }
-
-            base.OnAfterRender(firstRender);
+            InvokeAsync(StateHasChanged);
         }
 
 
-        #region MqttMessage Handlers
+        #endregion Private Methods
 
 
+        #region Api Methods
 
-        #endregion MqttMessage Handlers
+
+        private async Task<T> GetDataFromApi<T>(string toAddr)
+        {
+            return await GetDataFromApi<T>(toAddr, default);
+        }
+
+        private async Task<T> GetDataFromApi<T>(string toAddr, T defaultParam)
+        {
+            var s = await _httpClient.GetFromJsonAsync<T>(toAddr);
+            return s ?? defaultParam;
+        }
+
+
+        #endregion
     }
 }

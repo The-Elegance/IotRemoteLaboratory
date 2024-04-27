@@ -1,4 +1,5 @@
-﻿<style>
+﻿@using Microsoft.AspNetCore.SignalR.Client
+<style>
     .editor {
         display: flex;
         flex-direction: column;
@@ -41,6 +42,18 @@
             width: 100% !important;
             height: 100% !important;
         }
+
+    .editor-output {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .editor__output-title {
+        font-weight: 400;
+        font-size: 14px;
+        color: white;
+        margin: 0 0 8px 0;
+    }
 
     .editor__output {
         border-radius: 8px;
@@ -159,6 +172,7 @@
         }
 </style>
 
+@inject HubConnection _hubConnection;
 @inherits Component
 
 <div id="@(Name ?? GetId())" name="@Name" class="editor" attrbutes="@Attributes">
@@ -204,8 +218,12 @@
         <div id="container" class="code-container"></div>
     </div>
 
-    <div class="editor__output">
-        @_output
+    <div class="editor-output">
+        <div class="editor__output-title">
+            Результат выполнения кода.
+        </div>
+        <div class="editor__output">
+            @_output
+        </div>
     </div>
-
 </div>

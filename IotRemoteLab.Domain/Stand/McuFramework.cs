@@ -11,5 +11,7 @@
         /// Стартовый паттерн фреймворка.
         /// </summary>
         public string Pattern { get; set; }
+
+        // TODO: Заменить string Pattern на Boilerplate Code
     }
 }

@@ -15,7 +15,7 @@
 
         public MqttParams(string ip, int port, params string[] topics) : this(ip, port, (IEnumerable<string>)topics)
         {
-
+            
         }
     }
 }
