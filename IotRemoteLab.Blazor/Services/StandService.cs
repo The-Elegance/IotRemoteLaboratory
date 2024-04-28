@@ -12,6 +12,7 @@ namespace IotRemoteLab.Blazor.Services
         public event Action StandDataLoaded;
         public event Action LedStateChanged;
         public event Action StandStateChanged;
+        public event Action TerminalLogsChanged;
 
         private readonly HttpClient _httpClient;
         private readonly HubConnection _hubConnection;
@@ -57,6 +58,7 @@ namespace IotRemoteLab.Blazor.Services
         public List<StandLed> StandLeds { get; set; } = [];
         public List<StandButton> StandButton { get; set; } = [];
         public ExecutionCodeResult ExecutionCodeResult { get; }
+        public List<string> TerminalLogs { get; set; } = [];
 
 
         #region Constructors
@@ -89,7 +91,7 @@ namespace IotRemoteLab.Blazor.Services
                         {
                             Id = port.Id,
                             PortType = PortType.Mcu,
-                            Name = PortType.Mcu.ToString() + "_" + port.McuPort,
+                            Name = port.McuPort,
                             IsEnable = false
                         });
 
@@ -97,7 +99,7 @@ namespace IotRemoteLab.Blazor.Services
                         {
                             Id = port.Id,
                             PortType = PortType.RaspberryPi,
-                            Name = PortType.RaspberryPi.ToString() + "_" + port.RaspberryPiPort,
+                            Name = port.RaspberryPiPort.ToString(),
                             IsChecked = false
                         });
 
@@ -108,14 +110,14 @@ namespace IotRemoteLab.Blazor.Services
                     {
                         Id = port.Id,
                         PortType = PortType.RaspberryPi,
-                        Name = PortType.RaspberryPi.ToString() + "_" + port.RaspberryPiPort,
+                        Name = port.RaspberryPiPort.ToString(),
                         IsEnable = false
                     });
 
                     StandButton.Add(new StandButton()
                     {
                         Id = port.Id,
-                        Name = PortType.Mcu.ToString() + "_" + port.McuPort,
+                        Name = port.McuPort,
                         PortType = PortType.Mcu,
                         IsChecked = false
                     });
@@ -123,7 +125,24 @@ namespace IotRemoteLab.Blazor.Services
             }
 
             _hubConnection.On<Guid>("UartTypeChanged", OnUartTypeChanged);
+            _hubConnection.On<Guid, int, bool>("GpioLedStateChanged", OnGpioLedPortChanged);
+            _hubConnection.On<Guid, string>("TerminalLogAdded", OnTerminalLogAdded);
+            await _hubConnection.SendAsync("EnterToStand", _id);
             //_hubConnection.On<Guid, Guid, string>("CodeExecuteResultChanged", OnCodeExecuteResultChanged);
+        }
+
+        private void OnTerminalLogAdded(Guid guid, string log)
+        {
+            TerminalLogs.Add(log);
+            Console.WriteLine(log);
+            StandStateChanged?.Invoke();
+            TerminalLogsChanged?.Invoke();
+        }
+
+        private void OnGpioLedPortChanged(Guid guid, int arg2, bool arg3)
+        {
+            StandLeds.FirstOrDefault(x => x.Id == guid).IsEnable = arg3;
+            StandStateChanged?.Invoke();
         }
 
         private void OnUartTypeChanged(Guid guid)

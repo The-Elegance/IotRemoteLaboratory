@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using IotRemoteLab.API.MqttTopicHandlers;
+using IotRemoteLaboratory.Mqtt.Core;
+using Microsoft.AspNetCore.SignalR;
 
 namespace IotRemoteLab.API.Hubs
 {
     public class StandHub : Hub
     {
-        public async void Init(string test) 
+        private readonly MqttPublisher _publisher;
+        private readonly MqttSubscriber _subscriber;
+
+        public StandHub(MqttPublisher publisher, MqttSubscriber subscriber)
         {
-            Console.WriteLine(test);
+            _publisher = publisher;
+            _subscriber = subscriber;
         }
 
         /*
@@ -17,9 +23,16 @@ namespace IotRemoteLab.API.Hubs
          * **/
 
 
-        public async Task SendCodeExecuteResult(Guid standId, Guid editorElementId, string result) 
+        // /lab/stand/+/serial/in
+
+
+        /// <summary>
+        /// Raspberry Pi работает в режиме отслеживания состояния контакта (подаёт сигнал 0 или 1 на контакт)
+        /// </summary>
+        /// <returns></returns>
+        public async Task RaspberryPiInPort(Guid standId, Guid guid, int subport, bool signalValue)
         {
-            await Clients.All.SendAsync("CodeExecuteResultChanged", standId, editorElementId, result);
+            await Clients.All.SendAsync("RaspberryPiInPortChanged", guid, subport, signalValue);
         }
 
 
@@ -27,6 +40,19 @@ namespace IotRemoteLab.API.Hubs
          * Клиентские методы - предназначены для вызова клиентом.
          * 
          * **/
+
+        public override Task OnConnectedAsync()
+        {
+
+            Console.WriteLine(Context.ConnectionId);
+            return base.OnConnectedAsync();
+        }
+
+        public async Task EnterToStand(Guid standId) 
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, standId.ToString());
+            Console.WriteLine(Context.UserIdentifier);
+        }
 
         public async Task SendToTopic(string topic, string args) 
         {
@@ -50,15 +76,6 @@ namespace IotRemoteLab.API.Hubs
         public async Task RaspberryPiOutPort(byte signalValue) 
         {
             await Clients.All.SendAsync("RaspberryPiOutPortChanged", signalValue);
-        }
-
-        /// <summary>
-        /// Raspberry Pi работает в режиме отслеживания состояния контакта (подаёт сигнал 0 или 1 на контакт)
-        /// </summary>
-        /// <returns></returns>
-        public async Task RaspberryPiInPort(Guid guid, byte signalValue)
-        {
-            await Clients.All.SendAsync("RaspberryPiInPortChanged", guid, signalValue);
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿
+using IotRemoteLab.Blazor.Components;
 using IotRemoteLab.Blazor.Services;
 using IotRemoteLab.Domain.Code;
-using IotRemoteLab.Domain.Stand;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 using System.Net.Http.Json;
 
 namespace IotRemoteLab.Blazor.Pages
@@ -37,10 +36,7 @@ namespace IotRemoteLab.Blazor.Pages
         /// </summary>
         private Uri CameraUri;
 
-        /// <summary>
-        /// Данные в терминала
-        /// </summary>
-        private List<string> TerminalLines { get; set; } = [];
+        private Terminal terminal;
 
 
         #region Public & Protected Methods
@@ -73,7 +69,7 @@ namespace IotRemoteLab.Blazor.Pages
                 return;
 
             // SignalR send message
-            //TerminalLines.Add(command);
+            Service.TerminalLogs.Add(command);
         }
 
 

@@ -57,7 +57,7 @@ namespace IotRemoteLaboratory.Mqtt.Core
         {
             var msg = e.ApplicationMessage.Payload;
 
-            msg = msg ?? Array.Empty<byte>();
+            msg ??= Array.Empty<byte>();
 
             var value = Encoding.UTF8.GetString(msg);
             Console.WriteLine($"Topic: {e.ApplicationMessage.Topic}, Message: {value}");

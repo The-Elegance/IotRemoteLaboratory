@@ -53,7 +53,7 @@
             </div>
 
             <div class="workflow-box__item -stretch">
-                <IotRemoteLab.Blazor.Components.Terminal SendMessageAction="@TerminalSendMessage" TerminalLogs="@TerminalLines" />
+                <IotRemoteLab.Blazor.Components.Terminal @ref="terminal" SendMessageAction="@TerminalSendMessage" Logs="@Service.TerminalLogs" />
             </div>
         </div>
     </div>
