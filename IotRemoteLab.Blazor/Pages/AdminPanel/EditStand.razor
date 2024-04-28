@@ -1,4 +1,4 @@
-﻿@page "/addStand"
+﻿@page "/editStand"
 @layout AdminPanelLayout
 @inject DialogService DialogService
 @inject NotificationService NotificationService
@@ -11,22 +11,18 @@
 @using static IotRemoteLab.Blazor.Pages.AdminPanel.ListStand
 @using System.Collections
 
-<h1>AddStand</h1>
-
-
+<h3>EditStand</h3>
+<p>@mcu.Name</p>
 <RadzenTemplateForm Data="@stand">
 
-    <RadzenFieldset Text="Добавить стенд">
+    <RadzenFieldset Text="Редактировать стенд">
 
         <RadzenRow AlignItems="AlignItems.Center">
             <RadzenColumn Size="12" SizeMD="4">
                 <RadzenLabel Text="Микроконтроллер" />
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="5">
-                <RadzenDropDown Data="@mcu" TextProperty="Name" Name="Name" @bind-Value=@selectedMcu Style="width: 100%; max-width: 500px;"></RadzenDropDown>
-            </RadzenColumn>
-            <RadzenColumn Size="12" SizeMD="1">
-                <RadzenButton Text="Создать стенд" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewMcu />
+                <RadzenDropDown Data="@mcuData" AllowClear="true" Placeholder="@mcu.Name" TextProperty="Name" Name="Name" @bind-Value=@selectedMcu Style="width: 100%; max-width: 500px;"></RadzenDropDown>
             </RadzenColumn>
         </RadzenRow>
 
@@ -36,9 +32,6 @@
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="5">
                 <RadzenDropDown Data="@fram" TextProperty="Name" Name="Name" @bind-Value=@selectedFram Style="width: 100%; max-width: 500px;"></RadzenDropDown>
-            </RadzenColumn>
-            <RadzenColumn Size="12" SizeMD="1">
-                <RadzenButton Text="Создать фреймворк" ButtonStyle="ButtonStyle.Secondary" Click=@OpenNewFramForm />
             </RadzenColumn>
         </RadzenRow>
 
@@ -70,7 +63,7 @@
                     <RadzenDropDown Data="@stendPl" TextProperty="Name" Name="Name" @bind-Value=@selectedBench Style="width: 100%; max-width: 500px;"></RadzenDropDown>
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="1">
-                    <RadzenButton Text="Клак" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewBench /> 
+                    <RadzenButton Text="Клак" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewBench />
                 </RadzenColumn>
             </RadzenRow>
         }
@@ -152,21 +145,25 @@
     </RadzenStack>
 </RadzenTemplateForm>
 
+
 @code {
-    Stand stand = new();
+    [Parameter]
+    public Mcu mcu { get; set; }
+
+    Stand stand = new() { };
 
     bool valueStand = false;
     bool valueLightStand = false;
     bool valuePort = false;
     bool valueVebCamera = false;
 
-    private Mcu selectedMcu = new() { Name = ""}; 
-    public static List<Mcu> mcu = new List<Mcu>()
+    private Mcu selectedMcu = new() { Name = "" };
+    public static List<Mcu> mcuData = new List<Mcu>()
     {
        new Mcu() {Name = "test"}
     };
 
-    private McuFramework selectedFram =  new() { Name = ""};
+    private McuFramework selectedFram = new() { Name = "" };
     public static List<McuFramework> fram = new()
     {
         new McuFramework() {Name = "testPattern"}
@@ -186,7 +183,7 @@
 
     void Cancel()
     {
-    //
+        //
     }
 
     void UrlTextBoxChanged(string newValue)
@@ -219,4 +216,5 @@
                new Dictionary<string, object>(),
                new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
     }
+
 }

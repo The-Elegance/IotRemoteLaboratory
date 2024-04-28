@@ -1,0 +1,23 @@
+﻿@page "/standDetails"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.AddStand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.ListStand
+@using System.Collections
+
+<h3>StandDetailsCard</h3>
+
+<p>@id</p>
+<p>@mcuname</p>
+
+@code {
+	[Parameter]
+	public Guid id { get; set; }
+
+	[Parameter]
+	public string mcuname { get; set; }
+}
