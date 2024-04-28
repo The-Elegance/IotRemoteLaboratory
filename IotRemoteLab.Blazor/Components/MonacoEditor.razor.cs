@@ -71,7 +71,9 @@ namespace IotRemoteLab.Blazor.Components
         [Parameter]
         public Action<string, Action<string>> ExecuteCode { get; set; }
 
-        
+        [Parameter]
+        public string DebugUpload { get; set; }
+
         #endregion Properties
 
 

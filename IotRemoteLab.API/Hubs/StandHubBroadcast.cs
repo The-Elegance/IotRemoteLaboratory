@@ -1,6 +1,7 @@
 ﻿using IotRemoteLab.API.MqttTopicHandlers;
 using IotRemoteLaboratory.Mqtt.Core;
 using Microsoft.AspNetCore.SignalR;
+using System;
 
 namespace IotRemoteLab.API.Hubs
 {
@@ -22,7 +23,13 @@ namespace IotRemoteLab.API.Hubs
             var s = new LabStandHandler(topic, value);
             s.GpioLed += S_GpioLed;
             s.SerialIn += S_SerialIn;
+            s.DebugUpload += S_DebugUpload;
             s.Execute();
+        }
+
+        private async void S_DebugUpload(Guid arg1, string arg2)
+        {
+            await SendDebugUpload(arg1, arg2);
         }
 
         private async void S_SerialIn(Guid arg1, string arg2)
@@ -40,9 +47,9 @@ namespace IotRemoteLab.API.Hubs
             await _standHub.Clients.Group(standId.ToString()).SendAsync("GpioLedStateChanged", guid, subport, signalValue);
         }
 
-        public async Task SendDebugUpload() 
+        public async Task SendDebugUpload(Guid standId, string value) 
         {
-            
+            await _standHub.Clients.Group(standId.ToString()).SendAsync("DebugUploadChanged", value);
         }
 
         public async Task SendCodeExecuteResult(Guid standId, Guid editorElementId, string result)

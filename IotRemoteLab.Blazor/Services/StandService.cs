@@ -59,6 +59,7 @@ namespace IotRemoteLab.Blazor.Services
         public List<StandButton> StandButton { get; set; } = [];
         public ExecutionCodeResult ExecutionCodeResult { get; }
         public List<string> TerminalLogs { get; set; } = [];
+        public string DebugUpload { get; set; } = string.Empty;
 
 
         #region Constructors
@@ -127,8 +128,16 @@ namespace IotRemoteLab.Blazor.Services
             _hubConnection.On<Guid>("UartTypeChanged", OnUartTypeChanged);
             _hubConnection.On<Guid, int, bool>("GpioLedStateChanged", OnGpioLedPortChanged);
             _hubConnection.On<Guid, string>("TerminalLogAdded", OnTerminalLogAdded);
+            _hubConnection.On<string>("DebugUploadChanged", OnDebugUploadChanged);
             await _hubConnection.SendAsync("EnterToStand", _id);
             //_hubConnection.On<Guid, Guid, string>("CodeExecuteResultChanged", OnCodeExecuteResultChanged);
+        }
+
+        private void OnDebugUploadChanged(string arg2)
+        {
+            DebugUpload = arg2;
+            Console.WriteLine(arg2);
+            StandStateChanged?.Invoke();
         }
 
         private void OnTerminalLogAdded(Guid guid, string log)
