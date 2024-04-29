@@ -12,14 +12,11 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddControllers();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
-
-builder.Services.AddControllers();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,7 +48,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
 
 builder.Services.AddAuthentication(options =>
     {
@@ -98,7 +94,7 @@ app.MapControllers();
 
 app.MapHub<StandHub>("/stand-hub");
 
-
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 
 app.Run();

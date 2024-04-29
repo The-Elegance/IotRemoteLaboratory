@@ -2,6 +2,8 @@
 @layout AdminPanelLayout
 @inject DialogService DialogService
 @inject NotificationService NotificationService
+@inject HttpClient _httpClient
+
 
 
 @using Radzen
@@ -175,13 +177,18 @@
     private Benchboard selectedBench;
     public static List<Benchboard> stendPl = new List<Benchboard>()
     {
-        new Benchboard() {Name = "Плата1"},
+        new Benchboard() {Name = "Плата1",},
         new Benchboard() {Name = "Плата2"}
     };
 
-    void Submit()
+    async void Submit()
     {
-        listStand.Add(stand);
+        stand.Benchboard = selectedBench;
+        stand.Mcu = selectedMcu;
+        stand.Benchboard = selectedBench;
+
+        var res = await  _httpClient.PostAsJsonAsync<Stand>("/api/Stands", stand);
+        Console.WriteLine(res.Content);
     }
 
     void Cancel()

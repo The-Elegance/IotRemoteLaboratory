@@ -3,16 +3,18 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
+using IotRemoteLab.Blazor.Pages;
 using Radzen;
+using System;
+using IotRemoteLab.Domain.Stand;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddScoped<Radzen.DialogService>();
-builder.Services.AddRadzenComponents();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7216/") });
+builder.Services.AddScoped<DialogService>();
+
 
 builder.Services.AddSingleton(sp => {
     var navigationManager = sp.GetRequiredService<NavigationManager>();
@@ -21,5 +23,7 @@ builder.Services.AddSingleton(sp => {
       .WithAutomaticReconnect()
       .Build();
 });
+
+builder.Services.AddRadzenComponents();
 
 await builder.Build().RunAsync();

@@ -1,4 +1,5 @@
 ﻿using IotRemoteLab.Domain.Stand.Benchboards;
+using System.Text.Json.Serialization;
 
 namespace IotRemoteLab.Domain.Stand
 {
@@ -12,6 +13,8 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Фреймворк микроконтроллера.
         /// </summary>
+
+        [JsonIgnore]
         public McuFramework Framework { get => Mcu.Framework; }
         /// <summary>
         /// Url (Доменное имя)

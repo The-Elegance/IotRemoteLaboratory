@@ -2,6 +2,8 @@
 @layout AdminPanelLayout
 @inject DialogService DialogService
 @inject NotificationService NotificationService
+@inject HttpClient _httpClient
+
 
 @using Radzen
 @using Radzen.Blazor
@@ -32,10 +34,29 @@
 @code {
     private RadzenDataGrid<Stand> StandGrid = new RadzenDataGrid<Stand>();
 
-    public static List<Stand> listStand = new()
-	{
-        new Stand(){Id = Guid.NewGuid(), Mcu = new() {Name = "McuName", Framework = new() { Name = "FrameworkName" } }, Url = "http:/blablabla.ru", HasBenchboard = true, Benchboard = new(), HasLighting = true, LigthingBrightnessLevel = 50, LigthingRaspberryPiPort = 5050, HasSerialPort = true, SerialPortSpeed = 20, HasWebcam = true, WebcamUrl = "gjchcjcjcj"}
-	};
+    public static List<Stand> listStand = new();
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        await base.OnAfterRenderAsync(isFirstRender);
+
+        if (isFirstRender)
+        {
+            LoadData();
+        }
+    }
+
+    async void LoadData()
+    {
+        listStand = await _httpClient.GetFromJsonAsync<List<Stand>>("/api/Stands");
+
+        Console.WriteLine(listStand);
+
+        StandGrid.Reload();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
 
     public async Task OpenStendDetailsCard(Guid id, string name)
     {
