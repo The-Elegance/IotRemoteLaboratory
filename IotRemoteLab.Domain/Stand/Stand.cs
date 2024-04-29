@@ -13,8 +13,6 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Фреймворк микроконтроллера.
         /// </summary>
-
-        [JsonIgnore]
         public McuFramework Framework { get => Mcu.Framework; }
         /// <summary>
         /// Url (Доменное имя)
