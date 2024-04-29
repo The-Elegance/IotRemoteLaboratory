@@ -1,6 +1,7 @@
 using IotRemoteLab.API;
 using IotRemoteLab.API.HostBuilderExtentions;
 using IotRemoteLab.API.Hubs;
+using IotRemoteLab.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddMqtt("some ip", 0000, Topics.ToArray());
 #endif
 
 builder.Services.AddSingleton<StandHubBroadcast>();
+builder.Services.AddSingleton<StandsService>();
 
 var app = builder.Build();
 

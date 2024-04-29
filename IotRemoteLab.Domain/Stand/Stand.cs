@@ -58,7 +58,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Доступные Uarts для стенда.
         /// </summary>
-        public List<Uart> AvailableUarts { get; set; } 
+        public List<Uart> AvailableUarts { get; set; }
+        /// <summary>
+        /// Id для редактора кода
+        /// </summary>
+        public Guid CodeEditorId { get; set; }
     }
 
 
@@ -189,7 +193,8 @@ namespace IotRemoteLab.Domain.Stand
                     new Uart(Guid.Parse("840b7499-f1ed-48a1-aa91-a1656aa5cbc6"), 2, "UART 1.2"),
                     new Uart(Guid.Parse("69e44773-3cea-4dfc-bd8a-28f697e83e6c"), 3, "UART 1.3"),
                     new Uart(Guid.Parse("21190ead-52cf-4a73-9269-5158a4fdba5b"), 4, "UART 1.4"),
-                ]
+                ],
+                CodeEditorId = Guid.Parse("bf40a9e4-eabd-4b62-94b3-dc273328684f")
             };
 
             return stand;

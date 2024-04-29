@@ -1,4 +1,5 @@
 ﻿using IotRemoteLab.API.MqttTopicHandlers;
+using IotRemoteLab.API.Services;
 using IotRemoteLaboratory.Mqtt.Core;
 using Microsoft.AspNetCore.SignalR;
 
@@ -6,13 +7,17 @@ namespace IotRemoteLab.API.Hubs
 {
     public class StandHub : Hub
     {
-        private readonly MqttPublisher _publisher;
-        private readonly MqttSubscriber _subscriber;
+        private readonly StandsService _standsService;
 
-        public StandHub(MqttPublisher publisher, MqttSubscriber subscriber)
+        public StandHub(StandsService standsService)
         {
-            _publisher = publisher;
-            _subscriber = subscriber;
+            _standsService = standsService;
+        }   
+        
+        public async Task EnterToStand(Guid standId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, standId.ToString());
+            await Clients.Client(Context.ConnectionId).SendAsync("DeltaDataDelivered", _standsService.GetDeltaData(standId));
         }
 
         /*
@@ -48,20 +53,15 @@ namespace IotRemoteLab.API.Hubs
             return base.OnConnectedAsync();
         }
 
-        public async Task EnterToStand(Guid standId) 
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, standId.ToString());
-            Console.WriteLine(Context.UserIdentifier);
-        }
-
         public async Task SendToTopic(string topic, string args) 
         {
             await Clients.All.SendAsync("TopicValueChanged", topic, args);
         }
 
-        public async Task CodeUpdate(string newValue) 
+        public async Task CodeUpdate(Guid standId, string newValue) 
         {
-            await Clients.Others.SendAsync("OnCodeUpdated", newValue);
+            _standsService.AddDeltaData(standId, newValue, null);
+            await Clients.Group(standId.ToString()).SendAsync("OnCodeUpdated", newValue);
         }
 
         public async Task SelectUart(Guid id) 

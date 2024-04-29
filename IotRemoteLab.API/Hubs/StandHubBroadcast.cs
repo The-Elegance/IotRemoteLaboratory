@@ -1,7 +1,6 @@
 ﻿using IotRemoteLab.API.MqttTopicHandlers;
 using IotRemoteLaboratory.Mqtt.Core;
 using Microsoft.AspNetCore.SignalR;
-using System;
 
 namespace IotRemoteLab.API.Hubs
 {

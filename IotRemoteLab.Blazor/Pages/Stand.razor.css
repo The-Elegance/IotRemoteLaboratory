@@ -111,13 +111,18 @@
 .workflow-box-buttons {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: 8px 16px;
     margin: 0 0 16px 0;
+    flex-wrap: wrap;
+    max-width: 500px;
 }
 
 .workflow-box-leds {
     display: flex;
+    gap: 8px 16px;
     flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 500px;
 }
 
 .stand-led {

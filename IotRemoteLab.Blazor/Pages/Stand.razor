@@ -20,9 +20,9 @@
             <div class="workflow-box__item">
 
                 <div class="stream-frame">
-                    @if (false)
+                    @if (Service.IsWebcameraEnable)
                     {
-                        <span>Трансляция активна</span>
+                        <span>Попытка подключение к трансляции</span>
                     }
                     else
                     {
@@ -53,7 +53,7 @@
             </div>
 
             <div class="workflow-box__item -stretch">
-                <IotRemoteLab.Blazor.Components.Terminal @ref="terminal" SendMessageAction="@TerminalSendMessage" Logs="@Service.TerminalLogs" />
+                <IotRemoteLab.Blazor.Components.Terminal SendMessageAction="@TerminalSendMessage" Logs="@Service.TerminalLogs" />
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
 
         <div class="workflow-box">
             <div class="workflow-box__item -stretch">
-                <IotRemoteLab.Blazor.Components.MonacoEditor DebugUpload="@Service.DebugUpload" DefaultBoilerplateCode="@_defaultBoilderplateCode"  />
+                <IotRemoteLab.Blazor.Components.MonacoEditor @ref="codeEditor" MonacoEditorId="@Service.EditorElementId" DebugUpload="@Service.DebugUpload" DefaultBoilerplateCode="@Service.DefaultBoilerplateCode" CodeChanged="@OnCodeChanged" />
             </div>
         </div>
     </div>

@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Components;
 using IotRemoteLab.Blazor.Services;
 using Microsoft.AspNetCore.SignalR.Client;
 using IotRemoteLab.Domain.Code;
+using IotRemoteLab.Blazor.Tools;
 
 namespace IotRemoteLab.Blazor.Components
 {
     public partial class MonacoEditor
     {
-        private BoilerplateCode _defaultBoilerplateCode = new BoilerplateCode("cpp", "17", string.Empty);
         private bool _isReadonly = false;
         private uint _currentFontSize = 14;
         private string _output = string.Empty;
@@ -34,23 +34,11 @@ namespace IotRemoteLab.Blazor.Components
         }
 
         [Parameter]
-        public BoilerplateCode DefaultBoilerplateCode
-        {
-            get => _defaultBoilerplateCode; set
-            {
-                _defaultBoilerplateCode = value;
-                try
-                {
-                    if (Service.GetCode("container").Result == string.Empty)
-                    {
-                        Service.SetCode("container", value.Value);
-                    }
-                }
-                catch { }
-            }
-        }
+        public BoilerplateCode DefaultBoilerplateCode { get; set; }
     }
 
+    // TODO: !!! IMPORTANT !!! оставляю пока синхронизацию ide, но решение имеет кучу проблем.
+    // В будущем найти какое-нибудь иное решение, ибо доработать данный подход.
     public partial class MonacoEditor : Component
     {
         private int _codeVersion;
@@ -61,10 +49,6 @@ namespace IotRemoteLab.Blazor.Components
 
         [Inject]
         public MonacoEditorService Service { get; set; }
-        [Inject]
-        public HttpClient HttpClient { get; set; }
-
-
         /// <summary>
         /// Выполняет код, string - code, action - выполняется при завершении работы метода.
         /// </summary>
@@ -73,6 +57,16 @@ namespace IotRemoteLab.Blazor.Components
 
         [Parameter]
         public string DebugUpload { get; set; }
+
+        [Parameter]
+        public Guid MonacoEditorId { get; set; }
+
+        [Parameter]
+        public EventCallback<string> CodeChanged { get; set; }
+
+        [Parameter]
+        public string Code { get; set; }
+
 
         #endregion Properties
 
@@ -88,7 +82,7 @@ namespace IotRemoteLab.Blazor.Components
             IsReadonly = !IsReadonly;
             _output = string.Empty;
 
-            var latestCode = Service.GetCode("container").Result;
+            var latestCode = Service.GetCode(MonacoEditorId.ToString()).Result;
             ExecuteCode?.Invoke(latestCode, (res) => 
             {
                 _output = res;
@@ -134,16 +128,6 @@ namespace IotRemoteLab.Blazor.Components
             //}
         }
 
-        private void ChangeReadonlyMode()
-        {
-            Service.ReadonlyMode("container", IsReadonly);
-        }
-
-        public void ChangedFontSize()
-        {
-            Service.ChangeFontSize("container", CurrentFontSize);
-        }
-
 
         #region Button Clicks
 
@@ -165,43 +149,58 @@ namespace IotRemoteLab.Blazor.Components
         #endregion Monaco Editor Methods
 
 
-        #region Component Methods
-
-        protected override void OnInitialized()
+        public void Initialize(string delta = null) 
         {
-            base.OnInitialized();
+            InvokeAsync(StateHasChanged);
+            Console.WriteLine("1123");
+
+            string defaultValue = string.IsNullOrEmpty(delta) ?
+                    string.IsNullOrEmpty(DefaultBoilerplateCode.Value) ? "" : DefaultBoilerplateCode.Value
+                : delta;
+
+            _codeVersion = delta.GetHashCode();
+            _otherCodeVersion = delta.GetHashCode();
+
+
+
+            Service.Initialize(
+                MonacoEditorId.ToString(), 
+                defaultValue,
+                "cpp", 
+                OnIdeCodeChanged);
+            
+            _hubConnection.On<string>("OnCodeUpdated", OnCodeUpdated);
         }
 
-
-        protected override void OnAfterRender(bool firstRender)
-        {
-            base.OnAfterRender(firstRender);
-            Service.Reload("container");
-            if (firstRender) 
-            {
-                // TODO: !!! IMPORTANT !!! оставляю пока синхронизацию ide, но решение имеет кучу проблем.
-                // В будущем найти какое-нибудь иное решение, ибо доработать данный подход.
-                Service.Initialize("container", DefaultBoilerplateCode.Value, DefaultBoilerplateCode.LanguageName, OnIdeCodeChanged);
-                _hubConnection.On<string>("OnCodeUpdated", OnCodeUpdated);
-            }
-        }
 
         private async void OnIdeCodeChanged(string s)
         {
             _codeVersion = s.GetHashCode();
             if (_codeVersion != _otherCodeVersion)
             {
-                await _hubConnection.SendAsync("CodeUpdate", s);
+                var code = await Service.GetCode(MonacoEditorId.ToString());
+                ConsoleDebug.WriteLine(code);
+                await CodeChanged.InvokeAsync(code);
             }
         }
 
         private void OnCodeUpdated(string obj)
         {
-            _otherCodeVersion = obj.GetHashCode();
-            Service.SetCode("container", obj);
+            if (obj.GetHashCode() != _otherCodeVersion) 
+            { 
+                _otherCodeVersion = obj.GetHashCode();
+                Service.SetCode(MonacoEditorId.ToString(), obj);
+            }
         }
 
+        private void ChangeReadonlyMode()
+        {
+            Service.ReadonlyMode(MonacoEditorId.ToString(), IsReadonly);
+        }
 
-        #endregion Component Methods
+        public void ChangedFontSize()
+        {
+            Service.ChangeFontSize(MonacoEditorId.ToString(), CurrentFontSize);
+        }
     }
 }

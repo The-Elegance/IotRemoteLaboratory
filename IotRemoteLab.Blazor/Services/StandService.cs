@@ -13,6 +13,7 @@ namespace IotRemoteLab.Blazor.Services
         public event Action LedStateChanged;
         public event Action StandStateChanged;
         public event Action TerminalLogsChanged;
+        public event Action<string> EnterDeltaDataDelivered;
 
         private readonly HttpClient _httpClient;
         private readonly HubConnection _hubConnection;
@@ -28,7 +29,7 @@ namespace IotRemoteLab.Blazor.Services
         /// <summary>
         /// Id контейнера ide для стенда. Чтобы не допустить изменение значений из других страниц стендов.
         /// </summary>
-        public Guid EditorElementId { get; }
+        public Guid EditorElementId { get; set; }
 
 
         private Guid _lastSelectedUart;
@@ -59,7 +60,12 @@ namespace IotRemoteLab.Blazor.Services
         public List<StandButton> StandButton { get; set; } = [];
         public ExecutionCodeResult ExecutionCodeResult { get; }
         public List<string> TerminalLogs { get; set; } = [];
+        public bool IsWebcameraEnable { get; set; }
+
+
+        public BoilerplateCode DefaultBoilerplateCode { get; set; }
         public string DebugUpload { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
 
 
         #region Constructors
@@ -77,6 +83,9 @@ namespace IotRemoteLab.Blazor.Services
         public async Task Init(CancellationToken cancellationToken = default)
         {
             _stand = await _httpClient.GetFromJsonAsync<Stand>($"api/stands/{_id}", cancellationToken);
+            EditorElementId = _stand.CodeEditorId;
+            DefaultBoilerplateCode = new BoilerplateCode("cpp", "14", _stand.Framework.Pattern);
+
             var selectedUart = AvailableUarts.FirstOrDefault();
             _lastSelectedUart = selectedUart.Id;
             SelectedUart = selectedUart;
@@ -129,21 +138,37 @@ namespace IotRemoteLab.Blazor.Services
             _hubConnection.On<Guid, int, bool>("GpioLedStateChanged", OnGpioLedPortChanged);
             _hubConnection.On<Guid, string>("TerminalLogAdded", OnTerminalLogAdded);
             _hubConnection.On<string>("DebugUploadChanged", OnDebugUploadChanged);
+            _hubConnection.On<bool>("WebcameraStateChanged", OnWebcameraStateChanged);
+            _hubConnection.On<StandDeltaData>("DeltaDataDelivered", OnDeltaDataDelivered);
             await _hubConnection.SendAsync("EnterToStand", _id);
             //_hubConnection.On<Guid, Guid, string>("CodeExecuteResultChanged", OnCodeExecuteResultChanged);
+            ConsoleDebug.WriteLine("Init finished");
+        }
+
+        private void OnDeltaDataDelivered(StandDeltaData data)
+        {
+            ConsoleDebug.WriteLine(data.Code);//.Code);
+            Code = data.Code;
+            DebugUpload = data.DebugUploadOutput;
+            StandStateChanged?.Invoke();
+            EnterDeltaDataDelivered?.Invoke(data.Code);
+        }
+
+        private void OnWebcameraStateChanged(bool state)
+        {
+            IsWebcameraEnable = state;
+            StandStateChanged?.Invoke();
         }
 
         private void OnDebugUploadChanged(string arg2)
         {
             DebugUpload = arg2;
-            Console.WriteLine(arg2);
             StandStateChanged?.Invoke();
         }
 
         private void OnTerminalLogAdded(Guid guid, string log)
         {
             TerminalLogs.Add(log);
-            Console.WriteLine(log);
             StandStateChanged?.Invoke();
             TerminalLogsChanged?.Invoke();
         }
@@ -178,13 +203,6 @@ namespace IotRemoteLab.Blazor.Services
 
         }
 
-        private void OnRaspberryPiInPortChanged(Guid guid, byte arg2)
-        {
-            StandLeds.FirstOrDefault(s => s.PortType == PortType.RaspberryPi).IsEnable = arg2 > 0;
-            ConsoleDebug.WriteLine(arg2);
-            StandStateChanged?.Invoke();
-        }
-
 
         /**
          *
@@ -214,15 +232,6 @@ namespace IotRemoteLab.Blazor.Services
 
 
         #region Private Methods
-
-
-        /// <summary>
-        /// Данные топика были изменены на сервере, автор SignalR.
-        /// </summary>
-        private void OnTopicValueChanged(string topic, string args)
-        {
-            StandStateChanged?.Invoke();
-        }
 
 
         #endregion Private Methods

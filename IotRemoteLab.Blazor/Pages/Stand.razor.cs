@@ -1,8 +1,9 @@
 ﻿
 using IotRemoteLab.Blazor.Components;
 using IotRemoteLab.Blazor.Services;
-using IotRemoteLab.Domain.Code;
+using IotRemoteLab.Blazor.Tools;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using System.Net.Http.Json;
 
 namespace IotRemoteLab.Blazor.Pages
@@ -16,11 +17,6 @@ namespace IotRemoteLab.Blazor.Pages
         public Guid Id { get; set; }
 
         private StandService Service;
-
-        /// <summary>
-        /// Стандратный Boilderplace Code для прошивки.
-        /// </summary>
-        private BoilerplateCode _defaultBoilderplateCode;
 
 
         /// <summary>
@@ -36,7 +32,7 @@ namespace IotRemoteLab.Blazor.Pages
         /// </summary>
         private Uri CameraUri;
 
-        private Terminal terminal;
+        private MonacoEditor codeEditor;
 
 
         #region Public & Protected Methods
@@ -49,6 +45,13 @@ namespace IotRemoteLab.Blazor.Pages
             Service = new StandService(_httpClient, _hubConnection, Id);
             await Service.Init();
             Service.StandStateChanged += Service_StandStateChanged;
+            await InvokeAsync(StateHasChanged);
+
+            Service.EnterDeltaDataDelivered += (delta) =>
+            {
+                codeEditor.Initialize(delta);
+            };
+
             await InvokeAsync(StateHasChanged);
         }
 
@@ -72,7 +75,12 @@ namespace IotRemoteLab.Blazor.Pages
             Service.TerminalLogs.Add(command);
         }
 
-
+        private async void OnCodeChanged(string value)
+        {
+            ConsoleDebug.WriteLine(value);
+            await _hubConnection.SendAsync("CodeUpdate", Id, value);
+        }
+        
         async void OnButtonStateChanged(Tuple<string, bool> tuple)
         {
             //SignalR send message
@@ -86,24 +94,11 @@ namespace IotRemoteLab.Blazor.Pages
         }
 
 
+        protected override Task OnAfterRenderAsync(bool firstRender)
+        {
+            return base.OnAfterRenderAsync(firstRender);
+        }
+
         #endregion Private Methods
-
-
-        #region Api Methods
-
-
-        private async Task<T> GetDataFromApi<T>(string toAddr)
-        {
-            return await GetDataFromApi<T>(toAddr, default);
-        }
-
-        private async Task<T> GetDataFromApi<T>(string toAddr, T defaultParam)
-        {
-            var s = await _httpClient.GetFromJsonAsync<T>(toAddr);
-            return s ?? defaultParam;
-        }
-
-
-        #endregion
     }
 }
