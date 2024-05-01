@@ -58,7 +58,7 @@ namespace IotRemoteLab.API.Hubs
 
         public async Task SendTerminalLog(Guid standId, string value)
         {
-            await _standHub.Clients.Group(standId.ToString()).SendAsync("TerminalLogAdded", standId, value);
+            await _standHub.Clients.Group(standId.ToString()).SendAsync("TerminalDataUpdatedFromServer", standId, value);
         }
 
     }

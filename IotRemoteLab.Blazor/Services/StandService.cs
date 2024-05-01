@@ -75,9 +75,7 @@ namespace IotRemoteLab.Blazor.Services
         {
             _httpClient = httpClient;
             _hubConnection = hubConnection;
-            _id = id;
-
-            //Init(id, cancellationToken);            
+            _id = id;   
         }
 
         public async Task Init(CancellationToken cancellationToken = default)
@@ -136,14 +134,55 @@ namespace IotRemoteLab.Blazor.Services
 
             _hubConnection.On<Guid>("UartTypeChanged", OnUartTypeChanged);
             _hubConnection.On<Guid, int, bool>("GpioLedStateChanged", OnGpioLedPortChanged);
-            _hubConnection.On<Guid, string>("TerminalLogAdded", OnTerminalLogAdded);
+            _hubConnection.On<Guid, string>("TerminalDataUpdatedFromServer", OnTerminalDataUpdatedFromServer);
             _hubConnection.On<string>("DebugUploadChanged", OnDebugUploadChanged);
             _hubConnection.On<bool>("WebcameraStateChanged", OnWebcameraStateChanged);
             _hubConnection.On<StandDeltaData>("DeltaDataDelivered", OnDeltaDataDelivered);
+
+            _hubConnection.On<Guid, DateTime, Guid, string>("OnTerminalCommandAdded", OnTerminalCommandAdded);
+
             await _hubConnection.SendAsync("EnterToStand", _id);
             //_hubConnection.On<Guid, Guid, string>("CodeExecuteResultChanged", OnCodeExecuteResultChanged);
             ConsoleDebug.WriteLine("Init finished");
         }
+
+
+        #endregion Constructors
+
+
+        #region Public Methods
+
+
+        private void OnCodeExecuteResultChanged(Guid standId, Guid elementId, string result)
+        {
+
+        }
+
+        /// <summary>
+        /// Отправляет команду отправленную из терминала, на сервер через SignalR.
+        /// </summary>
+        /// <param name="command">Команда терминала.</param>
+        public void TerminalSendCommand(DateTime time, Guid sessionId, string command)
+        {
+            if (command != null && command?.Length == 0)
+                return;
+
+            _hubConnection.SendAsync("TerminalCommandSend", _id, time, sessionId, command);
+        }
+        // может MonacoEditor id хранить в базе данных, чтобы оно было уникальное для каждого стенда?
+
+
+        public void ButtonStateChanged(Guid portId, PortType portType, bool state) 
+        {
+
+        }
+
+
+        #endregion Public Methods
+
+
+        #region Private Methods
+
 
         private void OnDeltaDataDelivered(StandDeltaData data)
         {
@@ -166,7 +205,7 @@ namespace IotRemoteLab.Blazor.Services
             StandStateChanged?.Invoke();
         }
 
-        private void OnTerminalLogAdded(Guid guid, string log)
+        private void OnTerminalDataUpdatedFromServer(Guid guid, string log)
         {
             TerminalLogs.Add(log);
             StandStateChanged?.Invoke();
@@ -182,56 +221,17 @@ namespace IotRemoteLab.Blazor.Services
         private void OnUartTypeChanged(Guid guid)
         {
             _lastSelectedUart = guid;
-            ConsoleDebug.WriteLine($"LastSelectedUart {guid}");
+
             SelectedUart = AvailableUarts.FirstOrDefault(x => x.Id == guid);
-            foreach (var au in AvailableUarts)
-            {
-                ConsoleDebug.WriteLine(guid);
-            }
             StandStateChanged?.Invoke();
         }
 
-
-        #endregion Constructors
-
-
-        #region Public Methods
-
-
-        private void OnCodeExecuteResultChanged(Guid standId, Guid elementId, string result)
+        private void OnTerminalCommandAdded(Guid standId, DateTime time, Guid sessionId, string command) 
         {
-
+            TerminalLogs.Add($"[{time}] [{sessionId}] {command}");
+            StandStateChanged?.Invoke();
+            TerminalLogsChanged?.Invoke();
         }
-
-
-        /**
-         *
-         * Методы SignalR
-         * 
-         * SendToTopic(topic, args) - Отправляет об изменения по топику данные на сервер, откуда они уже передаются по Mqtt к стенду.
-         * TopicValueChanged<topic, args> - Событие которые вызывается, когда кто-то вызывает метод SendToTopic, возвращает topic и args.
-         * 
-         */
-
-
-        /// <summary>
-        /// Отправляет команду отправленную из терминала, на сервер через SignalR.
-        /// </summary>
-        /// <param name="command">Команда терминала.</param>
-        public void TerminalSendCommand(string command)
-        {
-            if (command != null && command?.Length == 0)
-                return;
-
-            _hubConnection.SendAsync("SendToTopic", "", command);
-        }
-        // может MonacoEditor id хранить в базе данных, чтобы оно было уникальное для каждого стенда?
-
-
-        #endregion Public Methods
-
-
-        #region Private Methods
 
 
         #endregion Private Methods

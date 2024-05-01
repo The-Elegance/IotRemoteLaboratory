@@ -4,7 +4,6 @@ using IotRemoteLab.Blazor.Services;
 using IotRemoteLab.Blazor.Tools;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using System.Net.Http.Json;
 
 namespace IotRemoteLab.Blazor.Pages
 {
@@ -16,21 +15,10 @@ namespace IotRemoteLab.Blazor.Pages
         [Parameter]
         public Guid Id { get; set; }
 
+        public Guid SessionId { get => Guid.NewGuid(); }
+
         private StandService Service;
 
-
-        /// <summary>
-        /// Имеет ли стенд камеру.
-        /// </summary>
-        private bool HasCamera;
-        /// <summary>
-        /// Включена ли веб-трансляция.
-        /// </summary>
-        private bool CameraEnableState;
-        /// <summary>
-        /// Ссылка на трансляцию.
-        /// </summary>
-        private Uri CameraUri;
 
         private MonacoEditor codeEditor;
 
@@ -71,21 +59,17 @@ namespace IotRemoteLab.Blazor.Pages
             if (command?.Length == 0)
                 return;
 
-            // SignalR send message
-            Service.TerminalLogs.Add(command);
+            var datetime = DateTime.Now;
+
+            Service.TerminalSendCommand(datetime, SessionId, command);
         }
 
-        private async void OnCodeChanged(string value)
-        {
-            ConsoleDebug.WriteLine(value);
-            await _hubConnection.SendAsync("CodeUpdate", Id, value);
-        }
+
         
         async void OnButtonStateChanged(Tuple<string, bool> tuple)
         {
             //SignalR send message
-            //Publisher.PublishMessageAsync(Topics.LedButtonState.Replace("+", stand.Id.ToString()).Replace("#", tuple.Item1), tuple.Item2 ? 1.ToString() : 0.ToString());
-            //await _hubConnection.SendAsync("SendToTopic", "ButtonStateChanged", tuple.Item1);
+            Service.ButtonStateChanged(Guid.NewGuid(),  Models.PortType.Mcu, false);
         }
 
         private void Service_StandStateChanged()
@@ -93,11 +77,18 @@ namespace IotRemoteLab.Blazor.Pages
             InvokeAsync(StateHasChanged);
         }
 
+        private async void OnCodeChanged(string value)
+        {
+            ConsoleDebug.WriteLine(value);
+            await _hubConnection.SendAsync("CodeUpdate", Id, value);
+        }
+
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
             return base.OnAfterRenderAsync(firstRender);
         }
+
 
         #endregion Private Methods
     }
