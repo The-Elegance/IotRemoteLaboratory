@@ -2,7 +2,7 @@
 
 namespace IotRemoteLab.Domain.Stand
 {
-    public record Stand
+    public class Stand
     {
         public Guid Id { get; init; }
         /// <summary>
@@ -20,11 +20,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Наличие стендовой платы
         /// </summary>
-        public bool HasBenchboard { get; set; }
+        public bool HasBenchBoard { get; set; }
         /// <summary>
         /// Стендовая плата, если HasBenchboard = false, то значением будет null.
         /// </summary>
-        public Benchboard Benchboard { get; set; }
+        public Benchboard? BenchBoard { get; set; }
         /// <summary>
         /// Наличие подсветки стенда.
         /// </summary>
@@ -52,7 +52,7 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Ссылка на web трансляцию.
         /// </summary>
-        public string WebcamUrl { get; set;}
+        public string? WebcamUrl { get; set;}
 
         public override int GetHashCode()
         {

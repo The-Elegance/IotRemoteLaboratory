@@ -1,10 +1,13 @@
 using IotRemoteLab.Domain.Stand;
+using IotRemoteLab.Domain.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class StandsController : ControllerBase
     {
         [HttpGet]
@@ -20,6 +23,7 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult Add(Stand stand)
         {
             return Ok();
@@ -32,6 +36,7 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult Delete(Guid id)
         {
             return Ok();

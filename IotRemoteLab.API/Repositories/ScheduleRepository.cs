@@ -91,8 +91,7 @@ public class ScheduleRepository : IScheduleRepository
         await AddRangeAsync(createScheduleDtos.Select(Map), cancellationToken);
         return r.ToArray();
     }
-
-
+    
     public async Task<Result<Schedule[]>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken = default)
     {
         var a = _applicationContext.Schedule.Where(schedule =>
