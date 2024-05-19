@@ -2,9 +2,9 @@
 
 namespace IotRemoteLab.Domain.Stand
 {
-    public class Stand
+    public record Stand
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
         /// <summary>
         /// Микроконтроллер.
         /// </summary>
@@ -53,5 +53,10 @@ namespace IotRemoteLab.Domain.Stand
         /// Ссылка на web трансляцию.
         /// </summary>
         public string WebcamUrl { get; set;}
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }

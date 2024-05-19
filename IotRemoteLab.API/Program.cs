@@ -1,5 +1,6 @@
 using System.Text;
 using IotRemoteLab.API;
+using IotRemoteLab.API.Controllers;
 using IotRemoteLab.API.Hubs;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.API.Services;
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 

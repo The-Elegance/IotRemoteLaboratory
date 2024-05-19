@@ -4,5 +4,5 @@ namespace IotRemoteLab.API.Repositories;
 
 public interface IUsersRepository : IRepository<User>
 {
-    Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task<Result<User?>> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default);
 }

@@ -27,7 +27,7 @@ public class AuthService : IAuthService
     {
         var existed = await _usersRepository.GetUserByEmailAsync(registerUserDto.Email);
         
-        if (existed != null)
+        if (!existed.IsSuccess)
             return Result.Fail<string>("Пользователь с такой почтой уже существует");
         
         //TODO: можно автомапер заюзать
@@ -40,10 +40,13 @@ public class AuthService : IAuthService
 
     public async Task<Result<string>> LoginUserAsync(LoginUserDto loginUserDto)
     {
-        var user = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
-        if (user == null)
+        var resUser = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
+        
+        if (!resUser.IsSuccess)
             return Result.Fail<string>("Такого пользователя не существует");
-
+        
+        var user = resUser.Value!;
+        
         if (IsPasswordVerified(loginUserDto.Password, user.PasswordHash))
             return Result.Fail<string>("Неправильный пароль");
 
@@ -52,7 +55,7 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
         };
-        claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name!)));
+        claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
 
         return Result.Ok(_jwtService.GenerateAccessToken(claims));
     }
@@ -69,7 +72,7 @@ public class AuthService : IAuthService
             Name = userDto.Name,
             Surname = userDto.Surname,
             GroupNumber = userDto.GroupNumber,
-            Roles = new[] { role }
+            Roles = new[] { role.Value }!
         };
     }
     
