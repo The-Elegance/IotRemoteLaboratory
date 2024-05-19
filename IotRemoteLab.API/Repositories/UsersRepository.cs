@@ -12,23 +12,17 @@ public class UsersRepository : IUsersRepository
     {
         _applicationContext = applicationContext;
     }
-
-
-    public async Task<User?> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    
+    public async Task<Result<User?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var a = await _applicationContext
-            .Users
-            .Include(u => u.Roles)
-            .SingleOrDefaultAsync(user => user.Id == id, cancellationToken)
+        return await _applicationContext
+                .Users
+                .Include(u => u.Roles)
+                .SingleOrDefaultAsync(user => user.Id == id, cancellationToken)
             ;
-        
-        
-        
-        
-        return a;
     }
 
-    public async Task<bool> AddAsync(User entity, CancellationToken cancellationToken = default)
+    public async Task<Result<User>> AddAsync(User entity, CancellationToken cancellationToken = default)
     {
         var user = await _applicationContext
             .Users
@@ -36,18 +30,18 @@ public class UsersRepository : IUsersRepository
                 cancellationToken);
 
         if (user != null)
-            return false;
+            return null;
         
         await _applicationContext.Users.AddAsync(entity, cancellationToken);
         await _applicationContext.SaveChangesAsync(cancellationToken);
-        return true;
+        return null;
     }
 
-    public async Task<User> UpdateAsync(User entity, CancellationToken cancellationToken = default)
+    public async Task<Result<User>> CreateOrUpdateAsync(User entity, CancellationToken cancellationToken = default)
     {
-        var user = await GetAsync(entity.Id, cancellationToken);
+        var user = await GetByIdAsync(entity.Id, cancellationToken);
 
-        if (user == null)
+        if (user.Value == null)
         {
             await _applicationContext.Users.AddAsync(entity, cancellationToken);
             await _applicationContext.SaveChangesAsync(cancellationToken);
@@ -60,19 +54,19 @@ public class UsersRepository : IUsersRepository
         return entity;
     }
     
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var user = await GetAsync(id, cancellationToken);
+        var user = await GetByIdAsync(id, cancellationToken);
 
-        if (user == null)
+        if (user.Value == null)
             return false;
 
-        _applicationContext.Users.Remove(user);
+        _applicationContext.Users.Remove(user.Value);
         await _applicationContext.SaveChangesAsync(cancellationToken);
         return true;
     }
 
-    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<Result<User?>> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         return await _applicationContext
                 .Users

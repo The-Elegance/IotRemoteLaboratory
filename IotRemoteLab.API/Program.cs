@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
@@ -75,8 +76,9 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
-{   
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        x => x.MigrationsAssembly("IotRemoteLab.Persistence") );
 });
 
 builder.Services.AddSignalR();

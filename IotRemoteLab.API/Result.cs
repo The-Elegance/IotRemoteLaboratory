@@ -7,7 +7,16 @@ public struct Result<T>
         Error = error;
         Value = value;
     }
+    public Result(string error, int statusCode, T value)
+    {
+        Error = error;
+        Value = value;
+        statusCode = statusCode;
+    }
     public string Error { get; }
+    
+    public int? StatusCode { get; set; } 
+    
     public T Value { get; }
     public T GetValueOrThrow()
     {
@@ -15,6 +24,12 @@ public struct Result<T>
         throw new InvalidOperationException($"No value. Only Error {Error}");
     }
     public bool IsSuccess => Error == null;
+
+
+    public static implicit operator Result<T>(T value)
+    {
+        return Result.Ok(value);
+    }
 }
 
 public static class Result
@@ -29,7 +44,7 @@ public static class Result
         return new Result<T>(null, value);
     }
 
-    public static Result<T> Fail<T>(string e)
+    public static Result<T> Fail<T>(string e, int? status = null)
     {
         return new Result<T>(e);
     }

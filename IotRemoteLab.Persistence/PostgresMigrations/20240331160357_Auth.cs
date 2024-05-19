@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-using IotRemoteLab.Domain.User;
+using IotRemoteLab.Domain.Role;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IotRemoteLab.Persistence.PostgresMigrations

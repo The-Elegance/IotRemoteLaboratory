@@ -1,4 +1,4 @@
-namespace IotRemoteLab.Domain.User;
+namespace IotRemoteLab.Domain.Role;
 
 public static class Roles
 {

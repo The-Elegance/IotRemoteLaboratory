@@ -4,7 +4,7 @@ namespace IotRemoteLab.Domain.Stand
 {
     public class Stand
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
         /// <summary>
         /// Микроконтроллер.
         /// </summary>
@@ -20,11 +20,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Наличие стендовой платы
         /// </summary>
-        public bool HasBenchboard { get; set; }
+        public bool HasBenchBoard { get; set; }
         /// <summary>
         /// Стендовая плата, если HasBenchboard = false, то значением будет null.
         /// </summary>
-        public Benchboard Benchboard { get; set; }
+        public Benchboard? BenchBoard { get; set; }
         /// <summary>
         /// Наличие подсветки стенда.
         /// </summary>
@@ -32,11 +32,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Яркость подсветки, значения 0-100.
         /// </summary>
-        public uint LigthingBrightnessLevel { get; set; }
+        public uint LightingBrightnessLevel { get; set; }
         /// <summary>
         /// Порт подсветки на Raspberry Pi. 
         /// </summary>
-        public uint LigthingRaspberryPiPort { get; set; }
+        public uint LightingRaspberryPiPort { get; set; }
         /// <summary>
         /// Наличие последовательного порта.
         /// </summary>
@@ -52,6 +52,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Ссылка на web трансляцию.
         /// </summary>
-        public string WebcamUrl { get; set;}
+        public string? WebcamUrl { get; set;}
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }
