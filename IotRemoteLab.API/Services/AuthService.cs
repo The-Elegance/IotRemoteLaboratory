@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Application.User.Dtos;
+using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.User;
 
 namespace IotRemoteLab.API.Services;
@@ -40,10 +41,16 @@ public class AuthService : IAuthService
 
     public async Task<Result<string>> LoginUserAsync(LoginUserDto loginUserDto)
     {
+        var res = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
+        
+        if (!res.IsSuccess)
         var resUser = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
         
         if (!resUser.IsSuccess)
             return Result.Fail<string>("Такого пользователя не существует");
+
+        var user = res.Value;
+        
         
         var user = resUser.Value!;
         

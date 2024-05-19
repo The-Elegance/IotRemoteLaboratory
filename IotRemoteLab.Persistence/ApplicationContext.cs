@@ -1,5 +1,6 @@
 ﻿using IotRemoteLab.Domain;
 using IotRemoteLab.Domain.Stand;
+using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.Team;
 using IotRemoteLab.Domain.User;
 using Microsoft.EntityFrameworkCore;

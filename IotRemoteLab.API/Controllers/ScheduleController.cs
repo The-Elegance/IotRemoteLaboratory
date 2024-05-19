@@ -1,5 +1,7 @@
-﻿using System.Security.Claims;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
 using IotRemoteLab.API.Repositories;
+using IotRemoteLab.Application;
 using IotRemoteLab.Domain;
 using IotRemoteLab.Domain.User;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +22,8 @@ public class ScheduleController : ControllerBase
 
     [HttpGet("byTeam/{teamId:guid}")]
     public async Task<ActionResult<Schedule[]>> GetScheduleByTeam([FromRoute] Guid teamId)
+    [HttpGet]
+    public async Task<ScheduleDto[]> GetSchedule([FromBody] FindScheduleDto findScheduleDto)
     {
         var result = await _scheduleRepository.GetByTeamIdAsync(teamId);
 
@@ -74,5 +78,28 @@ public class ScheduleController : ControllerBase
                 : StatusCode(result.StatusCode.Value, result.Error);
 
         return result.Value;
+    }
+}
+
+        
+    } 
+    
+    [HttpGet($@"{{scheduleId:{nameof(Guid)}}}")]
+    public async Task<ScheduleDto> GetScheduleById([FromBody] FindScheduleDto findScheduleDto, [FromRoute] Guid scheduleId)
+    {
+        
+    }
+    
+    [HttpPost]
+    public async Task<ScheduleDto[]> CreateSchedule([FromBody] CreateScheduleDto[] createSchedule)
+    {
+        var sch =  await _scheduleRepository.AddRangeAsync(createSchedule);
+        
+    }
+    
+    [HttpPut]
+    public async Task<ScheduleDto> UpdateSchedule()
+    {
+        throw new NotImplementedException();
     }
 }

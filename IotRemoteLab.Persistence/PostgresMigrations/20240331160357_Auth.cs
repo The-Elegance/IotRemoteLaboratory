@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.User;
 using Microsoft.EntityFrameworkCore.Migrations;
 
