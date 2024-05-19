@@ -1,0 +1,196 @@
+﻿.sideBar {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background-color: #2C2C2C;
+	row-gap: 210px;
+	width: 311px;
+	padding: 50px 17px 40px 17px;
+}
+
+.topContent {
+	display: flex;
+	flex-direction: column;
+	row-gap: 32px;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.logo {
+	display: flex;
+	column-gap: 20px;
+	align-items: center;
+}
+
+.logoText {
+	font-family: var(--font-family);
+	font-weight: 600;
+	font-size: 24px;
+	line-height: 120%;
+	color: #fff;
+}
+
+/* Burger Menu */
+.burgerCheckbox {
+	position: absolute;
+	visibility: hidden;
+}
+
+.burger {
+	cursor: pointer;
+	display: block;
+	position: relative;
+	border: none;
+	background: transparent;
+	width: 40px;
+	height: 26px;
+	margin: 30px auto;
+}
+
+.burger::before,
+.burger::after {
+	content: '';
+	left: 0;
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 4px;
+	border-radius: 10px;
+	background: #fff;
+		
+}
+
+.burger::before {
+	top: 0;
+	box-shadow: 0 11px 0 #fff;
+	transition: box-shadow .3s .15s, top .3s .15s, transform .3s;
+}
+
+.burger::after {
+	bottom: 0;
+	transition: bottom .3s .15s, transform .3s;
+}
+
+.burgerCheckbox:checked + .burger::before {
+	top: 11px;
+	transform: rotate(45deg);
+	box-shadow: 0 6px 0 rgba(0,0,0,0);
+	transition: box-shadow .15s, top .3s, transform .3s .15s;
+}
+
+.burgerCheckbox:checked + .burger::after {
+	bottom: 11px;
+	transform: rotate(-45deg);
+	transition: bottom .3s, transform .3s .15s;
+}
+
+.searchField {
+	display: flex;
+	align-items: center;
+	column-gap: 16px;
+	border-radius: 8px;
+	padding: 16px;
+	width: 276px;
+	background: #333;
+}
+
+.search {
+	font-family: var(--font-family);
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 120%;
+	color: #9e9e9e;
+	background: #333;
+	border: none;
+	outline: none;
+}
+
+.menuList {
+	display: flex;
+	flex-direction: column;
+	padding-left: 18px;
+}
+
+.menuUpItems,
+.menuDownItems {
+	display: flex;
+	align-items: center;
+	column-gap: 16px;
+	font-family: var(--font-family);
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 120%;
+	color: #9e9e9e;
+}
+
+.bottomContent {
+	display: flex;
+	flex-direction: column;
+	row-gap: 32px;
+}
+
+.profileWidget {
+	display: flex;
+	justify-content: space-between;
+	border-radius: 8px;
+	padding: 24px 16px;
+	width: 276px;
+	background: #333;
+}
+
+.profile {
+	display: flex;
+	column-gap: 16px;
+}
+
+.textContent {
+	display: flex;
+	flex-direction: column;
+}
+
+.brooklynSimmons {
+	font-family: var(--font-family);
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 120%;
+	color: #fff;
+}
+
+.brooklynSimmonsCom {
+	font-family: var(--font-family);
+	font-weight: 600;
+	font-size: 12px;
+	line-height: 120%;
+	color: #808080;
+}
+
+.alertWrapper {
+	display: flex;
+	justify-content: space-between;
+	column-gap: 16px;
+}
+
+.notice {
+	justify-content: space-between;
+}
+
+.alert {
+	display: flex;
+	border-radius: 4px;
+	padding: 4px 8px;
+	background: var(--brand-color);
+}
+
+span {
+	font-family: var(--font-family);
+	font-weight: 600;
+	color: #2c2c2c;
+}
+
+@code {
+
+}
