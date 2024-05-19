@@ -12,10 +12,8 @@ public class UsersRepository : IUsersRepository
     {
         _applicationContext = applicationContext;
     }
-
-
-    public async Task<Result<User?>> GetAsync(Guid id, CancellationToken cancellationToken = default)
-    public async Task<Result<User>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    
+    public async Task<Result<User?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _applicationContext
                 .Users
@@ -24,7 +22,6 @@ public class UsersRepository : IUsersRepository
             ;
     }
 
-    public async Task<Result<bool>> AddAsync(User entity, CancellationToken cancellationToken = default)
     public async Task<Result<User>> AddAsync(User entity, CancellationToken cancellationToken = default)
     {
         var user = await _applicationContext
@@ -40,7 +37,7 @@ public class UsersRepository : IUsersRepository
         return null;
     }
 
-    public async Task<Result<User>> UpdateAsync(User entity, CancellationToken cancellationToken = default)
+    public async Task<Result<User>> CreateOrUpdateAsync(User entity, CancellationToken cancellationToken = default)
     {
         var user = await GetByIdAsync(entity.Id, cancellationToken);
 

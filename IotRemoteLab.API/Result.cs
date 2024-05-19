@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace IotRemoteLab.API;
+﻿namespace IotRemoteLab.API;
 
 public struct Result<T>
 {

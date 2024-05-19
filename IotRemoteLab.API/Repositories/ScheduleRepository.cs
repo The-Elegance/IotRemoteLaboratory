@@ -1,4 +1,3 @@
-using IotRemoteLab.API.Controllers;
 using IotRemoteLab.Application;
 using IotRemoteLab.Domain;
 using IotRemoteLab.Persistence;
@@ -9,23 +8,13 @@ namespace IotRemoteLab.API.Repositories;
 public class ScheduleRepository : IScheduleRepository
 {
     private readonly ApplicationContext _applicationContext;
-    private readonly IScheduleConverterDto _converterDto;
-
-    public ScheduleRepository(ApplicationContext applicationContext, IScheduleConverterDto converterDto)
-    {
-        _applicationContext = applicationContext;
-        _converterDto = converterDto;
-    }
-
-
-    public async Task<Result<Schedule>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-
+    
     public ScheduleRepository(ApplicationContext applicationContext)
     {
         _applicationContext = applicationContext;
     }
     
-    public async Task<Result<Schedule?>> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<Schedule?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _applicationContext
             .Schedule
@@ -33,23 +22,13 @@ public class ScheduleRepository : IScheduleRepository
             .Include(p => p.Stands)
             .SingleOrDefaultAsync(schedule => schedule.Id == id, cancellationToken: cancellationToken);
     }
-
-    public async Task<Result<bool>> AddAsync(Schedule entity, CancellationToken cancellationToken = default)
-    public async Task<Result<Schedule>> AddAsync(Schedule entity, CancellationToken cancellationToken = default)
+    
+    
+    public async Task<Result<Schedule>> CreateOrUpdateAsync(Schedule entity, CancellationToken cancellationToken = default)
     {
-        await _applicationContext.Schedule.AddAsync(entity, cancellationToken);
-     
-        return true;
-    }
+        var result = await GetByIdAsync(entity.Id, cancellationToken);
 
-    public async Task<Result<Schedule>> UpdateAsync(Schedule entity, CancellationToken cancellationToken = default)
-    {
-        var user = await GetByIdAsync(entity.Id, cancellationToken);
-
-        if (user == null)
-        var user = await GetAsync(entity.Id, cancellationToken);
-
-        if (user.Value == null)
+        if (!result.IsSuccess)
         {
             await _applicationContext.Schedule.AddAsync(entity, cancellationToken);
             await _applicationContext.SaveChangesAsync(cancellationToken);
@@ -61,69 +40,8 @@ public class ScheduleRepository : IScheduleRepository
         
         return entity;
     }
+    
 
-    public async Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var schedule = await GetByIdAsync(id, cancellationToken);
-
-        if (schedule == null)
-            return false;
-
-        _applicationContext.Schedule.Remove(schedule);
-        var schedule = await GetAsync(id, cancellationToken);
-
-        if (schedule.Value == null)
-            return false;
-
-        _applicationContext.Schedule.Remove(schedule.Value);
-        await _applicationContext.SaveChangesAsync(cancellationToken);
-        return true;
-    }
-
-    public async Task<Result<IEnumerable<Schedule>>> FindSchedule(FindScheduleDto findScheduleDto, CancellationToken cancellationToken = default)
-    {
-        var res = await   _applicationContext
-            .Schedule
-            .Include(schedule =>  schedule.Stands)
-            .Include(schedule =>  schedule.Team)
-            .Where(schedule => (findScheduleDto.StandId == null ||
-                                schedule.Stands.Any(stand => stand.Id == findScheduleDto.StandId))
-                                && (findScheduleDto.TeamId == null ||
-                                    schedule.Team.Id == findScheduleDto.TeamId)
-                                && (findScheduleDto.End == null ||
-                                    schedule.End ==  new DateTime(findScheduleDto.End.Value))
-                                && (findScheduleDto.Start == null ||
-                                    schedule.Start ==  new DateTime(findScheduleDto.Start.Value)))
-            .ToArrayAsync(cancellationToken);
-
-        return res;
-    }
-
-    public async Task<Result<IEnumerable<Schedule>>> AddRangeAsync(IEnumerable<Schedule> entity, CancellationToken cancellationToken = default)
-    {
-        await _applicationContext.Schedule.AddRangeAsync(entity, cancellationToken);
-        return true;
-    }
-
-    public async Task<Result<IEnumerable<Schedule>>> AddRangeAsync(IEnumerable<CreateScheduleDto> createScheduleDto, CancellationToken cancellationToken = default)
-    {
-        return await AddRangeAsync(createScheduleDto.Select(_converterDto.Convert), cancellationToken);
-    }
-}
-
-
-public interface IScheduleConverterDto
-{
-    Schedule Convert(CreateScheduleDto createScheduleDto);
-}
-
-
-    public async Task<bool> AddRangeAsync(IEnumerable<Schedule> entity, CancellationToken cancellationToken = default)
-    {
-        await _applicationContext.Schedule.AddRangeAsync(entity, cancellationToken);
-        await _applicationContext.SaveChangesAsync(cancellationToken);
-        return true;
-    }
 
     public async Task<Result<Schedule[]>> AddRangeAsync(IEnumerable<CreateScheduleDto> createScheduleDto, CancellationToken cancellationToken = default)
     {
@@ -146,9 +64,10 @@ public interface IScheduleConverterDto
             }
         }
         
-        var r = createScheduleDtos.Select(Map);
-        await AddRangeAsync(createScheduleDtos.Select(Map), cancellationToken);
-        return r.ToArray();
+        var result = createScheduleDtos.Select(Map).ToArray();
+        
+        await AddRangeAsync(result, cancellationToken);
+        return result;
     }
     
     public async Task<Result<Schedule[]>> GetByTeamIdAsync(Guid teamId, CancellationToken cancellationToken = default)
@@ -165,6 +84,45 @@ public interface IScheduleConverterDto
         return await a.ToArrayAsync(cancellationToken: cancellationToken);
     }
     
+    public async Task<Result<Schedule>> AddAsync(Schedule entity, CancellationToken cancellationToken = default)
+    {
+        await _applicationContext.Schedule.AddAsync(entity, cancellationToken);
+     
+        return entity;
+    }
+    
+    public async Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var result = await GetByIdAsync(id, cancellationToken);
+
+        if (!result.IsSuccess)
+            return Result.Fail<bool>("Not found", 404);
+
+        _applicationContext.Schedule.Remove(result.Value!);
+        
+        await _applicationContext.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
+    public async Task<Result<IEnumerable<Schedule>>> FindSchedule(FindScheduleDto findScheduleDto, CancellationToken cancellationToken = default)
+    {
+        var res = await   _applicationContext
+            .Schedule
+            .Include(schedule =>  schedule.Stands)
+            .Include(schedule =>  schedule.Team)
+            .Where(schedule => (findScheduleDto.StandId == null ||
+                                schedule.Stands.Any(stand => stand.Id == findScheduleDto.StandId))
+                                && (findScheduleDto.TeamId == null ||
+                                    schedule.Team.Id == findScheduleDto.TeamId)
+                                && (findScheduleDto.End == null ||
+                                    schedule.End ==  new DateTime(findScheduleDto.End.Value))
+                                && (findScheduleDto.Start == null ||
+                                    schedule.Start ==  new DateTime(findScheduleDto.Start.Value)))
+            .ToArrayAsync(cancellationToken);
+
+        return res;
+    }
+    
     private  Schedule Map(CreateScheduleDto dto)
     {
         return new Schedule
@@ -175,5 +133,12 @@ public interface IScheduleConverterDto
             Start =  DateTimeOffset.FromUnixTimeSeconds(dto.Start).UtcDateTime, 
             End = DateTimeOffset.FromUnixTimeSeconds(dto.End).UtcDateTime
         };
+    }
+    
+    private async Task<bool> AddRangeAsync(IEnumerable<Schedule> entity, CancellationToken cancellationToken = default)
+    {
+        await _applicationContext.Schedule.AddRangeAsync(entity, cancellationToken);
+        await _applicationContext.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }

@@ -44,15 +44,9 @@ public class AuthService : IAuthService
         var res = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
         
         if (!res.IsSuccess)
-        var resUser = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
-        
-        if (!resUser.IsSuccess)
             return Result.Fail<string>("Такого пользователя не существует");
 
         var user = res.Value;
-        
-        
-        var user = resUser.Value!;
         
         if (IsPasswordVerified(loginUserDto.Password, user.PasswordHash))
             return Result.Fail<string>("Неправильный пароль");

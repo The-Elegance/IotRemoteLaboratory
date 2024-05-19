@@ -1,4 +1,4 @@
-﻿using IotRemoteLab.Domain.User;
+﻿using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,17 +18,21 @@ public class RolesRepository : IRolesRepository
         return await _applicationContext.Roles.SingleOrDefaultAsync(role => role.Name == name,cancellationToken);
     }
     
-    
-    public async Task<Result<Role?>> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<Role?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _applicationContext.Roles.SingleOrDefaultAsync(role => role.Id == id,cancellationToken);
     }
 
-    public async  Task<Result<bool>> AddAsync(Role entity, CancellationToken cancellationToken = default)
+    public async  Task<Result<Role>> AddAsync(Role entity, CancellationToken cancellationToken = default)
     {
         await _applicationContext.Roles.AddAsync(entity, cancellationToken);
         await _applicationContext.SaveChangesAsync(cancellationToken);
-        return true;
+        return entity;
+    }
+
+    public Task<Result<Role>> CreateOrUpdateAsync(Role entity, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     public async  Task<Result<Role>> UpdateAsync(Role entity, CancellationToken cancellationToken = default)

@@ -1,6 +1,5 @@
 using System.Text;
 using IotRemoteLab.API;
-using IotRemoteLab.API.Controllers;
 using IotRemoteLab.API.Hubs;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.API.Services;

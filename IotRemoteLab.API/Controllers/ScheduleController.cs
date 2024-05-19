@@ -1,9 +1,8 @@
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Application;
 using IotRemoteLab.Domain;
-using IotRemoteLab.Domain.User;
+using IotRemoteLab.Domain.Role;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,8 +21,6 @@ public class ScheduleController : ControllerBase
 
     [HttpGet("byTeam/{teamId:guid}")]
     public async Task<ActionResult<Schedule[]>> GetScheduleByTeam([FromRoute] Guid teamId)
-    [HttpGet]
-    public async Task<ScheduleDto[]> GetSchedule([FromBody] FindScheduleDto findScheduleDto)
     {
         var result = await _scheduleRepository.GetByTeamIdAsync(teamId);
 
@@ -33,10 +30,23 @@ public class ScheduleController : ControllerBase
                 : StatusCode(result.StatusCode.Value, result.Error);
 
         return result.Value;
+        
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<ScheduleDto[]>> GetSchedule([FromBody] FindScheduleDto findScheduleDto)
+    {
+        var result = await _scheduleRepository.FindSchedule(findScheduleDto);
+
+        if (!result.IsSuccess)
+            return StatusCode(result.StatusCode!.Value, result.Error);
+
+        return Ok(result.Value);
+
     }
     
     [HttpGet("my")]
-    public async Task<ActionResult<Schedule[]>> GetSchedule()
+    public async Task<ActionResult<Schedule[]>> GetMySchedule()
     {
 
         var userId = Guid.Parse(HttpContext.User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier ).Value);
@@ -79,27 +89,12 @@ public class ScheduleController : ControllerBase
 
         return result.Value;
     }
-}
-
-        
-    } 
     
-    [HttpGet($@"{{scheduleId:{nameof(Guid)}}}")]
-    public async Task<ScheduleDto> GetScheduleById([FromBody] FindScheduleDto findScheduleDto, [FromRoute] Guid scheduleId)
-    {
-        
-    }
-    
-    [HttpPost]
-    public async Task<ScheduleDto[]> CreateSchedule([FromBody] CreateScheduleDto[] createSchedule)
-    {
-        var sch =  await _scheduleRepository.AddRangeAsync(createSchedule);
-        
-    }
     
     [HttpPut]
     public async Task<ScheduleDto> UpdateSchedule()
     {
         throw new NotImplementedException();
     }
+    
 }
