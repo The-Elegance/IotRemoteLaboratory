@@ -68,6 +68,10 @@
     --brand-color: #bfb2ff;
 }
 
+ul {
+    padding: 0;
+    margin: 0;
+}
 
 html, body {
     /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/

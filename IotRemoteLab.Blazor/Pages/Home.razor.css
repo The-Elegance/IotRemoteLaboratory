@@ -37,20 +37,19 @@
     row-gap: 23px;
 }
 
-    .profileInfo ul {
-        display: flex;
-        flex-direction: column;
-        row-gap: 10px;
-        margin: 0;
-        list-style: none;
-    }
+.profileInfo ul {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    list-style: none;
+}
 
-        .profileInfo ul li {
-            font-weight: 500;
-            font-size: 18px;
-            line-height: 120%;
-            color: var(--brand-color);
-        }
+.profileInfo ul li {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 120%;
+    color: var(--brand-color);
+}
 
 .value {
     color: #fff;
