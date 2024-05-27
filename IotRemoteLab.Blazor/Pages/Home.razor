@@ -1,2 +1,74 @@
 ﻿@layout BlankLayout
 @page "/"
+
+<div class="homePage">
+    <div class="accountBioAccountHeader">
+        <div class="leftContent">
+            <img src="" class="profilePic">
+            <div class="profileInfo">
+                <span class="welcomeTitle">Добро пожаловать, <span class="userName">Игорь Викторович</span></span>
+                <ul class="userInfo">
+                    <li class="group">
+                        <span>Ваша группа:</span>
+                        <span class="value"> РИ-310949</span>
+                    </li>
+                    <li class="role">
+                        <span>Ваша роль:</span>
+                        <span class="value"> Студент</span>
+                    </li>
+                    <li class="mailContact">
+                        <span>Почта:</span>
+                        <span class="value">Igor.Shaposhnikov@urfu.me</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button class="changeBtn">
+            <img class="all-iconssettings" alt="" src="./src/Settings.svg" />
+            <span class="BtnText">Изменить данные профиля</span>
+        </button>
+    </div>
+
+    <div class="bottomContentWrapper">
+        <div class="listContentWrapper">
+            <h2 class="listTitle">Ваша команда</h2>
+            <ul class="list">
+                <li class="card">
+                    <img class="avatar" src="./src/avatar.svg" />
+                    <div class="info">
+                        <span class="name">Шапошников Игорь Викторович</span>
+                        <span class="">РИ-310949</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="listContentWrapper">
+            <h2 class="listTitle">Список стендов</h2>
+            <div class="listWrapper">
+                <span class="available">Доступные стенды</span>
+                <ul class="list">
+                    <li class="card">
+                        <img class="avatar" src="./src/avatar.svg" />
+                        <div class="info">
+                            <span class="name">Название стенда</span>
+                            <span class="">Доступ до 13:00 28.09.2024</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="listWrapper">
+                <span class="available">Недоступные стенды</span>
+                <ul class="list">
+                    <li class="card">
+                        <img class="avatar" src="./src/avatar.svg" />
+                        <div class="info">
+                            <span class="name">Название стенда</span>
+                            <span class="">Доступ до 13:00 28.09.2024</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
