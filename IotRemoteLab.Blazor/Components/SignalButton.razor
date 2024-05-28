@@ -1,0 +1,33 @@
+﻿<button @onclick="OnClicked" style="width: 32px; height: 32px;" @onmousedown="OnMouseDown" @onmouseup="OnMouseUp" />
+
+@code {
+    [Parameter]
+    public string PortId { get; set; }
+    [Parameter]
+    public EventCallback<string> Pressed { get; set; }
+    [Parameter]
+    public EventCallback<string> Unpressed { get; set; }
+
+    private void OnClicked()
+    {
+        Console.WriteLine("Clicked");
+    }
+
+    private void OnMouseDown(MouseEventArgs e)
+    {
+        if (e.Button == 0)
+        {
+            Console.WriteLine("Pressed");
+            Pressed.InvokeAsync(PortId);
+        }
+    }
+
+    private void OnMouseUp(MouseEventArgs e)
+    {
+        if (e.Button == 0)
+        {
+            Console.WriteLine("Unpressed");
+            Unpressed.InvokeAsync(PortId);
+        }
+    }
+}

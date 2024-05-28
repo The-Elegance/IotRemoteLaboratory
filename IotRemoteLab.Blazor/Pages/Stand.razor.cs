@@ -66,10 +66,9 @@ namespace IotRemoteLab.Blazor.Pages
 
 
         
-        async void OnButtonStateChanged(Tuple<string, bool> tuple)
+        void OnButtonStateChanged(Tuple<string, bool> tuple)
         {
-            //SignalR send message
-            Service.ButtonStateChanged(Guid.NewGuid(),  Models.PortType.Mcu, false);
+            Service.ButtonStateChanged(tuple.Item1, tuple.Item2);
         }
 
         private void Service_StandStateChanged()
@@ -83,10 +82,14 @@ namespace IotRemoteLab.Blazor.Pages
             await _hubConnection.SendAsync("CodeUpdate", Id, value);
         }
 
-
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        private void OnSignalButtonPressed(string portId) 
         {
-            return base.OnAfterRenderAsync(firstRender);
+            Service.ButtonStateChanged(portId, false);
+        }
+
+        private void OnSignalButtonUnpressed(string portId) 
+        {
+            Service.ButtonStateChanged(portId, true);
         }
 
 

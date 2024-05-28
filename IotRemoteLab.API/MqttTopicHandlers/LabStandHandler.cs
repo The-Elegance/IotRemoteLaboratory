@@ -13,8 +13,8 @@
         /// int - subport
         /// bool - value
         /// </summary>
-        public event Action<Guid, Guid, int, bool> GpioButton;
-        public event Action<Guid, Guid, int, bool> GpioLed;
+        public event Action<Guid, string, bool> GpioButton;
+        public event Action<Guid, string, bool> GpioLed;
 
         private Dictionary<string, Action<string[]>> ActionByTopic = [];
         private readonly string[] _topicParts;
@@ -30,7 +30,7 @@
             _topicParts = topic.Replace("/lab/stand/", "").Split("/");
 
             StandId = Guid.Parse(_topicParts[0]);
-
+            
             ActionByTopic["led"] = LedStateChanged;
             ActionByTopic["webcamera"] = WebcameraStateChanged;
             ActionByTopic["serial-in"] = SerialInChanged;
@@ -61,11 +61,11 @@
                         }
                     } 
                     break;
-                case 5: 
+                case 4: 
                     {
                         if (ActionByTopic.TryGetValue($"{_topicParts[1]}-{_topicParts[2]}", out var action))
                         {
-                            action([_topicParts[3], _topicParts[4], _value]);
+                            action([_topicParts[3], _value]);
                         }
                         else
                         {
@@ -98,12 +98,12 @@
 
         private void GpioLedChanged(string[] values) 
         {
-            GpioLed?.Invoke(StandId, Guid.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]) > 0);
+            GpioLed?.Invoke(StandId, values[0], int.Parse(values[1]) > 0);
         }
 
         private void GpioButtonChanged(string[] values) 
         {
-            GpioButton?.Invoke(StandId, Guid.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]) > 0);
+            GpioButton?.Invoke(StandId, values[1], int.Parse(values[2]) > 0);
         }
 
         private void UnknownTokenError() 

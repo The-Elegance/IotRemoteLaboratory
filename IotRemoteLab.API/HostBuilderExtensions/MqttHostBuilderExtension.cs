@@ -1,8 +1,8 @@
 ﻿using IotRemoteLaboratory.Mqtt.Core;
 
-namespace IotRemoteLab.API.HostBuilderExtentions
+namespace IotRemoteLab.API.HostBuilderExtensions
 {
-    public static class MqttHostBuilderExtentions
+    public static class MqttHostBuilderExtension
     {
         public static IApplicationBuilder UseMqtt(this IApplicationBuilder app, params Action<string, string>[] receivedMessageActions) 
         {
@@ -11,9 +11,9 @@ namespace IotRemoteLab.API.HostBuilderExtentions
             var subscriber = app.ApplicationServices.GetRequiredService<MqttSubscriber>();
             subscriber.Connect();
 
-            if (receivedMessageActions == null || receivedMessageActions.Length == 0) 
+            if (receivedMessageActions == null || receivedMessageActions.Length == 0)
             {
-                foreach (var act in receivedMessageActions) 
+                foreach (var act in receivedMessageActions)
                 {
                     subscriber.MessageReceivedEvent += act;
                 }

@@ -1,4 +1,5 @@
 ﻿using IotRemoteLab.Domain.Stand;
+using IotRemoteLaboratory.Mqtt.Core;
 using System.Text.Json.Serialization;
 
 namespace IotRemoteLab.API.Services
@@ -7,15 +8,22 @@ namespace IotRemoteLab.API.Services
     {
         private readonly Dictionary<Guid, StandDeltaData> _deltaDataByStandId = [];
 
-        public StandsService() 
+        private MqttPublisher _mqttPublisher;
+
+        public StandsService(MqttPublisher mqttPublisher) 
         {
-            
+            _mqttPublisher = mqttPublisher;
         }
 
-        public void AddDeltaData(Guid id, string? code, string? debugUploadOutput) 
+        public void PublishMessageAsync(string topic, string payload) 
+        {
+            _mqttPublisher.PublishMessageAsync(topic, payload);
+        }
+
+        public void AddDeltaData<T>(Guid id, T code, string? debugUploadOutput) 
         {
             // Immutable or Not?
-            _deltaDataByStandId[id] = new StandDeltaData(code, debugUploadOutput);
+            //_deltaDataByStandId[id] = new StandDeltaData(code, debugUploadOutput);
         }
 
         public StandDeltaData GetDeltaData(Guid id) 

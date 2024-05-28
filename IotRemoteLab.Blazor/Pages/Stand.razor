@@ -10,7 +10,7 @@
         <div class="workflow-box">
             <div class="workflow-box__header">
                 <div class="workflow-box__title">
-                    Test Stand Name
+                    @Service.McuName
                 </div>
 
                 <div class="workflow-box__combobox">
@@ -37,6 +37,7 @@
                 <div class="workflow-box-buttons">
                     @foreach (var button in Service.StandButton)
                     {
+                        <IotRemoteLab.Blazor.Components.SignalButton PortId="@button.Name" Pressed="OnSignalButtonPressed" Unpressed="OnSignalButtonUnpressed" />
                         <IotRemoteLab.Blazor.Components.CheckBox Text="@button.Name" StateChanged="@OnButtonStateChanged" IsChecked="@button.IsChecked" />
                     }
                 </div>

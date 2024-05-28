@@ -24,11 +24,29 @@ namespace IotRemoteLaboratory.Mqtt.Core
 
             Topics = mqttParams.Topics;
             Client = _mqttFactory.CreateMqttClient();
-            Options = new MqttClientOptionsBuilder()
+            var builder = new MqttClientOptionsBuilder()
                 .WithClientId(Guid.NewGuid().ToString())
                 .WithTcpServer(mqttParams.Ip, mqttParams.Port)
-                .WithCleanSession()
-                .Build();
+                .WithCleanSession();
+
+            if (mqttParams.HasX509Certificates)
+            {
+                builder = builder.WithTls(new MqttClientOptionsBuilderTlsParameters()
+                {
+                    UseTls = true,
+                    SslProtocol = System.Security.Authentication.SslProtocols.Tls12,
+                    Certificates = new[]
+                    {
+                        mqttParams.ClientX509Certificate, mqttParams.CaX509Certificate
+                    },
+                    AllowUntrustedCertificates = true,
+                    // без этой штуки ничего не работает !!!
+                    IgnoreCertificateRevocationErrors = true
+                });
+            }
+
+            Options = builder.Build();
+
 
             Client.UseConnectedHandler(Connected);
             Client.UseDisconnectedHandler(Disconnected);

@@ -1,7 +1,8 @@
 using IotRemoteLab.API;
-using IotRemoteLab.API.HostBuilderExtentions;
+using IotRemoteLab.API.HostBuilderExtensions;
 using IotRemoteLab.API.Hubs;
 using IotRemoteLab.API.Services;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +13,47 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-#if DEBUG
-builder.Services.AddMqtt(Topics.ToArray());
-#else
-builder.Services.AddMqtt("some ip", 0000, Topics.ToArray());
-#endif
+
+var mqttConnectionType = builder.Configuration.GetSection("Mqtt:ConnectionType").Value;
+
+if (string.IsNullOrEmpty(mqttConnectionType)) 
+{
+    throw new Exception("Mqtt ConnectionType must be Certificated/NoCertificated.");
+}
+
+var mqttIp = builder.Configuration.GetSection($"Mqtt:{mqttConnectionType}:Ip").Value;
+var mqttPortString = builder.Configuration.GetSection($"Mqtt:{mqttConnectionType}:Port").Value;
+
+if (string.IsNullOrEmpty(mqttIp)) 
+{
+    throw new Exception("MQTT Ip must be not empty");
+}
+
+if (!short.TryParse(mqttPortString, out var mqttPort))
+{
+    throw new Exception("MQTT Port must be not empty/null or higher than 65565");
+}
+
+if (mqttConnectionType == "Certificated") 
+{
+    var caCertFilePath = builder.Configuration.GetSection("Mqtt:Certificated:CertificateFilePath:Ca").Value;
+    var clientCertFilePath = builder.Configuration.GetSection("Mqtt:Certificated:CertificateFilePath:Client").Value;
+
+    if (!(string.IsNullOrEmpty(caCertFilePath) && string.IsNullOrEmpty(clientCertFilePath)))
+    {
+        var ca = X509Certificate.CreateFromCertFile(caCertFilePath);
+        var client = new X509Certificate2(clientCertFilePath);
+        builder.Services.AddMqtt(mqttIp, mqttPort, ca, client, Topics.ToArray());
+    }
+    else
+    {
+        throw new Exception("CertificateFilePath.[Ca/Client] must be not empty with connection type Certificated");
+    }
+}
+else 
+{
+    builder.Services.AddMqtt(mqttIp, mqttPort, Topics.ToArray());
+}
 
 builder.Services.AddSingleton<StandHubBroadcast>();
 builder.Services.AddSingleton<StandsService>();

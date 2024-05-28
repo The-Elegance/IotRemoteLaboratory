@@ -1,6 +1,5 @@
-﻿using IotRemoteLab.API.MqttTopicHandlers;
-using IotRemoteLab.API.Services;
-using IotRemoteLaboratory.Mqtt.Core;
+﻿using IotRemoteLab.API.Services;
+using IotRemoteLab.Domain.Stand;
 using Microsoft.AspNetCore.SignalR;
 
 namespace IotRemoteLab.API.Hubs
@@ -29,6 +28,15 @@ namespace IotRemoteLab.API.Hubs
         public async Task TerminalCommandSend(Guid standId, DateTime time, Guid sessionId, string command) 
         {
             await Clients.Group(standId.ToString()).SendAsync("OnTerminalCommandAdded", standId, time, sessionId, command);
+            if (command == "/light 100")
+            {
+                _standsService.PublishMessageAsync(Topics.LedState.Replace("+", standId.ToString()), "100");
+            }
+            else 
+            {
+                _standsService.PublishMessageAsync(Topics.LedState.Replace("+", standId.ToString()), "0");
+            }
+            //_standsService.PublishMessageAsync(Topics.TerminalDataFrom.Replace("+", standId.ToString()), command);
         }
 
         public async Task CodeUpdate(Guid standId, string newValue) 
@@ -37,27 +45,16 @@ namespace IotRemoteLab.API.Hubs
             await Clients.Group(standId.ToString()).SendAsync("OnCodeUpdated", newValue);
         }
 
-        public async Task SelectUart(Guid id) 
+        public async Task SelectUart(Guid standId, Uart uart) 
         {
-            await Clients.Others.SendAsync("UartTypeChanged", id);
+            await Clients.Group(standId.ToString()).SendAsync("UartTypeChanged", uart.Id);
+            _standsService.PublishMessageAsync(Topics.UartType.Replace("+", standId.ToString()), uart.Index.ToString());
         }
 
-        /// <summary>
-        /// Raspberry Pi эмулирует нажатие кнопки (подаёт сигнал 0 или 1 на контакт)
-        /// </summary>
-        /// <returns></returns>
-        public async Task RaspberryPiOutPort(byte signalValue) 
+        public async Task ChangePortState(Guid standId, string port, bool state) 
         {
-            await Clients.All.SendAsync("RaspberryPiOutPortChanged", signalValue);
-        }
-
-        /// <summary>
-        /// Raspberry Pi работает в режиме отслеживания состояния контакта (подаёт сигнал 0 или 1 на контакт)
-        /// </summary>
-        /// <returns></returns>
-        public async Task RaspberryPiInPort(Guid standId, Guid guid, int subport, bool signalValue)
-        {
-            await Clients.All.SendAsync("RaspberryPiInPortChanged", guid, subport, signalValue);
+            await Clients.Group(standId.ToString()).SendAsync("OnPortStateChanged", port, state);
+            _standsService.PublishMessageAsync(Topics.ButtonNoLedState.Replace("+", standId.ToString()).Replace("#", port), state ? "1" : "0");
         }
     }
 }

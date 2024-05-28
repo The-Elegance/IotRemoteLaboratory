@@ -134,7 +134,7 @@ namespace IotRemoteLab.Domain.Stand
                             Id = Guid.Parse("3bc7236e-0151-4492-9312-729e4bd715fb"),
                             Type = BenchboardPortType.Input,
                             RaspberryPiPort = 16,
-                            McuPort = "PC_6"
+                            McuPort = "PC_7"
                         },
 
                         new BenchboardPort()

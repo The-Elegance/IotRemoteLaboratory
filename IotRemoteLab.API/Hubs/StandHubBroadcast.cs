@@ -19,11 +19,11 @@ namespace IotRemoteLab.API.Hubs
 
         private void _mqttSubscriber_MessageReceivedEvent(string topic, string value)
         {
-            var s = new LabStandHandler(topic, value);
-            s.GpioLed += S_GpioLed;
-            s.SerialIn += S_SerialIn;
-            s.DebugUpload += S_DebugUpload;
-            s.Execute();
+            //var s = new LabStandHandler(topic, value);
+            //s.GpioLed += S_GpioLed;
+            //s.SerialIn += S_SerialIn;
+            //s.DebugUpload += S_DebugUpload;
+            //s.Execute();
         }
 
         private async void S_DebugUpload(Guid arg1, string arg2)
@@ -36,14 +36,14 @@ namespace IotRemoteLab.API.Hubs
             await SendTerminalLog(arg1, arg2);
         }
 
-        private async void S_GpioLed(Guid arg1, Guid arg2, int arg3, bool arg4)
+        private async void S_GpioLed(Guid arg1, string arg3, bool arg4)
         {
-            await SendNewGpioLedState(arg1, arg2, arg3, arg4);
+            await SendNewGpioLedState(arg1, arg3, arg4);
         }
 
-        public async Task SendNewGpioLedState(Guid standId, Guid guid, int subport, bool signalValue)
+        public async Task SendNewGpioLedState(Guid standId, string port, bool signalValue)
         {
-            await _standHub.Clients.Group(standId.ToString()).SendAsync("GpioLedStateChanged", guid, subport, signalValue);
+            await _standHub.Clients.Group(standId.ToString()).SendAsync("GpioLedStateChanged", port, signalValue);
         }
 
         public async Task SendDebugUpload(Guid standId, string value) 
@@ -60,6 +60,5 @@ namespace IotRemoteLab.API.Hubs
         {
             await _standHub.Clients.Group(standId.ToString()).SendAsync("TerminalDataUpdatedFromServer", standId, value);
         }
-
     }
 }
