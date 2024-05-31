@@ -87,6 +87,7 @@
 	transform: rotate(-45deg);
 	transition: bottom .3s, transform .3s .15s;
 }
+/*Конец меню */
 
 .searchField {
 	display: flex;
@@ -189,6 +190,10 @@ span {
 	font-family: var(--font-family);
 	font-weight: 600;
 	color: #2c2c2c;
+}
+
+.navListMenu a, p{
+	text-decoration: none;
 }
 
 

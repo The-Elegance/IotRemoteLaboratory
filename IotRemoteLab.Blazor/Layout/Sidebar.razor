@@ -5,63 +5,84 @@
         <div class="header">
             <div class="logo">
                 <img class="logoIcon" src="./src/logo.svg" />
-                <h3 class="logoText">Untitled</h3>
+                <h3 class="logoText">IOTlab</h3>
             </div>
             <div>
                 <input type="checkbox" id="burgerCheckbox" class="burgerCheckbox">
                 <label class="burger" for="burgerCheckbox"></label>
             </div>
-
         </div>
 
         <div class="searchField">
             <img class="searchIcon" alt="" src="./src/search.svg" />
             <input class="search" placeholder="Search" type="text" />
-        </div>
+        </div>        
 
         <ul class="menuList">
-            <li class="menuUpItems">
-                <img class="homeIcon" loading="lazy" alt="" src="./src/home.svg" />
-                <p class="home">Home</p>
-            </li>
-            <li class="menuUpItems">
-                <img class="dashIcon" loading="lazy" alt="" src="./src/dashboard.svg" />
-                <p class="dash">Dashboard</p>
-            </li>
-            <li class="menuUpItems">
-                <img class="projIcon" loading="lazy" alt="" src="./src/projects.svg" />
-                <p class="proj">Projects</p>
-            </li>
-            <li class="menuUpItems">
-                <img class="tasksIcon" loading="lazy" alt="" src="./src/tasks.svg" />
-                <p class="tasks">Tasks</p>
-            </li>
-            <li class="menuUpItems">
-                <img class="reportIcon" loading="lazy" alt="" src="./src/reporting.svg" />
-                <p class="report">Reporting</p>
-            </li>
+            <NavLink Class="navListMenu" href="/home" Match="NavLinkMatch.All">
+				<li class="menuUpItems">
+					<img class="homeIcon" loading="lazy" alt="" src="./src/home.svg" />
+					<p class="home">Home</p>
+				</li>
+            </NavLink>
+            
+            <NavLink Class="navListMenu" href="/dashboard">
+                <li class="menuUpItems">
+                    <img class="dashIcon" loading="lazy" alt="" src="./src/dashboard.svg" />
+                    <p class="dash">Dashboard</p>
+                </li>
+            </NavLink>
+
+            <NavLink Class="navListMenu" href="/projects">
+                <li class="menuUpItems">
+                    <img class="projIcon" loading="lazy" alt="" src="./src/projects.svg" />
+                    <p class="proj">Projects</p>
+                </li>
+            </NavLink>
+
+            <NavLink Class="navListMenu" href="/tasks">
+                <li class="menuUpItems">
+                    <img class="tasksIcon" loading="lazy" alt="" src="./src/tasks.svg" />
+                    <p class="tasks">Tasks</p>
+                </li>
+            </NavLink>
+
+            <NavLink Class="navListMenu" href="/reporting">
+                <li class="menuUpItems">
+                    <img class="reportIcon" loading="lazy" alt="" src="./src/reporting.svg" />
+                    <p class="report">Reporting</p>
+                </li>
+            </NavLink>
         </ul>
     </div>
 
     <div class="bottomContent">
         <ul class="menuList">
-            <li class="menuDownItems notice">
-                <div class="alertWrapper">
-                    <img class="bellIcon" loading="lazy" alt="" src="./src/notification.svg" />
-                    <p class="notif">Notifications</p>
-                </div>
-                <div class="alert">
-                    <span>12</span>
-                </div>
-            </li>
-            <li class="menuDownItems">
-                <img class="supportIcon" loading="lazy" alt="" src="./src/suport.svg" />
-                <p class="support">Support</p>
-            </li>
-            <li class="menuDownItems">
-                <img class="settingsIcon" loading="lazy" alt="" src="./src/settingsWhite.svg" />
-                <p class="settings">Settings</p>
-            </li>
+            <NavLink href="/notifications">
+                <li class="menuDownItems notice">
+                    <div class="alertWrapper">
+                        <img class="bellIcon" loading="lazy" alt="" src="./src/notification.svg" />
+                        <p class="notif">Notifications</p>
+                    </div>
+                    <div class="alert">
+                        <span>12</span>
+                    </div>
+                </li>
+            </NavLink>
+
+            <NavLink href="/support">
+                <li class="menuDownItems">
+                    <img class="supportIcon" loading="lazy" alt="" src="./src/suport.svg" />
+                    <p class="support">Support</p>
+                </li>
+            </NavLink>
+
+            <NavLink href="/settings">
+                <li class="menuDownItems">
+                    <img class="settingsIcon" loading="lazy" alt="" src="./src/settingsWhite.svg" />
+                    <p class="settings">Settings</p>
+                </li>
+            </NavLink>
         </ul>
 
         <div class="profileWidget">
