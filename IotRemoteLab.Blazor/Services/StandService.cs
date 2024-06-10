@@ -9,11 +9,11 @@ namespace IotRemoteLab.Blazor.Services
 {
     public class StandService
     {
-        public event Action StandDataLoaded;
-        public event Action LedStateChanged;
-        public event Action StandStateChanged;
-        public event Action TerminalLogsChanged;
-        public event Action<string> EnterDeltaDataDelivered;
+        public event Action? StandDataLoaded;
+        public event Action? LedStateChanged;
+        public event Action? StandStateChanged;
+        public event Action? TerminalLogsChanged;
+        public event Action<string>? EnterDeltaDataDelivered;
 
         private readonly HttpClient _httpClient;
         private readonly HubConnection _hubConnection;
@@ -78,12 +78,23 @@ namespace IotRemoteLab.Blazor.Services
         {
             _httpClient = httpClient;
             _hubConnection = hubConnection;
-            _id = id;   
+            _id = id;
         }
 
+        /// <summary>
+        /// Инициализация StandService.
+        /// </summary>
         public async Task Init(CancellationToken cancellationToken = default)
         {
             _stand = await _httpClient.GetFromJsonAsync<Stand>($"api/stands/{_id}", cancellationToken);
+
+            // TODO: Если Stand is null, выкидывать на экран ошибку об этом.
+
+            if (_stand == null)
+            {
+                throw new Exception("Stand data was null");
+            }
+
             McuName = _stand.Mcu.Name;
             EditorElementId = _stand.CodeEditorId;
             DefaultBoilerplateCode = new BoilerplateCode("cpp", "14", _stand.Framework.Pattern);
@@ -92,54 +103,15 @@ namespace IotRemoteLab.Blazor.Services
             _lastSelectedUart = selectedUart.Id;
             SelectedUart = selectedUart;
 
-            if (_stand != null)
-            {
-                foreach (var port in _stand.Benchboard.Ports)
-                {
-                    if (port.Type == Domain.Stand.Benchboards.BenchboardPortType.Output)
-                    {
-                        // mcu led
-                        StandLeds.Add(new StandLed()
-                        {
-                            Id = port.Id,
-                            PortType = PortType.Mcu,
-                            Name = port.McuPort,
-                            IsEnable = false
-                        });
-                            
-                        continue;
-                    }
+            LoadBenchboardPorts(_stand);
 
-                    StandButton.Add(new StandButton()
-                    {
-                        Id = port.Id,
-                        Name = port.McuPort,
-                        PortType = PortType.Mcu,
-                        IsChecked = true
-                    });
-                }
-            }
-
-            // signalr data change event
-            _hubConnection.On<Guid>("UartTypeChanged", OnUartTypeChanged);           
-            _hubConnection.On<string, bool>("GpioLedStateChanged", OnGpioLedPortChanged);
-            _hubConnection.On<Guid, string>("TerminalDataUpdatedFromServer", OnTerminalDataUpdatedFromServer);
-            _hubConnection.On<string>("DebugUploadChanged", OnDebugUploadChanged);
-            _hubConnection.On<bool>("WebcameraStateChanged", OnWebcameraStateChanged);
-            _hubConnection.On<StandDeltaData>("DeltaDataDelivered", OnDeltaDataDelivered);
-            _hubConnection.On<string, bool>("OnPortStateChanged", OnPortStateChanged);
-            _hubConnection.On<Guid, DateTime, Guid, string>("OnTerminalCommandAdded", OnTerminalCommandAdded);
+            // SignalR Prepare
+            SubscribeOnSignalRHubUnits();
 
             // регистрируем пользователя в SignalR группу для данного стенда
             await _hubConnection.SendAsync("EnterToStand", _id);
             //_hubConnection.On<Guid, Guid, string>("CodeExecuteResultChanged", OnCodeExecuteResultChanged);
             ConsoleDebug.WriteLine("Init finished");
-        }
-
-        private void OnPortStateChanged(string port, bool state)
-        {
-            StandButton.FirstOrDefault(b => b.Name == port).IsChecked = state;
-            StandStateChanged?.Invoke();
         }
 
 
@@ -162,8 +134,7 @@ namespace IotRemoteLab.Blazor.Services
         }
         // может MonacoEditor id хранить в базе данных, чтобы оно было уникальное для каждого стенда?
 
-
-        public async void ButtonStateChanged(string portId, bool state) 
+        public async void ButtonStateChanged(string portId, bool state)
         {
             await _hubConnection.SendAsync("ChangePortState", _id, portId, state);
         }
@@ -174,6 +145,61 @@ namespace IotRemoteLab.Blazor.Services
 
         #region Private Methods
 
+
+        private void OnPortStateChanged(string port, bool state)
+        {
+            var foundPort = StandButton.FirstOrDefault(b => b.Name == port);
+            if (foundPort != null)
+                foundPort.IsChecked = state;
+            StandStateChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Подсписываемся на обновления данных через SignalR
+        /// </summary>
+        private void SubscribeOnSignalRHubUnits()
+        {
+            _hubConnection.On<Guid>("UartTypeChanged", OnUartTypeChanged);
+            _hubConnection.On<string, bool>("GpioLedStateChanged", OnGpioLedPortChanged);
+            _hubConnection.On<Guid, string>("TerminalDataUpdatedFromServer", OnTerminalDataUpdatedFromServer);
+            _hubConnection.On<string>("DebugUploadChanged", OnDebugUploadChanged);
+            _hubConnection.On<bool>("WebcameraStateChanged", OnWebcameraStateChanged);
+            _hubConnection.On<StandDeltaData>("DeltaDataDelivered", OnDeltaDataDelivered);
+            _hubConnection.On<string, bool>("OnPortStateChanged", OnPortStateChanged);
+            _hubConnection.On<Guid, DateTime, Guid, string>("OnTerminalCommandAdded", OnTerminalCommandAdded);
+        }
+
+        /// <summary>
+        /// Загружает порты в списки, которые выводятся на экран.
+        /// </summary>
+        /// <param name="stand">Данные стенда</param>
+        private void LoadBenchboardPorts(Stand stand)
+        {
+            foreach (var port in stand.Benchboard.Ports)
+            {
+                if (port.Type == Domain.Stand.Benchboards.BenchboardPortType.Output)
+                {
+                    // mcu led
+                    StandLeds.Add(new StandLed()
+                    {
+                        Id = port.Id,
+                        PortType = PortType.Mcu,
+                        Name = port.McuPort,
+                        IsEnable = false
+                    });
+
+                    continue;
+                }
+
+                StandButton.Add(new StandButton()
+                {
+                    Id = port.Id,
+                    Name = port.McuPort,
+                    PortType = PortType.Mcu,
+                    IsChecked = true
+                });
+            }
+        }
 
         private void OnDeltaDataDelivered(StandDeltaData data)
         {
@@ -205,7 +231,12 @@ namespace IotRemoteLab.Blazor.Services
 
         private void OnGpioLedPortChanged(string arg2, bool arg3)
         {
-            StandLeds.FirstOrDefault(x => x.Name == arg2).IsEnable = arg3;
+            var foundPort = StandLeds.FirstOrDefault(x => x.Name == arg2);
+
+            if (foundPort == null)
+                return;
+
+            foundPort.IsEnable = arg3;
             StandStateChanged?.Invoke();
         }
 
@@ -217,7 +248,7 @@ namespace IotRemoteLab.Blazor.Services
             StandStateChanged?.Invoke();
         }
 
-        private void OnTerminalCommandAdded(Guid standId, DateTime time, Guid sessionId, string command) 
+        private void OnTerminalCommandAdded(Guid standId, DateTime time, Guid sessionId, string command)
         {
             TerminalLogs.Add($"[{time}] [{sessionId}] {command}");
             StandStateChanged?.Invoke();

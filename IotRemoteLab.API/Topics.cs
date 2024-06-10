@@ -20,6 +20,8 @@
         public const string Webcamera = Base + "webcamera";
         // uart type -> 1,2,3,4
         public const string UartType = Base + "uart";
+        // lighting -> 0-100
+        public const string LightingBrightness = Base + "led";
 
         public static string[] ToArray() 
         {

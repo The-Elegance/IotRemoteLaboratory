@@ -1,6 +1,6 @@
-﻿using IotRemoteLab.Domain.Stand;
+﻿using IotRemoteLab.API.CLI;
+using IotRemoteLab.Domain.Stand;
 using IotRemoteLaboratory.Mqtt.Core;
-using System.Text.Json.Serialization;
 
 namespace IotRemoteLab.API.Services
 {
@@ -9,10 +9,22 @@ namespace IotRemoteLab.API.Services
         private readonly Dictionary<Guid, StandDeltaData> _deltaDataByStandId = [];
 
         private MqttPublisher _mqttPublisher;
+        private ICommandExecutor _commandExecutor;
 
-        public StandsService(MqttPublisher mqttPublisher) 
+        public StandsService(MqttPublisher mqttPublisher, ICommandExecutor commandExecutor) 
         {
             _mqttPublisher = mqttPublisher;
+            _commandExecutor = commandExecutor;
+        }
+
+        public void ExecuteCommand(Guid id, string cmd) 
+        {
+            var cmdParts = cmd.Split();
+
+            var command = cmdParts.ToList();
+            command.Add(id.ToString());
+
+            _commandExecutor.Execute([.. command]);
         }
 
         public void PublishMessageAsync(string topic, string payload) 

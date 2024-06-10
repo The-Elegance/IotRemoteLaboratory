@@ -28,15 +28,7 @@ namespace IotRemoteLab.API.Hubs
         public async Task TerminalCommandSend(Guid standId, DateTime time, Guid sessionId, string command) 
         {
             await Clients.Group(standId.ToString()).SendAsync("OnTerminalCommandAdded", standId, time, sessionId, command);
-            if (command == "/light 100")
-            {
-                _standsService.PublishMessageAsync(Topics.LedState.Replace("+", standId.ToString()), "100");
-            }
-            else 
-            {
-                _standsService.PublishMessageAsync(Topics.LedState.Replace("+", standId.ToString()), "0");
-            }
-            //_standsService.PublishMessageAsync(Topics.TerminalDataFrom.Replace("+", standId.ToString()), command);
+            _standsService.ExecuteCommand(standId, command);
         }
 
         public async Task CodeUpdate(Guid standId, string newValue) 

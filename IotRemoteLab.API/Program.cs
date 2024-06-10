@@ -1,7 +1,10 @@
 using IotRemoteLab.API;
+using IotRemoteLab.API.CLI;
+using IotRemoteLab.API.CLI.Commands;
 using IotRemoteLab.API.HostBuilderExtensions;
 using IotRemoteLab.API.Hubs;
 using IotRemoteLab.API.Services;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+
+
+#region Mqtt Prepare
+
 
 var mqttConnectionType = builder.Configuration.GetSection("Mqtt:ConnectionType").Value;
 
@@ -54,6 +61,12 @@ else
 {
     builder.Services.AddMqtt(mqttIp, mqttPort, Topics.ToArray());
 }
+
+
+#endregion MqttPrepare
+
+
+builder.Services.AddCLI();
 
 builder.Services.AddSingleton<StandHubBroadcast>();
 builder.Services.AddSingleton<StandsService>();
