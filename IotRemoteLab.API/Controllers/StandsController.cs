@@ -1,11 +1,14 @@
 using IotRemoteLab.Domain.Code;
+using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.Stand;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class StandsController : ControllerBase
     {
         private Random random = new();
@@ -31,6 +34,7 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult Add(Stand stand)
         {
             return Ok();
@@ -43,6 +47,7 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult Delete(Guid id)
         {
             return Ok();
@@ -51,7 +56,7 @@ namespace IotRemoteLab.API.Controllers
 
         #region Current Stand data
 
-        /// TODO !!! использовать данные из БД, вместо статичных конструкций
+        /// TODO !!! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
         private static readonly List<Uart> _availableUarts =
         [
@@ -66,9 +71,9 @@ namespace IotRemoteLab.API.Controllers
 
 
         /// <summary>
-        /// Возвращает список доступных Uart.
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Uart.
         /// </summary>
-        /// <param name="standId">Id стенда для которого требуется получить информацию</param>
+        /// <param name="standId">Id пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
         /// <returns></returns>
         [HttpGet("{standId}/availableUarts")]
         public async Task<ActionResult<List<Uart>>> GetAvailableUartsList(Guid standId)

@@ -62,6 +62,7 @@ namespace IotRemoteLab.Blazor.Components
             InvokeAsync(StateHasChanged);
         }
 
+
         #endregion Private Methods
     }
 }

@@ -1,14 +1,17 @@
 :root {
+    /*Àâòîðèçàöèÿ */
     /* fonts */
     --font-inter: Inter;
     /* font sizes */
     --font-size-base: 16px;
-    --font-size-xl: 20px;
+    --font-size-md: 24px;
+    --font-size-xl: 36px;
     /* Colors */
-    --brand-color: #bfb2ff;
+    --brand-color: #8c80cc;
     --color-white: #fff;
-    --color-cornflowerblue-100: #8c80cc;
+    --color-cornflowerblue-100: #bfb2ff;
     --color-dimgray: #6a6a6a;
+    --dark-background-color: #333333;
     /* Gaps */
     --gap-5xs: 8px;
     --gap-9xs: 4px;
@@ -16,6 +19,51 @@
     --padding-81xl: 100px;
     --padding-sm: 14px;
     --padding-xl: 20px;
+    /* Border radius  */
+    --br-3xs: 10px;
+
+
+    /*Äëÿ ñòðàíèöû Home*/
+    /* fonts */
+    --caption: Inter;
+
+    /* font sizes */
+    --body-size: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --font-size-5xl: 1.5rem;
+    --font-size-lgi: 1.188rem;
+    --caption-size: 0.75rem;
+
+    /* Colors */
+    --color-darkslategray: #333;
+    --color-gray-100: #2c2c2c;
+    --color-white: #fff;
+    --brand-color: #bfb2ff;
+    --color-aquamarine: #b5ffc1;
+    --color-darkgray: #9e9e9e;
+
+    /* Gaps */
+    --gap-13xl: 2rem;
+    --gap-base: 1rem;
+    --gap-3xs: 0.625rem;
+    --gap-xl: 1.25rem;
+    --gap-5xs: 0.5rem;
+
+    /* Paddings */
+    --padding-13xl: 2rem;
+    --padding-xl: 1.25rem;
+    --padding-3xs: 0.625rem;
+    --padding-base: 1rem;
+    --padding-2xl: 1.312rem;
+    --padding-81xl: 6.25rem;
+    --padding-21xl: 2.5rem;
+    --padding-7xl: 1.625rem;
+    --padding-158xl-5: 11.093rem;
+
+    /* Border radiuses */
+    --br-3xs: 10px;
+    --br-8xs: 5px;
 }
 
 html, body {

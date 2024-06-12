@@ -21,4 +21,6 @@ builder.Services.AddSingleton(sp => {
 
 builder.Services.AddScoped<MonacoEditorService>();
 
+builder.Services.AddScoped<MonacoEditorService>();
+
 await builder.Build().RunAsync();

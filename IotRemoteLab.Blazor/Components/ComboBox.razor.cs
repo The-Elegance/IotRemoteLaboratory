@@ -13,6 +13,7 @@ namespace IotRemoteLab.Blazor.Components
         /// </summary>
         [Parameter]
         public List<TItem> Items { get; set; } = [];
+        
         private TItem? _selectedItem;
         [Parameter]
         public TItem? SelectedItem 
@@ -103,8 +104,8 @@ namespace IotRemoteLab.Blazor.Components
 
 
         #endregion Private Methods
-
-
+        
+        
         protected override void OnInitialized()
         {
             base.OnInitialized();
