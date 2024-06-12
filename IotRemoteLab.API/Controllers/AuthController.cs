@@ -21,6 +21,9 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<string>> Login([FromBody] LoginUserDto loginUserDto)
     {
+        var b = ModelState;
+        
+        
         var result = await _authService.LoginUserAsync(loginUserDto);
         if (!result.IsSuccess)
             return BadRequest(result.Error);

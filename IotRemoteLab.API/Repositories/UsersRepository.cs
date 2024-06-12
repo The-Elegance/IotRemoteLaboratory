@@ -68,6 +68,10 @@ public class UsersRepository : IUsersRepository
 
     public async Task<Result<User?>> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
+        
+        
+        
+        
         return await _applicationContext
                 .Users
                 .Include(u => u.Roles)

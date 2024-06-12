@@ -2,6 +2,7 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using IotRemoteLab.API.Repositories;
+using IotRemoteLab.Application;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers;
@@ -23,13 +24,6 @@ public class IotServiceController
         return await _uppersIotServices[type].UpServiceAsync();
     }
 }
-
-public enum IotServiceType
-{
-    Mqqt,
-    NodeRed
-}
-
 
 public interface IUpperIotService : IAsyncDisposable
 {
