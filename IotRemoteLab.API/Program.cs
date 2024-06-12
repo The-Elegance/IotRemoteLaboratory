@@ -1,5 +1,7 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using IotRemoteLab.API;
+using IotRemoteLab.API.Controllers;
 using IotRemoteLab.API.Hubs;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.API.Services;
@@ -18,7 +20,7 @@ builder.Services.AddScoped<IRolesRepository, RolesRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
-
+builder.Services.AddSingleton<IUpperIotService, UpperNodeRedService>();
 builder.Services.AddControllers();
 
 
@@ -75,6 +77,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+builder.Services.ConfigureHttpJsonOptions(p => p.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
