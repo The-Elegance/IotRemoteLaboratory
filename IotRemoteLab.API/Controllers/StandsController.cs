@@ -11,9 +11,9 @@ namespace IotRemoteLab.API.Controllers
         public static List<Stand> standList = new()
         {
             new Stand()
-        {
-            Id = Guid.NewGuid(),
-            Mcu = new Mcu()
+            {
+                Id = Guid.NewGuid(),
+                Mcu = new Mcu()
             {
                 Id = Guid.Parse("25638a09-f591-488b-bfe4-0ee680a8ade7"),
                 Name = "STM32F401RE",
@@ -138,9 +138,10 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetStand(Guid id)
+        public IActionResult GetStand(Guid id)
         {
-            return Ok("get stand");
+
+            return Ok(standList.Where(p => p.Id == id));
         }
 
         [HttpPost]

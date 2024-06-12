@@ -1,0 +1,210 @@
+﻿@page "/addStand"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject HttpClient _httpClient
+
+
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using IotRemoteLab.Domain.Stand.Benchboards
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.ListStand
+@using IotRemoteLab.Blazor.Pages.AdminPanel.Stand.NewForm
+@using System.Collections
+
+<h1>AddStand</h1>
+
+
+<RadzenTemplateForm Data="@stand">
+    <RadzenFieldset Text="Добавить стенд">
+        <RadzenStack Gap="1rem" >
+            @*Поле для добавляния/создания нового микроконтроллера *@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="Микроконтроллер" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenDropDown Data="@mcu" TextProperty="Name" Name="Name" @bind-Value=@selectedMcu Style="width: 80%"></RadzenDropDown>
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenButton Text="Создать Mcu" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewMcu />
+                </RadzenColumn>
+            </RadzenRow>
+            @*Поле для добавляния URL Стенда *@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="URL Стенда" Component="Url" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenTextBox Name="url" @bind-Value="@stand.Url" Style="width: 40%" />
+                </RadzenColumn>
+            </RadzenRow>
+            @*Поле для выбора наличия и добавления/создания стендовой платы *@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="Стендовая плата" Component="Stand" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenToggleButton @bind-Value=@valueStand Shade="Shade.Light" Text="@(valueStand ? "Да" : "Нет" )" ButtonStyle="ButtonStyle.Primary"
+                                        ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Нет" }})" />
+                </RadzenColumn>
+            </RadzenRow>
+            @if (valueStand == true)
+            {
+                <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenColumn Size="3">
+                        <RadzenLabel Text="Стендовая плата:" />
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenDropDown Data="@stendPl" TextProperty="Name" Name="Name" @bind-Value=@selectedBench Style="width: 80%"></RadzenDropDown>
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenButton Text="Создать стендовую плату" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewBench />
+                    </RadzenColumn>
+                </RadzenRow>
+            }
+            @*Поле для выбора наличия и добавления подсветки стенда *@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="Подсветка стенда" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenToggleButton @bind-Value=@valueLightStand Shade="Shade.Light" Text="@(valueLightStand ? "Да" : "Нет" )" ButtonStyle="ButtonStyle.Primary"
+                                        ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "False" }})" />
+                </RadzenColumn>
+            </RadzenRow>
+            @if (valueLightStand == true)
+            {
+                <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenColumn Size="3">
+                        <RadzenLabel Text="Подсветка стенда - значение ШИМ" />
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenNumeric Min="1" Max="100" @bind-Value=@stand.LigthingRaspberryPiPort InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width: 40%" />
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenColumn Size="3">
+                        <RadzenLabel Text="Подсветка стенда (порт RPi): число" />
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenNumeric Min="1" Max="100" @bind-Value=@stand.LigthingBrightnessLevel InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width: 40%" />
+                    </RadzenColumn>
+                </RadzenRow>
+            }
+            @*Поле для выбора наличия и добавления последовтаельного порта *@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="Последовательный порт" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenToggleButton @bind-Value=@valuePort Shade="Shade.Light" Text="@(valuePort ? "Да" : "Нет" )" ButtonStyle="ButtonStyle.Primary"
+                                        ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "False" }})" />
+                </RadzenColumn>
+            </RadzenRow>
+            @if (valuePort == true)
+            {
+                <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenColumn Size="3">
+                        <RadzenLabel Text="Последовательный порт (скорость/бод)" />
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenNumeric Min="1" Max="10" @bind-Value=@stand.SerialPortSpeed InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width: 40%" />
+                    </RadzenColumn>
+                </RadzenRow>
+            }
+            @*Поле для выбора наличия веб камеры и добавления ссылки на трансляцию *@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="Веб камера" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenToggleButton @bind-Value=@valueVebCamera Shade="Shade.Light" Text="@(valueVebCamera ? "Да" : "Нет" )" ButtonStyle="ButtonStyle.Primary"
+                                        ToggleButtonStyle="ButtonStyle.Light" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Нет" }})" />
+                </RadzenColumn>
+            </RadzenRow>
+            @if (valueVebCamera == true)
+            {
+                <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                    <RadzenColumn Size="3">
+                        <RadzenLabel Text="Ссылка на трансляцию" />
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenTextBox @bind-Value="@stand.WebcamUrl" Style="width: 40%" />
+                    </RadzenColumn>
+                </RadzenRow>
+            }
+        </RadzenStack>
+    </RadzenFieldset>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-4 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Сохранить" Click="@Submit" />
+    </RadzenStack>
+
+</RadzenTemplateForm>
+
+@code {
+    Stand stand = new();
+
+    bool valueStand = false;
+    bool valueLightStand = false;
+    bool valuePort = false;
+    bool valueVebCamera = false;
+
+    private Mcu selectedMcu;
+    public static List<Mcu> mcu = new();
+
+    private Benchboard selectedBench;
+    public static List<Benchboard> stendPl = new();
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        await base.OnAfterRenderAsync(isFirstRender);
+
+        if (isFirstRender)
+        {
+            LoadData();
+        }
+    }
+
+    async void LoadData()
+    {
+        mcu = await _httpClient.GetFromJsonAsync<List<Mcu>>("/api/mcu");
+
+        stendPl = await _httpClient.GetFromJsonAsync<List<Benchboard>>("/api/benchboards");
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    async void Submit()
+    {
+        stand.Benchboard = selectedBench;
+        stand.Mcu = selectedMcu;
+
+        var res = await  _httpClient.PostAsJsonAsync<Stand>("/api/stands", stand);
+        Console.WriteLine(res.StatusCode.ToString());
+    }
+
+    public async Task OpenFormNewMcu()
+    {
+        await DialogService.OpenAsync<NewMcuForm>($"Создание нового микроконтроллера",
+               new Dictionary<string, object>(),
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+
+    public async Task OpenFormNewBench()
+    {
+        await DialogService.OpenAsync<NewBenchForm>($"Создание новой стендовой платы",
+               new Dictionary<string, object>(),
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+}

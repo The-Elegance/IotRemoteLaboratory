@@ -1,0 +1,53 @@
+﻿@page "/addStand"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject HttpClient _httpClient
+
+
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using IotRemoteLab.Domain.Stand.Benchboards
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.ListStand
+@using IotRemoteLab.Blazor.Pages.AdminPanel.Stand.NewForm
+@using System.Collections
+
+<h1>Add Group</h1>
+
+
+<RadzenTemplateForm Data="@ы">
+    <RadzenFieldset Text="Добавить группу">
+        <RadzenStack Gap="1rem">
+            @*Поле для названия команды*@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="Название команды" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenTextBox Name="nameGroup" @bind-Value="@f" Style="width: 40%" />
+                </RadzenColumn>
+            </RadzenRow>
+
+            @*Поле для добавляния/создания нового участника команды*@
+
+            <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
+                <RadzenColumn Size="3">
+                    <RadzenLabel Text="Участники команды"/>
+                </RadzenColumn>
+
+            </RadzenRow>
+        </RadzenStack>
+    </RadzenFieldset>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-4 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Сохранить" Click="@Submit" />
+    </RadzenStack>
+
+</RadzenTemplateForm>
+
+@code {
+
+}

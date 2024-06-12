@@ -7,13 +7,39 @@ namespace IotRemoteLab.API.Controllers
     [ApiController]
     public class McuController : ControllerBase
     {
-        #region Mcu
+        public static List<Mcu> mcuList = new()
+        {
+            new Mcu()
+            {
+                Id = Guid.Parse("25638a09-f591-488b-bfe4-0ee680a8ade7"),
+                Name = "STM32F401RE",
+                Framework = new McuFramework()
+                {
+                    Id = Guid.Parse("60f8bc4d-aa37-4457-95d9-685a89c1b849"),
+                    Name = "Mbed OS 5",
+                    Pattern = "#include \"mbed.h\" \r\n    Serial pc(PIN_TX, PIN_RX); // tx, rx\r\n    DigitalOut led(PIN_LED);\r\n    int main() {        \r\n    pc.baud(115200);\r\n    while(1) {\r\n    led = 1;\r\n    wait(1);\r\n    led = 0;\r\n    wait(1);        \r\n    pc.printf(\"Finish a period\\r\\n\"); } }",
+                },
+                AssemblyScriptFile = "assembly.yml",
+                DeployScriptFile = "deploy.yml"
+            }
+        };
 
+        public static List<McuFramework> framList = new()
+        {
+            new McuFramework()
+            {
+                Id = Guid.Parse("60f8bc4d-aa37-4457-95d9-685a89c1b849"),
+                Name = "Mbed OS 5",
+                Pattern = "#include \"mbed.h\" \r\n    Serial pc(PIN_TX, PIN_RX); // tx, rx\r\n    DigitalOut led(PIN_LED);\r\n    int main() {        \r\n    pc.baud(115200);\r\n    while(1) {\r\n    led = 1;\r\n    wait(1);\r\n    led = 0;\r\n    wait(1);        \r\n    pc.printf(\"Finish a period\\r\\n\"); } }",
+            }
+        };
+
+        #region Mcu 
 
         [HttpGet]
         public async Task<IActionResult> GetMcuList()
         {
-            return Ok();
+            return Ok(mcuList);
         }
 
         [HttpGet("{id}")]
@@ -23,19 +49,25 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddBenchboard(Mcu mcu)
+
+        public IActionResult PostMcu(Mcu mcu)
         {
-            return Ok();
+            if (mcu == null)
+                Console.WriteLine("mcu is null");
+            else
+                mcuList.Add(mcu);
+
+            return Ok("mcu add");
         }
 
         [HttpPut]
-        public IActionResult UpdateBenchboard(Mcu stand)
+        public IActionResult UpdateMcu(Mcu stand)
         {
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult DeleteBenchboard(Guid id)
+        public IActionResult DeleteMcu(Guid id)
         {
             return Ok();
         }
@@ -50,7 +82,7 @@ namespace IotRemoteLab.API.Controllers
         [HttpGet("frameworks")]
         public async Task<IActionResult> GetMcuFrameworks()
         {
-            return Ok();
+            return Ok(framList);
         }
 
         [HttpGet("frameworks/{id}")]
@@ -60,9 +92,14 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpPost("frameworks")]
-        public IActionResult AddMcuFramework(Mcu mcu)
+        public IActionResult AddMcuFramework(McuFramework fram)
         {
-            return Ok();
+            if (fram == null)
+                Console.WriteLine("fram is null");
+            else
+                framList.Add(fram);
+
+            return Ok("fram add");
         }
 
         [HttpPut("frameworks")]
@@ -76,7 +113,6 @@ namespace IotRemoteLab.API.Controllers
         {
             return Ok();
         }
-
 
         #endregion Mcu Framework
     }

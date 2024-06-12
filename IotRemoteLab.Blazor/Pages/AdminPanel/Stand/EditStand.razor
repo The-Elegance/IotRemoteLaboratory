@@ -2,16 +2,18 @@
 @layout AdminPanelLayout
 @inject DialogService DialogService
 @inject NotificationService NotificationService
+@inject HttpClient _httpClient
+
 
 
 @using Radzen
 @using Radzen.Blazor
 @using IotRemoteLab.Domain.Stand
 @using IotRemoteLab.Domain.Stand.Benchboards
-@using static IotRemoteLab.Blazor.Pages.AdminPanel.ListStand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.ListStand
+@using IotRemoteLab.Blazor.Pages.AdminPanel.Stand.NewForm
 @using System.Collections
 
-<h3>EditStand</h3>
 <p>@mcu.Name</p>
 <RadzenTemplateForm Data="@stand">
 
@@ -164,17 +166,29 @@
     };
 
     private McuFramework selectedFram = new() { Name = "" };
-    public static List<McuFramework> fram = new()
-    {
-        new McuFramework() {Name = "testPattern"}
-    };
+    public static List<McuFramework> fram = new();
 
     private Benchboard selectedBench;
-    public static List<Benchboard> stendPl = new List<Benchboard>()
+    public static List<Benchboard> stendPl = new();
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
     {
-        new Benchboard() {Name = "Плата1"},
-        new Benchboard() {Name = "Плата2"}
-    };
+        await base.OnAfterRenderAsync(isFirstRender);
+
+        if (isFirstRender)
+        {
+            LoadData();
+        }
+    }
+
+    async void LoadData()
+    {
+        mcuData = await _httpClient.GetFromJsonAsync<List<Mcu>>("/api/mcu");
+        stendPl = await _httpClient.GetFromJsonAsync<List<Benchboard>>("/api/benchboards");
+
+
+        await InvokeAsync(StateHasChanged);
+    }
 
     void Submit()
     {
