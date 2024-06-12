@@ -1,28 +1,36 @@
+:root {
+    /* fonts */
+    --font-inter: Inter;
+    /* font sizes */
+    --font-size-base: 16px;
+    --font-size-md: 24px;
+    --font-size-xl: 36px;
+    /* Colors */
+    --brand-color: #8c80cc;
+    --color-white: #fff;
+    --color-cornflowerblue-100: #bfb2ff;
+    --color-dimgray: #6a6a6a;
+    --dark-background-color: #333333;
+    /* Gaps */
+    --gap-5xs: 8px;
+    --gap-9xs: 4px;
+    /* Paddings */
+    --padding-81xl: 100px;
+    --padding-sm: 14px;
+    --padding-xl: 20px;
+    /* Border radius  */
+    --br-3xs: 10px;
+}
+
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+    font-family: var(--font-inter);
+    margin: 0;
+    line-height: normal;
+    background-color: var(--dark-background-color);
 }
 
-h1:focus {
-    outline: none;
-}
-
-a, .btn-link {
-    color: #0071c1;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-.content {
-    padding-top: 1.1rem;
-}
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;

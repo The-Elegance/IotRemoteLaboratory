@@ -1,0 +1,68 @@
+﻿@layout AuthorizationLayout
+@page "/login"
+@attribute [AllowAnonymous]
+
+@using Microsoft.AspNetCore.Authorization
+
+<div class="authContainer">
+	<div class="authWrapper">
+		<div class="authHeader">
+			<h1 class="projectName">Iot Remote Laboratory</h1>
+			<div class="authTitleWrapper">
+				<span class="authTitle">Log In</span>
+				<span class="authDescription">Welcome back! Please enter your details.</span>
+			</div>
+		</div>
+
+		@* <EditForm Model="@_userData"> *@
+		<form class="authForm">
+			@* <div class="authForm"> *@
+			<div class="authFormField">
+				<label class="fieldLabel">Login</label>
+				@* <InputText id="authInput" style="color: blue" type="text" placeholder="Enter the login" @bind-Value="@_userData.Login" required /> *@
+				@* <i class="uil uil-envelope icon"></i> *@
+				<input class="authInput" type="text" />
+
+			</div>
+
+			<div class="authFormField">
+				<label class="fieldLabel">Password</label>
+				@* <InputText type="password" id="authInput" placeholder="Enter the password" @bind-Value="@_userData.Password" required /> *@
+				@* <i class="uil uil-lock icon"></i> *@
+				@* <i class="uil uil-eye-slash showHidePw"></i> *@
+				<input class="authInput" type="text" />
+			</div>
+
+			<div class="rememberWrapper">
+				<div class="checkboxWrapper">
+					<input type="checkbox" class="rememberChekbox" id="logCheck">
+					<label for="logCheck" class="text">Remember me</label>
+				</div>
+				<a href="#" class="link">Forgot password?</a>
+			</div>
+
+			<button class="signinBtn" type="submit">Sign In</button>
+			<button class="signinBtn blank" type="submit">Sign In with Urfu</button>
+
+			<div class="signupWrapper">
+				<span class="text">Not a member?</span>
+				<a href="#" class="link">Create an account</a>
+			</div>
+			@* </div> *@
+		</form>
+
+		@* </EditForm> *@
+	</div>
+</div>
+
+
+
+@code {
+    public class UserData
+    {
+        public string Login { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    private UserData _userData = new();
+}

@@ -1,0 +1,54 @@
+﻿@page "/stand"
+@layout BlankLayout
+
+<div class="stand-workflow">
+    <div class="stand-workflow__left">
+        <div class="workflow-box">
+            <div class="workflow-box__header">
+                <div class="workflow-box__title">
+                    Test Stand Name
+                </div>
+
+                <div class="workflow-box__combobox">
+                    <IotRemoteLab.Blazor.Components.ComboBox SelectedItem="null" Items="@UartList" />
+                </div>
+            </div>
+            <div class="workflow-box__item">
+                <div class="stream-frame">
+                    @if (false)
+                    {
+                        <span>Трансляция активна</span>
+                    }
+                    else
+                    {
+                        <span>Отсутствует активная трансляция</span>
+                    }
+                </div>
+
+                @* <IotRemoteLaboratory.Components.Controls.StreamFrame /> *@
+            </div>
+
+            <div class="workflow-box__item workflow-box-grid">
+                
+                        <div class="workflow-box-buttons">
+                        @foreach (var button in new List<object>(0))
+                        {
+                            <IotRemoteLab.Blazor.Components.CheckBox Text="test" StateChanged="@OnButtonStateChanged" IsChecked="false" />
+                        }
+                        </div>
+            </div>
+
+            <div class="workflow-box__item -stretch">
+                <IotRemoteLab.Blazor.Components.Terminal SendMessageAction="@TerminalSendMessage" TerminalLogs="@TerminalLines" />
+            </div>
+        </div>
+    </div>
+    <div class="stand-workflow__right">
+
+        <div class="workflow-box">
+            <div class="workflow-box__item -stretch">
+                <IotRemoteLab.Blazor.Components.MonacoEditor />
+            </div>
+        </div>
+    </div>
+</div>
