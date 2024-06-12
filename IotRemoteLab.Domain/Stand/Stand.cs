@@ -22,11 +22,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Наличие стендовой платы
         /// </summary>
-        public bool HasBenchBoard { get; set; }
+        public bool HasBenchboard { get; set; }
         /// <summary>
         /// Стендовая плата, если HasBenchboard = false, то значением будет null.
         /// </summary>
-        public Benchboard? BenchBoard { get; set; }
+        public Benchboard? Benchboard { get; set; }
         /// <summary>
         /// Наличие подсветки стенда.
         /// </summary>
@@ -34,11 +34,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Яркость подсветки, значения 0-100.
         /// </summary>
-        public uint LigthingBrightnessLevel { get; set; }
+        public uint LightingBrightnessLevel { get; set; }
         /// <summary>
         /// Порт подсветки на Raspberry Pi. 
         /// </summary>
-        public uint LigthingRaspberryPiPort { get; set; }
+        public uint LightingRaspberryPiPort { get; set; }
         /// <summary>
         /// Наличие последовательного порта.
         /// </summary>
@@ -92,8 +92,8 @@ namespace IotRemoteLab.Domain.Stand
                     DeployScriptFile = "deploy.yml"
                 },
                 Url = "stand1.iot-remotelaboratory.local",
-                HasBenchBoard = true,
-                BenchBoard = new Benchboard()
+                HasBenchboard = true,
+                Benchboard = new Benchboard()
                 {
                     Id = Guid.Parse("7675c7f4-5f69-4e50-bcca-5c0c14babf4b"),
                     Name = "Basic stand STM32 Adapter Board",
@@ -187,8 +187,8 @@ namespace IotRemoteLab.Domain.Stand
                     ]
                 },
                 HasLighting = true,
-                LigthingBrightnessLevel = 50,
-                LigthingRaspberryPiPort = 4,
+                LightingBrightnessLevel = 50,
+                LightingRaspberryPiPort = 4,
                 HasSerialPort = true,
                 SerialPortSpeed = 5,
                 HasWebcam = true,

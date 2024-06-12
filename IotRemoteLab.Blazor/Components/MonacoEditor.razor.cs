@@ -23,7 +23,6 @@ namespace IotRemoteLab.Blazor.Components
             }
         }
 
-        private bool _isReadonly = false;
         [Parameter]
         public bool IsReadonly
         {
