@@ -1,49 +1,31 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
 using Blazored.LocalStorage;
 using IotRemoteLab.Application.User.Dtos;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IotRemoteLab.Blazor.Services;
 
 public class AuthService :  IAuthService
 {
-    private readonly HttpClient _client;
+    private readonly HttpClient _httpClient;
     private readonly ILocalStorageService _storageService;
 
     public AuthService(HttpClient client, ILocalStorageService storageService )
     {
-        _client = client;
+        _httpClient = client;
         _storageService = storageService;
     }
-    
-    
-    public async Task<bool> Login(string email, string password)
+	public async Task<bool> Login(string email, string password)
     {
-        
-        Console.WriteLine("noerror 29");
-        Console.WriteLine(_client.BaseAddress.ToString());
-        
-        var message = new HttpRequestMessage(HttpMethod.Post, "api/Auth/login");
-        message.Content = JsonContent.Create(new { email = email, password=password });
-        
-        Console.WriteLine("Body");
-        
-        Console.WriteLine($"{email}, {password}");
-        
-        var response = await _client.SendAsync(message);
-        
-        if (!response.IsSuccessStatusCode)
-            return false;
-        
-        Console.WriteLine("noerror 39");
-        var token = await response.Content.ReadAsStringAsync();
-        
-        Console.WriteLine(token);
-        
-        await _storageService.SetItemAsync(StorageFieldNames.TokenName, token);
+		var response = await _httpClient.PostAsJsonAsync("api/Auth/login/", new LoginUserDto(email, password));
 
-        
-        Console.WriteLine("noerror 47");
+		if (!response.IsSuccessStatusCode)
+            return false;
+
+        var token = await response.Content.ReadAsStringAsync();
+
+        await _storageService.SetItemAsync(StorageFieldNames.TokenName, token);
         return true;
     }
 
@@ -57,7 +39,7 @@ public class AuthService :  IAuthService
         var message = new HttpRequestMessage(HttpMethod.Post, "api/Auth/register");
         message.Content = JsonContent.Create(registerUserDto);
 
-        var response = await _client.SendAsync(message);
+        var response = await _httpClient.SendAsync(message);
 
         if (!response.IsSuccessStatusCode)
             return false;

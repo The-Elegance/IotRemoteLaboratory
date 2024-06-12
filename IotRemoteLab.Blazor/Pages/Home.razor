@@ -1,5 +1,6 @@
 ﻿@layout BlankLayout
-@page "/"
+@page "/home"
+@using Blazored.LocalStorage
 
 
 <div class="lobby">
@@ -197,3 +198,20 @@
         </section>
     </footer>
 </div>
+
+
+@code 
+{
+    [Inject]
+    private HttpClient _httpClient { get; set; }
+    [Inject]
+    private ILocalStorageService localStorage { get; set; }
+
+    protected async override void OnInitialized()
+    {
+        var response = await _httpClient.PostAsJsonAsync("https://localhost:7216/api/Auth/login", new { email = "string@str.ru", password = "1" });
+        Console.WriteLine(response);
+        localStorage.RemoveItemAsync(StorageFieldNames.TokenName);
+        base.OnInitialized();
+    }
+}

@@ -1,10 +1,6 @@
 ﻿@layout AuthorizationLayout
-@page "/login"
-@attribute [AllowAnonymous]
-
-@inject IAuthService AuthService
-
-@using Microsoft.AspNetCore.Authorization
+@page "/"
+@using Blazored.LocalStorage
 @using IotRemoteLab.Application.User.Dtos
 @using IotRemoteLab.Blazor.Services
 
@@ -18,14 +14,13 @@
 			</div>
 		</div>
 
-		@* <EditForm Model="@_userData"> *@
-		<form class="authForm">
+		<EditForm class="authForm" Model="@data" OnSubmit="Submit">
 			@* <div class="authForm"> *@
 			<div class="authFormField">
 				<label class="fieldLabel">Login</label>
 				@* <InputText id="authInput" style="color: blue" type="text" placeholder="Enter the login" @bind-Value="@_userData.Login" required /> *@
 				@* <i class="uil uil-envelope icon"></i> *@
-				<input class="authInput" type="text" @bind-value="@Email" />
+				<input class="authInput" type="text" @bind-value="data.Email" />
 
 			</div>
 
@@ -34,7 +29,7 @@
 				@* <InputText type="password" id="authInput" placeholder="Enter the password" @bind-Value="@_userData.Password" required /> *@
 				@* <i class="uil uil-lock icon"></i> *@
 				@* <i class="uil uil-eye-slash showHidePw"></i> *@
-				<input class="authInput" type="text"  @bind-value="@Password"/>
+				<input class="authInput" type="text"  @bind-value="data.Password"/>
 			</div>
 
 			<div class="rememberWrapper">
@@ -45,7 +40,7 @@
 				<a href="#" class="link">Forgot password?</a>
 			</div>
 
-			<button class="signinBtn"  onclick="@Method">Sign In</button>
+			<button class="signinBtn" type="submit">Sign In</button>
 			<button class="signinBtn blank" type="submit">Sign In with Urfu</button>
 
 			<div class="signupWrapper">
@@ -53,22 +48,29 @@
 				<a href="#" class="link">Create an account</a>
 			</div>
 			@* </div> *@
-		</form>
 
-		@* </EditForm> *@
+		</EditForm>
 	</div>
 </div>
 
 
-
 @code {
 
-	private string Password { get; set; }
-	private string Email { get; set; }
-	
-	async Task Method()
+	public class UserData
 	{
-		 //await Console.Out.WriteLineAsync($"Password = {Password}; email = {Email}");
-		var a = await AuthService.Login(Email, Password);
+		public string Email { get; set; }
+		public string Password { get; set; }
+	}
+
+	private UserData data = new();
+
+	[Inject]
+	private HttpClient _httpClient { get; set; }
+	[Inject]
+	private IAuthService _authService { get; set; } 
+
+	async void Submit()
+	{
+		var response = _authService.Login(data.Email, data.Password);
 	}
 }
