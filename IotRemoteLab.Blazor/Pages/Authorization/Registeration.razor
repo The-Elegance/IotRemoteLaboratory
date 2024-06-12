@@ -1,5 +1,6 @@
 ﻿@layout AuthorizationLayout
-@page "/signup"
+@page "/register"
+@using IotRemoteLab.Blazor.Models
 
 <div class="authContainer">
 	<div class="authWrapper">
@@ -12,21 +13,20 @@
 			</div>
 		</div>
 
-		<form class="authForm">
+		<EditForm class="authForm" Model="@data" OnSubmit="@Submit">
 			<div class="authFormField">
 				<label class="fieldLabel">Email</label>
-				<input class="authInput" type="text" />
-
+				<input class="authInput" type="text" @bind-value=data.Email />
 			</div>
 
 			<div class="authFormField">
 				<label class="fieldLabel">Login</label>
-				<input class="authInput" type="text" />
+				<input class="authInput" type="text" @bind-value=data.Login />
 			</div>
 
 			<div class="authFormField">
 				<label class="fieldLabel">Password</label>
-				<input class="authInput" type="text" />
+				<input class="authInput" type="text" @bind-value=data.Password />
 			</div>
 
 			<button class="signinBtn" type="submit">Create account</button>
@@ -35,10 +35,18 @@
 				<span class="text">Already have an account?</span>
 				<a href="#" class="link">Log In</a>
 			</div>
-		</form>
+		</EditForm>
 	</div>
 </div>
 
 @code {
+	private RegistrationUserData data = new();
 
+	[Inject]
+	private HttpClient _httpClient { get; set; }
+
+	async void Submit()
+	{
+		Console.WriteLine(data.Login);
+	}
 }

@@ -1,7 +1,8 @@
 ﻿@layout AuthorizationLayout
-@page "/"
+@page "/login"
 @using Blazored.LocalStorage
 @using IotRemoteLab.Application.User.Dtos
+@using IotRemoteLab.Blazor.Models
 @using IotRemoteLab.Blazor.Services
 
 <div class="authContainer">
@@ -47,7 +48,6 @@
 				<span class="text">Not a member?</span>
 				<a href="#" class="link">Create an account</a>
 			</div>
-			@* </div> *@
 
 		</EditForm>
 	</div>
@@ -55,17 +55,8 @@
 
 
 @code {
+	private AuthorizationUserData data = new();
 
-	public class UserData
-	{
-		public string Email { get; set; }
-		public string Password { get; set; }
-	}
-
-	private UserData data = new();
-
-	[Inject]
-	private HttpClient _httpClient { get; set; }
 	[Inject]
 	private IAuthService _authService { get; set; } 
 
