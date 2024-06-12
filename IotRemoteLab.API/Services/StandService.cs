@@ -1,6 +1,6 @@
 ﻿using IotRemoteLab.API.CLI;
 using IotRemoteLab.Domain.Stand;
-using IotRemoteLaboratory.Mqtt.Core;
+using IotRemoteLab.Mqtt;
 
 namespace IotRemoteLab.API.Services
 {

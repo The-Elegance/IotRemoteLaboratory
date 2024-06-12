@@ -34,11 +34,11 @@ namespace IotRemoteLab.Domain.Stand
         /// <summary>
         /// Яркость подсветки, значения 0-100.
         /// </summary>
-        public uint LightingBrightnessLevel { get; set; }
+        public uint LigthingBrightnessLevel { get; set; }
         /// <summary>
         /// Порт подсветки на Raspberry Pi. 
         /// </summary>
-        public uint LightingRaspberryPiPort { get; set; }
+        public uint LigthingRaspberryPiPort { get; set; }
         /// <summary>
         /// Наличие последовательного порта.
         /// </summary>
@@ -92,8 +92,8 @@ namespace IotRemoteLab.Domain.Stand
                     DeployScriptFile = "deploy.yml"
                 },
                 Url = "stand1.iot-remotelaboratory.local",
-                HasBenchboard = true,
-                Benchboard = new Benchboard()
+                HasBenchBoard = true,
+                BenchBoard = new Benchboard()
                 {
                     Id = Guid.Parse("7675c7f4-5f69-4e50-bcca-5c0c14babf4b"),
                     Name = "Basic stand STM32 Adapter Board",

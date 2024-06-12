@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace IotRemoteLab.Blazor.Components
+﻿namespace IotRemoteLab.Blazor.Components
 {
     public partial class StreamFrame : Component
     {

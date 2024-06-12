@@ -1,5 +1,4 @@
-﻿using IotRemoteLab.API.MqttTopicHandlers;
-using IotRemoteLaboratory.Mqtt.Core;
+﻿using IotRemoteLab.Mqtt;
 using Microsoft.AspNetCore.SignalR;
 
 namespace IotRemoteLab.API.Hubs

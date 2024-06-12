@@ -1,5 +1,6 @@
 ﻿using IotRemoteLaboratory.Mqtt.Core;
 using System.Security.Cryptography.X509Certificates;
+using IotRemoteLab.Mqtt;
 
 namespace IotRemoteLab.API.HostBuilderExtensions
 {

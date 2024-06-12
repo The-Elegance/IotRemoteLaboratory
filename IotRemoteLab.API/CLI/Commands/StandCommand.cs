@@ -1,4 +1,4 @@
-﻿using IotRemoteLaboratory.Mqtt.Core;
+﻿using IotRemoteLab.Mqtt;
 
 namespace IotRemoteLab.API.CLI.Commands
 {

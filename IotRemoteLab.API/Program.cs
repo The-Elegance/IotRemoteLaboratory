@@ -1,10 +1,7 @@
 using IotRemoteLab.API;
-using IotRemoteLab.API.CLI;
-using IotRemoteLab.API.CLI.Commands;
 using IotRemoteLab.API.HostBuilderExtensions;
 using IotRemoteLab.API.Hubs;
 using IotRemoteLab.API.Services;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json.Serialization;
