@@ -3,20 +3,33 @@
 namespace IotRemoteLab.Domain.Stand
 {
     [method: JsonConstructor]
-    public readonly struct Uart(Guid id, byte index, string name) : IEquatable<Uart>
+    public class Uart : IEquatable<Uart>
     {
+        public Uart()
+        {
+            
+        }
+        
+        public Uart(Guid id, byte index, string name)
+        {
+            Id = id;
+            Index = index;
+            Name = name;
+        }
+        
+        
         /// <summary>
         /// Uart id.
         /// </summary>
-        public Guid Id { get; } = id;
+        public Guid Id { get; set; }
         /// <summary>
         /// Индекс порта Uart. Может назвать это порт?
         /// </summary>
-        public byte Index { get; } = index;
+        public byte Index { get; set; }
         /// <summary>
         /// Полное название
         /// </summary>
-        public string Name { get; } = name;
+        public string Name { get; set; }
 
         public bool Equals(Uart other)
         {
