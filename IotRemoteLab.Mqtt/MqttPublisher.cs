@@ -8,20 +8,43 @@ namespace IotRemoteLab.Mqtt
 {
     public sealed class MqttPublisher : MqttMember
     {
+        public const string StaticClientId = "mqtt";
+
         public override IEnumerable<string> Topics { get; }
         protected override IMqttClient Client { get; }
         protected override IMqttClientOptions Options { get; }
+        public bool IsStaticClientId { get; }
 
 
-        public MqttPublisher(MqttParams mqttParams)
+        public MqttPublisher(MqttParams mqttParams, bool isStaticClientId = true)
         {
-            Client = _mqttFactory.CreateMqttClient();
-            Options = new MqttClientOptionsBuilder()
-                .WithClientId(Guid.NewGuid().ToString())
-                .WithTcpServer(mqttParams.Ip, mqttParams.Port)
-                .WithCleanSession()
-                .Build();
+            IsStaticClientId = isStaticClientId;
 
+            Client = _mqttFactory.CreateMqttClient();
+
+            var builder = new MqttClientOptionsBuilder()
+                .WithClientId("Hel2x")
+                .WithTcpServer(mqttParams.Ip, mqttParams.Port)
+                .WithCleanSession();
+
+            if (mqttParams.HasX509Certificates)
+            {
+                builder = builder.WithTls(new MqttClientOptionsBuilderTlsParameters() 
+                {
+                    UseTls = true,
+                    SslProtocol = System.Security.Authentication.SslProtocols.Tls12,
+                    Certificates = new[] 
+                    {
+                        mqttParams.CaX509Certificate, mqttParams.ClientX509Certificate
+                    },
+                    AllowUntrustedCertificates = true,
+                    // без этой штуки ничего не работает !!!
+                    IgnoreCertificateRevocationErrors = true
+                });
+            }
+
+            Options = builder.Build();
+            
             Client.UseConnectedHandler(Connected);
             Client.UseDisconnectedHandler(Disconnected);
         }

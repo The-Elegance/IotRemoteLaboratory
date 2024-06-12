@@ -69,7 +69,7 @@
      }
 </style>
 
-
+@typeparam TItem
 @inherits Component
 
 @if (Visible)
@@ -85,7 +85,7 @@
         <div class="combobox__items">
             @foreach (var i in Items)
             {
-                <div class="combobox__item @(SelectedItem == i ? "-selected" : "")" @onclick="@(e => SelectItem(i))">
+                <div class="combobox__item @((object)SelectedItem == (object)i ? "-selected" : "")" @onclick="@(e => SelectItem(i))">
                     @i?.ToString()
                 </div>
             }

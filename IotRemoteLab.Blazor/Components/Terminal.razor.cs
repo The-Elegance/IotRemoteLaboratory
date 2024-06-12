@@ -37,8 +37,11 @@ namespace IotRemoteLab.Blazor.Components
         /// </summary>
         void SendMessage()
         {
-            SendMessageAction?.Invoke(_inputStr);
-            _inputStr = string.Empty;
+            if (!string.IsNullOrEmpty(_inputStr)) 
+            {
+                SendMessageAction?.Invoke(_inputStr);
+                _inputStr = string.Empty;
+            }
             InvokeAsync(StateHasChanged);
         }
 
@@ -52,6 +55,11 @@ namespace IotRemoteLab.Blazor.Components
             {
                 SendMessage();
             }
+        }
+
+        public void OnCollectionChanged() 
+        {
+            InvokeAsync(StateHasChanged);
         }
 
 

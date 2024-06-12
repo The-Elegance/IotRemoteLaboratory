@@ -1,0 +1,12 @@
+﻿using System.Text.Json.Serialization;
+
+namespace IotRemoteLab.Domain.Stand
+{
+    [method: JsonConstructor]
+    public readonly struct StandDeltaData(string? code, string? debugUploadOutput)
+    {
+        //public Uart Uart { get; } = uart;
+        public string Code { get; } = code ?? string.Empty;
+        public string DebugUploadOutput { get; } = debugUploadOutput ?? string.Empty;
+    }
+}

@@ -1,5 +1,5 @@
 :root {
-    /*Авторизация */
+    /*ГЂГўГІГ®Г°ГЁГ§Г Г¶ГЁГї */
     /* fonts */
     --font-inter: Inter;
     /* font sizes */
@@ -23,7 +23,7 @@
     --br-3xs: 10px;
 
 
-    /*Для страницы Home*/
+    /*Г„Г«Гї Г±ГІГ°Г Г­ГЁГ¶Г» Home*/
     /* fonts */
     --caption: Inter;
 
@@ -66,15 +66,11 @@
     --br-8xs: 5px;
 }
 
-
 html, body {
-    /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
-    font-family: var(--font-inter);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: 0;
     line-height: normal;
-    background-color: var(--dark-background-color);
 }
-
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
