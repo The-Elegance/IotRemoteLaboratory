@@ -1,0 +1,55 @@
+﻿﻿@page "/framForm"
+@layout AdminPanelLayout
+@inject Radzen.DialogService dialogService
+@inject HubConnection hubConnection
+@inject HttpClient _httpClient
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.NewForm.NewMcuForm
+@using System.Collections
+@using Microsoft.AspNetCore.SignalR.Client;
+
+
+<RadzenTemplateForm Data="@_fram">
+
+    <RadzenFieldset Text="Создание нового фреймворка">
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Название фреймворка" Component="FramName" />
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenTextBox Name="FramName" @bind-Value="@_fram.Name" Style="width: 100%"/>
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Pattern" Component="FramPattern" />
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenTextBox Name="FramPattern" @bind-Value="@_fram.Pattern" Style="width: 100%"/>
+            </RadzenColumn>
+        </RadzenRow>
+
+    </RadzenFieldset>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Сохранить" Click="@Submit" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Отмена" Click="@((args) => dialogService.Close(true))" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    private McuFramework _fram = new();
+
+    async void Submit()
+    {
+        _fram.Id = Guid.NewGuid();
+        fram.Add(_fram);
+
+        var res = await _httpClient.PostAsJsonAsync<McuFramework>("/api/mcu/frameworks", _fram);
+        Console.WriteLine(res.StatusCode.ToString());
+    }
+}

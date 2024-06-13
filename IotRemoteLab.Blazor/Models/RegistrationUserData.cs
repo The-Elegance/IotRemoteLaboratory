@@ -10,7 +10,7 @@ namespace IotRemoteLab.Blazor.Models
 		public string Name { get; set; }
 		[MinLength(1)]
 		public string Surname { get; set; }
-		[[DataType(DataType.EmailAddress)]
+		[DataType(DataType.EmailAddress)]
 		[EmailAddress]
 		public string Email { get; set; }
 		[MinLength(1)]

@@ -18,13 +18,7 @@ public class UsersRepository : IUsersRepository
         return await _applicationContext
             .Users
             .Include(u => u.Roles)
-            .SingleOrDefaultAsync(user => user.Id == id, cancellationToken)
-            ;
-        
-        
-        
-        
-        return a;
+            .SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
     }
 
     public async Task<Result<User>> AddAsync(User entity, CancellationToken cancellationToken = default)

@@ -1,4 +1,4 @@
-﻿@page "/addStand"
+﻿﻿@page "/editStand"
 @layout AdminPanelLayout
 @inject DialogService DialogService
 @inject NotificationService NotificationService
@@ -10,25 +10,21 @@
 @using Radzen.Blazor
 @using IotRemoteLab.Domain.Stand
 @using IotRemoteLab.Domain.Stand.Benchboards
-@using static IotRemoteLab.Blazor.Pages.AdminPanel.ListStand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.ListStand
+@using IotRemoteLab.Blazor.Pages.AdminPanel.Stand.NewForm
 @using System.Collections
 
-<h1>AddStand</h1>
-
-
+<p>@mcu.Name</p>
 <RadzenTemplateForm Data="@stand">
 
-    <RadzenFieldset Text="Добавить стенд">
+    <RadzenFieldset Text="Редактировать стенд">
 
         <RadzenRow AlignItems="AlignItems.Center">
             <RadzenColumn Size="12" SizeMD="4">
                 <RadzenLabel Text="Микроконтроллер" />
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="5">
-                <RadzenDropDown Data="@mcu" TextProperty="Name" Name="Name" @bind-Value=@selectedMcu Style="width: 100%; max-width: 500px;"></RadzenDropDown>
-            </RadzenColumn>
-            <RadzenColumn Size="12" SizeMD="1">
-                <RadzenButton Text="Создать стенд" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewMcu />
+                <RadzenDropDown Data="@mcuData" AllowClear="true" Placeholder="@mcu.Name" TextProperty="Name" Name="Name" @bind-Value=@selectedMcu Style="width: 100%; max-width: 500px;"></RadzenDropDown>
             </RadzenColumn>
         </RadzenRow>
 
@@ -38,9 +34,6 @@
             </RadzenColumn>
             <RadzenColumn Size="12" SizeMD="5">
                 <RadzenDropDown Data="@fram" TextProperty="Name" Name="Name" @bind-Value=@selectedFram Style="width: 100%; max-width: 500px;"></RadzenDropDown>
-            </RadzenColumn>
-            <RadzenColumn Size="12" SizeMD="1">
-                <RadzenButton Text="Создать фреймворк" ButtonStyle="ButtonStyle.Secondary" Click=@OpenNewFramForm />
             </RadzenColumn>
         </RadzenRow>
 
@@ -72,7 +65,7 @@
                     <RadzenDropDown Data="@stendPl" TextProperty="Name" Name="Name" @bind-Value=@selectedBench Style="width: 100%; max-width: 500px;"></RadzenDropDown>
                 </RadzenColumn>
                 <RadzenColumn Size="12" SizeMD="1">
-                    <RadzenButton Text="Клак" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewBench /> 
+                    <RadzenButton Text="Клак" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewBench />
                 </RadzenColumn>
             </RadzenRow>
         }
@@ -154,47 +147,57 @@
     </RadzenStack>
 </RadzenTemplateForm>
 
+
 @code {
-    Stand stand = new();
+    [Parameter]
+    public Mcu mcu { get; set; }
+
+    Stand stand = new() { };
 
     bool valueStand = false;
     bool valueLightStand = false;
     bool valuePort = false;
     bool valueVebCamera = false;
 
-    private Mcu selectedMcu = new() { Name = ""}; 
-    public static List<Mcu> mcu = new List<Mcu>()
+    private Mcu selectedMcu = new() { Name = "" };
+    public static List<Mcu> mcuData = new List<Mcu>()
     {
-       new Mcu() {Name = "test", AssemblyScriptFile = "", DeployScriptFile = "", Id = Guid.NewGuid()}
+       new Mcu() {Name = "test"}
     };
 
-    private McuFramework selectedFram =  new() { Name = ""};
-    public static List<McuFramework> fram = new()
-    {
-        new McuFramework() {Name = "testPattern", Id = Guid.NewGuid(), Pattern = ""}
-    };
+    private McuFramework selectedFram = new() { Name = "" };
+    public static List<McuFramework> fram = new();
 
     private Benchboard selectedBench;
-    public static List<Benchboard> stendPl = new List<Benchboard>()
-    {
-        new Benchboard() {Name = "Плата1", Id = Guid.NewGuid(), Ports = []},
-        new Benchboard() {Name = "Плата2", Id = Guid.NewGuid(), Ports = []}
-    };
+    public static List<Benchboard> stendPl = new();
 
-    async void Submit()
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
     {
-        stand.Benchboard = selectedBench;
-        selectedMcu.Framework = fram[0];
-        stand.Mcu = selectedMcu;
-        stand.Benchboard = selectedBench;
+        await base.OnAfterRenderAsync(isFirstRender);
 
-        var res = await  _httpClient.PostAsJsonAsync<Stand>("/api/stands", stand);
-        Console.WriteLine(res.StatusCode.ToString());
+        if (isFirstRender)
+        {
+            LoadData();
+        }
+    }
+
+    async void LoadData()
+    {
+        mcuData = await _httpClient.GetFromJsonAsync<List<Mcu>>("/api/mcu");
+        stendPl = await _httpClient.GetFromJsonAsync<List<Benchboard>>("/api/benchboards");
+
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    void Submit()
+    {
+        listStand.Add(stand);
     }
 
     void Cancel()
     {
-    //
+        //
     }
 
     void UrlTextBoxChanged(string newValue)
@@ -227,4 +230,5 @@
                new Dictionary<string, object>(),
                new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
     }
+
 }

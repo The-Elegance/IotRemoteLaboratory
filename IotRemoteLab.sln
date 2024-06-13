@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.Mqtt", "IotRemoteLab.Mqtt\IotRemoteLab.Mqtt.csproj", "{BAB52239-42F9-4AA6-9F91-DF4F15F0B609}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.Persistence", "IotRemoteLab.Persistence\IotRemoteLab.Persistence.csproj", "{751A7905-DA61-4421-AE05-C5E1D2A7CD50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.Persistence", "IotRemoteLab.Persistence\IotRemoteLab.Persistence.csproj", "{751A7905-DA61-4421-AE05-C5E1D2A7CD50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.Application", "IotRemoteLab.Application\IotRemoteLab.Application.csproj", "{6541833F-F2D0-4883-92D2-DD9519F17D34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.Application", "IotRemoteLab.Application\IotRemoteLab.Application.csproj", "{6541833F-F2D0-4883-92D2-DD9519F17D34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,64 @@
+﻿
+@layout AdminPanelLayout
+﻿@page "/portForm"
+@inject DialogService DialogService
+@inject HttpClient _httpClient
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand.Benchboards
+@using IotRemoteLab.Domain.Stand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.NewForm.NewBenchForm
+@using IotRemoteLab.Blazor.EnumBox
+@using System.Collections
+
+<RadzenTemplateForm Data="@_port">
+
+    <RadzenFieldset Text="Создание порта">
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Тип" Component="PortType" />
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenDropDown Data="@_types" TextProperty="Name" ValueProperty="Value" @bind-Value=@selectedPortType style="width: 100%;"></RadzenDropDown>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Порт на Raspberry Pi" Component="PortRaspberryPi" />
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenNumeric Min="1" Max="100" @bind-Value=@_port.RaspberryPiPort InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" Style="width: 100%" />
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Порт микроконтроллера" Component="PortMcu" />
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenTextBox Name="PortMcu" @bind-Value="@_port.McuPort" Style="width: 100%" />
+            </RadzenColumn>
+        </RadzenRow>
+
+    </RadzenFieldset>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" Click="@Submit" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    private BenchboardPort _port = new();
+
+    private IEnumerable<EnumBox<BenchboardPortType>> _types = EnumBox<BenchboardPortType>.EnumToValue();
+    private BenchboardPortType selectedPortType;
+
+    async void Submit()
+    {
+        _port.Id = Guid.NewGuid();
+        _port.Type = selectedPortType;
+
+        var res = await _httpClient.PostAsJsonAsync<BenchboardPort>("/api/benchboards/ports", _port);
+        Console.WriteLine(res.StatusCode.ToString());
+    }
+}

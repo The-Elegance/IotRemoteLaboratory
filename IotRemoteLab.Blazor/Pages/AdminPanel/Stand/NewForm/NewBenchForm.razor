@@ -1,0 +1,84 @@
+﻿﻿@page "/benchForm"
+@layout AdminPanelLayout
+@inject Radzen.DialogService dialogService
+@inject HttpClient _httpClient
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand.Benchboards
+@using IotRemoteLab.Domain.Stand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.AddStand
+@using System.Collections
+
+
+<RadzenTemplateForm Data="@_bench">
+
+    <RadzenFieldset Text="Создание стендовой платы">
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Название стендовой платы" Component="StandName" />
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenTextBox Name="StandName" @bind-Value="@_bench.Name" Style="width: 100%" />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="3">
+                <RadzenLabel Text="Порт" />
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenDropDown Data="@ports" TextProperty="McuPort" Name="McuPort" @bind-Value=@selectedBenchboardPort Style="width: 100%"></RadzenDropDown>
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenButton Text="Создать новый порт" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewPort />
+            </RadzenColumn>
+        </RadzenRow>
+
+    </RadzenFieldset>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" Click="@Submit" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Отмена" Click="@((args) => dialogService.Close(true))" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    private Benchboard _bench = new();
+
+    private BenchboardPort selectedBenchboardPort;
+    public static List<BenchboardPort> ports = new();
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        await base.OnAfterRenderAsync(isFirstRender);
+
+        if (isFirstRender)
+        {
+            LoadData();
+        }
+    }
+
+    async void LoadData()
+    {
+        ports = await _httpClient.GetFromJsonAsync<List<BenchboardPort>>("/api/benchboards/ports");
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task OpenFormNewPort()
+    {
+        await dialogService.OpenAsync<NewPortForm>($"Создание нового порта",
+               new Dictionary<string, object>(),
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+
+    async void Submit()
+    {
+        _bench.Id = Guid.NewGuid();
+        _bench.Ports = ports;
+
+        var res = await _httpClient.PostAsJsonAsync<Benchboard>("/api/benchboards", _bench);
+        Console.WriteLine(res.StatusCode.ToString());
+    }
+}
