@@ -1,4 +1,4 @@
-﻿@page "/addStand"
+﻿@page "/addGroup"
 @layout AdminPanelLayout
 @inject DialogService DialogService
 @inject NotificationService NotificationService
@@ -8,46 +8,71 @@
 
 @using Radzen
 @using Radzen.Blazor
-@using IotRemoteLab.Domain.Stand
-@using IotRemoteLab.Domain.Stand.Benchboards
-@using static IotRemoteLab.Blazor.Pages.AdminPanel.Stand.ListStand
-@using IotRemoteLab.Blazor.Pages.AdminPanel.Stand.NewForm
-@using System.Collections
+@using IotRemoteLab.Domain.Team
+@using IotRemoteLab.Domain.User
+@using IotRemoteLab.Blazor.Pages.AdminPanel.Group
 
 <h1>Add Group</h1>
 
-
-<RadzenTemplateForm Data="@ы">
-    <RadzenFieldset Text="Добавить группу">
+<RadzenTemplateForm Data="@_team">
+    <RadzenFieldset Text="Создание новой команды">
         <RadzenStack Gap="1rem">
-            @*Поле для названия команды*@
 
+            @*Поле для создания имени группы*@
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
-                    <RadzenLabel Text="Название команды" />
+                    <RadzenLabel Text="Название команды" Component="GroupName" />
                 </RadzenColumn>
                 <RadzenColumn>
-                    <RadzenTextBox Name="nameGroup" @bind-Value="@f" Style="width: 40%" />
+                    <RadzenTextBox Name="GroupName" @bind-Value="@_team.Name" Style="width: 40%" />
                 </RadzenColumn>
             </RadzenRow>
 
-            @*Поле для добавляния/создания нового участника команды*@
-
+            @*Поле для добавления/создания новых учасников*@
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
-                    <RadzenLabel Text="Участники команды"/>
+                    <RadzenLabel Text="Участники команды" />
                 </RadzenColumn>
-
+                <RadzenColumn>
+                    <RadzenDropDown @bind-Value=@values Data=@users TextProperty="Name" ValueProperty="Id" Name="DropDownMultiple"
+                                    Multiple=true AllowClear=true Placeholder="Select users" Style="width: 80%" />
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenButton Text="Добавить пользователя" ButtonStyle="ButtonStyle.Secondary" Click=@OpenNewUserForm />
+                </RadzenColumn>
             </RadzenRow>
+
         </RadzenStack>
     </RadzenFieldset>
-
-    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-4 rz-mb-4">
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
         <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Сохранить" Click="@Submit" />
     </RadzenStack>
-
 </RadzenTemplateForm>
 
-@code {
 
+@code {
+    Team _team = new();
+
+    IEnumerable<Guid> values = new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+
+    List<User> users = new()
+    {
+        new User {Id = Guid.NewGuid(), Name = "Oleg"},
+        new User {Id = Guid.NewGuid(), Name = "Jeck"},
+        new User {Id = Guid.NewGuid(), Name = "Mike"},
+        new User {Id = Guid.NewGuid(), Name = "Alis"},
+        new User {Id = Guid.NewGuid(), Name = "Olga"}
+    };
+
+    public async Task OpenNewUserForm()
+    {
+        await DialogService.OpenAsync<NewUserForm>($"Создание нового микроконтроллера",
+               new Dictionary<string, object>(),
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+
+    async void Submit()
+    {
+        //
+    }
 }
