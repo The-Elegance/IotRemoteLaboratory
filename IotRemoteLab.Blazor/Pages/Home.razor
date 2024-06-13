@@ -1,6 +1,7 @@
-﻿@layout BlankLayout
+﻿@using IotRemoteLab.Blazor.Services.LocalStorage
+
+@layout BlankLayout
 @page "/home"
-@using Blazored.LocalStorage
 
 
 <div class="lobby">
@@ -211,7 +212,7 @@
     {
         var response = await _httpClient.PostAsJsonAsync("https://localhost:7216/api/Auth/login", new { email = "string@str.ru", password = "1" });
         Console.WriteLine(response);
-        localStorage.RemoveItemAsync(StorageFieldNames.TokenName);
+        await localStorage.RemoveItemAsync(StorageFieldNames.TokenName);
         base.OnInitialized();
     }
 }

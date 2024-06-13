@@ -1,6 +1,9 @@
 ﻿@layout AuthorizationLayout
 @page "/register"
+
 @using IotRemoteLab.Blazor.Models
+@using IotRemoteLab.Blazor.Services
+@using System.Text.RegularExpressions
 
 <div class="authContainer">
 	<div class="authWrapper">
@@ -16,17 +19,21 @@
 		<EditForm class="authForm" Model="@data" OnSubmit="@Submit">
 			<div class="authFormField">
 				<label class="fieldLabel">Email</label>
-				<input class="authInput" type="text" @bind-value=data.Email />
+				<InputText class="authInput" id="email" @bind-Value="data.Email" />
+				<ValidationMessage For="@(() => data.Email)" />
 			</div>
 
 			<div class="authFormField">
 				<label class="fieldLabel">Login</label>
-				<input class="authInput" type="text" @bind-value=data.Login />
+				<InputText class="authInput" id="email" @bind-Value="data.Login" />
+				<ValidationMessage For="@(() => data.Login)" />
 			</div>
 
 			<div class="authFormField">
 				<label class="fieldLabel">Password</label>
-				<input class="authInput" type="text" @bind-value=data.Password />
+
+				<InputText class="authInput" id="email" @bind-Value="data.Password" />
+				<ValidationMessage For="@(() => data.Password)" />
 			</div>
 
 			<button class="signinBtn" type="submit">Create account</button>
@@ -40,13 +47,13 @@
 </div>
 
 @code {
-	private RegistrationUserData data = new();
+    private RegistrationUserData data = new();
 
-	[Inject]
-	private HttpClient _httpClient { get; set; }
+    [Inject]
+    private IAuthService _authService { get; set; }
 
-	async void Submit()
-	{
-		Console.WriteLine(data.Login);
-	}
+    async void Submit()
+    {
+        var response = await _authService.Register(data.Login, Regex.Replace(data.Email, @"\s+", ""), data.Password);
+    }
 }

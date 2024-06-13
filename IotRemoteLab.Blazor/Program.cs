@@ -1,7 +1,8 @@
-using Blazored.LocalStorage;
+//using Blazored.LocalStorage;
 using IotRemoteLab.Blazor;
 using IotRemoteLab.Blazor.Providers;
 using IotRemoteLab.Blazor.Services;
+using IotRemoteLab.Blazor.Services.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -18,7 +19,8 @@ builder.Services.AddScoped(sp => new HttpClient
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IAccessTokenProvider, AccessTokenProvider>();
-builder.Services.AddBlazoredLocalStorageAsSingleton();
+builder.Services.AddSingleton<ILocalStorageService, DefaultLocalStorageService>();
+//builder.Services.AddBlazoredLocalStorageAsSingleton();
 
 builder.Services.AddSingleton(sp => {
 	var navigationManager = sp.GetRequiredService<NavigationManager>();
