@@ -1,0 +1,74 @@
+﻿@page "/listStande"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject HttpClient _httpClient
+
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using IotRemoteLab.Domain.Stand.Benchboards
+
+<h1>ListStand</h1>
+
+
+<RadzenDataGrid EmptyText="Not stand" @ref="StandGrid" AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                Data="@listStand" TItem="Stand" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
+    <Columns>
+        <RadzenDataGridColumn TItem="Stand" Property="Id" Title="id" Frozen="true" Width="100px"/>
+        <RadzenDataGridColumn TItem="Stand" Property="Mcu.Name" Title="МКУ" Frozen="true" Width="160px" />
+        <RadzenDataGridColumn TItem="Stand" Property="Mcu.Framework.Name" Title="Фреймворк" Frozen="true" Width="160px" /> 
+        <RadzenDataGridColumn TItem="Stand" Property="Url" Title="ЮРЛ" Frozen="true" Width="160px" />
+
+        <RadzenDataGridColumn TItem="Stand" Width="160px" Property="Mcu.Name" >
+            <Template Context="data">
+                <RadzenButton Text = "inf" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" class="m-1" Click=@(() => OpenStendDetailsCard(data.Id, data.Mcu.Name)) />
+                <RadzenButton Text="edit" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" class="m-1" Click=@(() => OpenEditStand( data.Mcu)) />
+            </Template>
+        </RadzenDataGridColumn>
+
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    private RadzenDataGrid<Stand> StandGrid = new RadzenDataGrid<Stand>();
+
+    public static List<Stand> listStand = new();
+
+    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+    {
+        await base.OnAfterRenderAsync(isFirstRender);
+
+        if (isFirstRender)
+        {
+            LoadData();
+        }
+    }
+
+    async void LoadData()
+    {
+        listStand = await _httpClient.GetFromJsonAsync<List<Stand>>("/api/Stands");
+
+        Console.WriteLine(listStand);
+
+        StandGrid.Reload();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    public async Task OpenStendDetailsCard(Guid id, string name)
+    {
+        await DialogService.OpenAsync<StandDetailsCard>($"Детали стенда",
+               new Dictionary<string, object> { { "id", id }, { "mcuname", name} },
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+
+    public async Task OpenEditStand(Mcu mcuOrig)
+    {
+        await DialogService.OpenAsync<EditStand>($"Редактирование",
+               new Dictionary<string, object> { { "mcu", mcuOrig } },
+               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+}

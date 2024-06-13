@@ -12,14 +12,19 @@ public class UsersRepository : IUsersRepository
     {
         _applicationContext = applicationContext;
     }
-    
+
     public async Task<Result<User?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _applicationContext
-                .Users
-                .Include(u => u.Roles)
-                .SingleOrDefaultAsync(user => user.Id == id, cancellationToken)
+            .Users
+            .Include(u => u.Roles)
+            .SingleOrDefaultAsync(user => user.Id == id, cancellationToken)
             ;
+        
+        
+        
+        
+        return a;
     }
 
     public async Task<Result<User>> AddAsync(User entity, CancellationToken cancellationToken = default)

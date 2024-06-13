@@ -1,0 +1,66 @@
+﻿@page "/framForm"
+@layout AdminPanelLayout
+@inject DialogService DialogService
+@inject HubConnection hubConnection
+
+@using Radzen
+@using Radzen.Blazor
+@using IotRemoteLab.Domain.Stand
+@using static IotRemoteLab.Blazor.Pages.AdminPanel.AddStand
+@using System.Collections
+@using Microsoft.AspNetCore.SignalR.Client;
+
+<h3>NewFrameworkForm</h3>
+
+<RadzenTemplateForm Data="@_fram">
+
+    <RadzenFieldset Text="Фреймворк">
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Название фреймворка" Component="FramName" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenTextBox Name="FramName" @bind-Value="@_fram.Name" Style="width: 100%; max-width: 500px;" Change=@(args => FrameNameTextBoxChanged(args)) />
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow AlignItems="AlignItems.Center">
+            <RadzenColumn Size="12" SizeMD="4">
+                <RadzenLabel Text="Pattern" Component="FramPattern" />
+            </RadzenColumn>
+            <RadzenColumn Size="12" SizeMD="8">
+                <RadzenTextBox Name="FramPattern" @bind-Value="@_fram.Pattern" Style="width: 100%; max-width: 500px;" Change=@(args => PatternNameTextBoxChanged(args)) />
+            </RadzenColumn>
+        </RadzenRow>
+
+    </RadzenFieldset>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
+        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" Click="@Submit" />
+        <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Large" Icon="cancel" Text="Cancel" Click="@Cancel" />
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    private McuFramework _fram = new();
+
+    void PatternNameTextBoxChanged(string newValue)
+    {
+        _fram.Pattern = newValue;
+    }
+
+    void FrameNameTextBoxChanged(string newValue)
+    {
+        _fram.Name = newValue;
+    }
+
+    async void Submit()
+    {
+        fram.Add(_fram);
+    }
+
+    void Cancel()
+    {
+        //
+    }
+}

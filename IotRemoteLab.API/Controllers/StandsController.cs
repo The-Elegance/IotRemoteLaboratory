@@ -37,7 +37,12 @@ namespace IotRemoteLab.API.Controllers
         [Authorize(Roles = Roles.Admin)]
         public IActionResult Add(Stand stand)
         {
-            return Ok();
+            if (stand == null)
+                Console.WriteLine("Stand is null");
+            else 
+                standList.Add(stand);
+
+            return Ok("stand add");
         }
 
         [HttpPut]

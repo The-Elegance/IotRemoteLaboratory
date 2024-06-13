@@ -14,7 +14,7 @@ namespace IotRemoteLaboratory.Mqtt.Core
 
         #region Constructors
 
-        
+
         public MqttParams(string ip, int port, X509Certificate ca, X509Certificate2 client, IEnumerable<string> topics) : this(ip, port, topics)
         {
             CaX509Certificate = ca;
