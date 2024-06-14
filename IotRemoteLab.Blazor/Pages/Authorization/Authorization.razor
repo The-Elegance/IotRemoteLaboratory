@@ -16,31 +16,28 @@
 			</div>
 		</div>
 
-		<EditForm class="authForm" Model="@data" OnSubmit="Submit">
+		<EditForm Model="@data" OnSubmit="Submit">
 			<DataAnnotationsValidator />
 
-			<div class="authFormField">
+			<div class="authFormField margin-bottom-28px">
 				<label class="fieldLabel">Login</label>
 				<InputText class="authInput" id="email" @bind-Value="data.Email" />
 				<ValidationMessage For="@(() => data.Email)" />
 			</div>
 
-			<div class="authFormField">
+			<div class="authFormField margin-bottom-28px">
 				<label class="fieldLabel">Password</label>
 				<InputText class="authInput" id="email" @bind-Value="data.Password" />
 				<ValidationMessage For="@(() => data.Password)" />
 			</div>
 
-			<div class="rememberWrapper">
-				<div class="checkboxWrapper">
-					<input type="checkbox" class="rememberChekbox" id="logCheck">
-					<label for="logCheck" class="text">Remember me</label>
-				</div>
+			<div class="rememberWrapper margin-bottom-28px">
+				<IotRemoteLab.Blazor.Components.CheckBox Text="Remember Me" />
 				<a href="#" class="link">Forgot password?</a>
 			</div>
 
-			<button class="signinBtn" type="submit">Sign In</button>
-			<button class="signinBtn blank" type="submit">Sign In with Urfu</button>
+			<button class="default-button margin-bottom-28px" type="submit">Sign In</button>
+			<button class="ghost-button margin-bottom-28px" type="submit">Sign In with Urfu</button>
 
 			<div class="signupWrapper">
 				<span class="text">Not a member?</span>
