@@ -35,5 +35,6 @@ builder.Services.AddSingleton(sp => {
 
 builder.Services.AddRadzenComponents();
 builder.Services.AddScoped<MonacoEditorService>();
+builder.Services.AddSingleton<JanusWebRtcService>();
 
 await builder.Build().RunAsync();

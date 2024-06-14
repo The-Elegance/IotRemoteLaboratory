@@ -9,27 +9,25 @@
         // terminal data from user (commands)
         public const string TerminalDataTo = Base + "serial/out";
         // button with led state (0/1) | Port - id of button
-        public const string LedButtonState = Base + "gpio/led/#";
+        public const string LedState = Base + "gpio/input/#";
         // button without led state (0/1) | Port - id of button
-        public const string ButtonNoLedState = Base + "gpio/button/#";
+        public const string ButtonState = Base + "gpio/output/#";
         // code complied output
         public const string DebugCodeOutput = Base + "debug/upload";
-        // led on/off -> (0/1)
-        public const string LedState = Base + "led";
         // webcamera on/off -> (0/1)
         public const string Webcamera = Base + "webcamera";
         // uart type -> 1,2,3,4
         public const string UartType = Base + "uart";
         // lighting -> 0-100
-        public const string LightingBrightness = Base + "led";
+        public const string LightingBrightness = Base + "light";
 
         public static string[] ToArray() 
         {
             return [
                 TerminalDataFrom,
                 TerminalDataTo,
-                LedButtonState,
-                ButtonNoLedState,
+                LedState,
+                ButtonState,
                 DebugCodeOutput,
                 LedState,
                 Webcamera,

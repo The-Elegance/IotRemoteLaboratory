@@ -1,4 +1,5 @@
-﻿using IotRemoteLab.Mqtt;
+﻿using IotRemoteLab.API.MqttTopicHandlers;
+using IotRemoteLab.Mqtt;
 using Microsoft.AspNetCore.SignalR;
 
 namespace IotRemoteLab.API.Hubs
@@ -18,11 +19,11 @@ namespace IotRemoteLab.API.Hubs
 
         private void _mqttSubscriber_MessageReceivedEvent(string topic, string value)
         {
-            //var s = new LabStandHandler(topic, value);
-            //s.GpioLed += S_GpioLed;
-            //s.SerialIn += S_SerialIn;
-            //s.DebugUpload += S_DebugUpload;
-            //s.Execute();
+            var s = new LabStandHandler(topic, value);
+            s.GpioLed += S_GpioLed;
+            s.SerialIn += S_SerialIn;
+            s.DebugUpload += S_DebugUpload;
+            s.Execute();
         }
 
         private async void S_DebugUpload(Guid arg1, string arg2)

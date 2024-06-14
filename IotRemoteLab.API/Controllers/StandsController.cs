@@ -28,6 +28,7 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Stand>> GetStand(Guid id)
         {
             return Ok(StandCreator.Get(id));

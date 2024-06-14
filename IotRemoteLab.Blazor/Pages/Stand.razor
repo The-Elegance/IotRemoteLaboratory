@@ -17,19 +17,7 @@
                 </div>
             </div>
             <div class="workflow-box__item">
-
-                <div class="stream-frame">
-                    @if (Service.IsWebcameraEnable)
-                    {
-                        <span>Попытка подключение к трансляции</span>
-                    }
-                    else
-                    {
-                        <span>Отсутствует активная трансляция</span>
-                    }
-                </div>
-
-                @* <IotRemoteLaboratory.Components.Controls.StreamFrame /> *@
+                <IotRemoteLab.Blazor.Components.StreamFrame />
             </div>
 
             <div class="workflow-box__item workflow-box-grid">         

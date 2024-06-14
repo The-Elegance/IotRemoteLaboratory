@@ -177,7 +177,7 @@ namespace IotRemoteLab.Blazor.Services
         {
             foreach (var port in stand.Benchboard.Ports)
             {
-                if (port.Type == Domain.Stand.Benchboards.BenchboardPortType.Output)
+                if (port.Type == Domain.Stand.Benchboards.BenchboardPortType.Input)
                 {
                     // mcu led
                     StandLeds.Add(new StandLed()

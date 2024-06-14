@@ -1,4 +1,7 @@
-﻿@inherits Component
+﻿@using IotRemoteLab.Blazor.Services
+@inherits Component
+
+@inject JanusWebRtcService _janusWebRtcService;
 
 <div id="@(Name ?? GetId())" class="video-block">
     <div class="video-block_player">

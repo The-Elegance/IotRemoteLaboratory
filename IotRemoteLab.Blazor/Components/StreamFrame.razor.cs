@@ -1,22 +1,32 @@
-﻿namespace IotRemoteLab.Blazor.Components
+﻿using IotRemoteLab.Blazor.Services;
+
+namespace IotRemoteLab.Blazor.Components
 {
     public partial class StreamFrame : Component
     {
-        protected override void OnAfterRender(bool firstRender)
+        protected override Task OnAfterRenderAsync(bool firstRender)
+		{
+            if (firstRender)
+            {
+                Init();
+            }
+
+			return base.OnAfterRenderAsync(firstRender);
+		}
+
+		async void Init()
         {
-            base.OnAfterRender(firstRender);
+            await _janusWebRtcService.InitializeJanus();
+		}
+
+        async void StartStream()
+        {
+            await _janusWebRtcService.StartVideoStreaming();
         }
 
-        async void Init()
+        async void StopStream()
         {
-        }
-
-        void StartStream()
-        {
-        }
-
-        void StopStream()
-        {
+            await _janusWebRtcService.StopVideoStreaming();
         }
     }
 }

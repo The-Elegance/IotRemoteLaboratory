@@ -28,15 +28,14 @@
             _topic = topic;
             _value = value;
             _topicParts = topic.Replace("/lab/stand/", "").Split("/");
+            Guid.TryParse(_topicParts[0], out StandId);
 
-            StandId = Guid.Parse(_topicParts[0]);
-            
-            ActionByTopic["led"] = LedStateChanged;
+			ActionByTopic["led"] = LedStateChanged;
             ActionByTopic["webcamera"] = WebcameraStateChanged;
             ActionByTopic["serial-in"] = SerialInChanged;
             ActionByTopic["debug-upload"] = DebugUploadChanged;
-            ActionByTopic["gpio-led"] = GpioLedChanged;
-            ActionByTopic["gpio-button"] = GpioButtonChanged;
+            ActionByTopic["gpio-input"] = GpioLedChanged;
+            ActionByTopic["gpio-output"] = GpioButtonChanged;
         }
 
         public void Execute() 

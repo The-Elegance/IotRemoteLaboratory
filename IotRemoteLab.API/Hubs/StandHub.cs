@@ -49,7 +49,7 @@ namespace IotRemoteLab.API.Hubs
         public async Task ChangePortState(Guid standId, string port, bool state) 
         {
             await Clients.Group(standId.ToString()).SendAsync("OnPortStateChanged", port, state);
-            _standsService.PublishMessageAsync(Topics.ButtonNoLedState.Replace("+", standId.ToString()).Replace("#", port), state ? "1" : "0");
+            _standsService.PublishMessageAsync(Topics.ButtonState.Replace("+", standId.ToString()).Replace("#", port), state ? "1" : "0");
         }
     }
 }

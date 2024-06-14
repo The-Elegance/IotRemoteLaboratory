@@ -20,6 +20,9 @@ namespace IotRemoteLab.Blazor.Components
         { 
             get => _selectedItem; set 
             {
+                if (_selectedItem == null)
+                    return;
+
                 if (_selectedItem.Equals(value)) {
                     return;
                 }
@@ -97,7 +100,7 @@ namespace IotRemoteLab.Blazor.Components
         /// <param name="item">Элемент который выбрал пользователь</param>
         void SelectItem(TItem? item)
         {
-            SelectedItem = item;
+            SelectedItem = item ?? default;
             if (!IsStaysOpen)
                 IsDropDownOpen = false;
         }
