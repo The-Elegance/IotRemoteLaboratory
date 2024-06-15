@@ -1,47 +1,48 @@
 ﻿@layout AuthorizationLayout
-@page "/register"
+@page "/signup"
 
 @using IotRemoteLab.Blazor.Models
 @using IotRemoteLab.Blazor.Services
 @using System.Text.RegularExpressions
 
-<div class="authContainer">
-	<div class="authWrapper">
-
-		<div class="authHeader">
-			<h1 class="projectName">Iot Remote Laboratory</h1>
+<div class="auth-container">
+	<div class="auth-wrapper">
+		<div class="auth-header">
+			<h1 class="project-name">Iot Remote Laboratory</h1>
 			<div class="authTitleWrapper">
-				<span class="authTitle">Log In</span>
+				<span class="authTitle">Create your account</span>
 				<span class="authDescription">Welcome back! Please enter your details.</span>
 			</div>
 		</div>
 
-		<EditForm class="authForm" Model="@data" OnSubmit="@Submit">
-			<div class="authFormField">
-				<label class="fieldLabel">Email</label>
+		<EditForm Model="@data" OnSubmit="Submit">
+			<DataAnnotationsValidator />
+
+			<div class="authFormField margin-bottom-28px">
+				<label class="fieldLabel">Login</label>
 				<InputText class="authInput" id="email" @bind-Value="data.Email" />
 				<ValidationMessage For="@(() => data.Email)" />
 			</div>
 
-			<div class="authFormField">
+			<div class="authFormField margin-bottom-28px">
 				<label class="fieldLabel">Login</label>
 				<InputText class="authInput" id="email" @bind-Value="data.Login" />
 				<ValidationMessage For="@(() => data.Login)" />
 			</div>
 
-			<div class="authFormField">
+			<div class="authFormField margin-bottom-28px">
 				<label class="fieldLabel">Password</label>
-
 				<InputText class="authInput" id="email" @bind-Value="data.Password" />
 				<ValidationMessage For="@(() => data.Password)" />
 			</div>
 
-			<button class="signinBtn" type="submit">Create account</button>
+			<button class="default-button margin-bottom-28px" type="submit">Create Account</button>
 
 			<div class="signupWrapper">
 				<span class="text">Already have an account?</span>
-				<a href="#" class="link">Log In</a>
+				<a href="/login" class="link">Log In</a>
 			</div>
+
 		</EditForm>
 	</div>
 </div>

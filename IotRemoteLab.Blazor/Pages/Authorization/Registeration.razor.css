@@ -1,30 +1,28 @@
-﻿.authContainer {
+﻿.auth-container {
     width: 100%;
-    display: flex;
-    justify-content: center;
+    height: 100vh;
     padding: 4rem 0;
-    /*background-image: url(../../Assets/Login_Field.svg);
-    background-repeat: no-repeat;
-    background-position: 100% 100%;*/
+    background-color: var(--dark-background-color);
 }
 
-.authWrapper {
+.auth-wrapper {
     width: 100%;
     min-width: 250px;
     max-width: 558px;
+    margin: auto;
 }
 
-.authHeader {
-    display: flex;
-    flex-direction: column;
-    row-gap: 32px;
+.auth-header {
     margin-bottom: 28px;
 }
 
-.authForm {
-    display: flex;
-    flex-direction: column;
-    row-gap: 28px;
+.project-name {
+    font-size: var(--font-size-md);
+    color: var(--color-white);
+    margin: 0;
+    position: relative;
+    font-weight: 700;
+    font-family: inherit;
 }
 
 .authFormField {
@@ -38,7 +36,8 @@
     color: var(--color-white);
 }
 
-.authInput {
+input,
+::deep input {
     width: 100%;
     border: 0;
     outline: 0;
@@ -53,15 +52,6 @@
     font-weight: 500;
     font-size: var(--font-size-base);
     color: var(--color-white);
-}
-
-.projectName {
-    font-size: var(--font-size-md);
-    color: var(--color-white);
-    margin: 0;
-    position: relative;
-    font-weight: 700;
-    font-family: inherit;
 }
 
 .authTitleWrapper {
@@ -89,6 +79,12 @@
     font-size: var(--font-size-base);
 }
 
+.rememberWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .text {
     color: var(--color-white);
 }
@@ -98,23 +94,43 @@
     text-decoration: none;
 }
 
-.signinBtn {
-    cursor: pointer;
-    border: 0;
-    padding: var(--padding-sm) var(--padding-xl);
+    .link:hover {
+        text-decoration: underline;
+    }
+
+.default-button {
     background-color: var(--brand-color);
-    align-self: stretch;
-    border-radius: var(--br-3xs);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    border-radius: 10px;
+    height: 52px;
+    width: 100%;
+    border-style: none;
+    font-weight: 500;
     font-size: 20px;
 }
 
-.signinBtn:hover {
+.margin-bottom-28px {
+    margin-bottom: 28px;
+}
+
+.default-button:hover {
     background-color: var(--color-cornflowerblue-100);
 }
+
+.ghost-button {
+    border-radius: 10px;
+    border: 1px solid var(--brand-color);
+    height: 52px;
+    width: 100%;
+    cursor: pointer;
+    background-color: transparent;
+    color: var(--brand-color);
+}
+
+    .ghost-button:hover {
+        background-color: rgba(140, 128, 204, 0.09);
+        border: 2px solid var(--color-cornflowerblue-100);
+        box-sizing: border-box;
+    }
 
 .signupWrapper {
     display: flex;

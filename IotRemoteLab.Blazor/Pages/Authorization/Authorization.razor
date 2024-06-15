@@ -6,10 +6,10 @@
 @layout AuthorizationLayout
 @page "/login"
 
-<div class="authContainer">
-	<div class="authWrapper">
-		<div class="authHeader">
-			<h1 class="projectName">Iot Remote Laboratory</h1>
+<div class="auth-container">
+	<div class="auth-wrapper">
+		<div class="auth-header">
+			<h1 class="project-name">Iot Remote Laboratory</h1>
 			<div class="authTitleWrapper">
 				<span class="authTitle">Log In</span>
 				<span class="authDescription">Welcome back! Please enter your details.</span>
@@ -31,17 +31,12 @@
 				<ValidationMessage For="@(() => data.Password)" />
 			</div>
 
-			<div class="rememberWrapper margin-bottom-28px">
-				<IotRemoteLab.Blazor.Components.CheckBox Text="Remember Me" />
-				<a href="#" class="link">Forgot password?</a>
-			</div>
-
 			<button class="default-button margin-bottom-28px" type="submit">Sign In</button>
-			<button class="ghost-button margin-bottom-28px" type="submit">Sign In with Urfu</button>
+			@* <button class="ghost-button margin-bottom-28px" type="submit">Sign In with Urfu</button> *@
 
 			<div class="signupWrapper">
 				<span class="text">Not a member?</span>
-				<a href="#" class="link">Create an account</a>
+				<a href="/signup" class="link">Create an account</a>
 			</div>
 
 		</EditForm>

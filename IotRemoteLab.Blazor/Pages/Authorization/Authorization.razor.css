@@ -1,19 +1,28 @@
-﻿.authContainer {
+﻿.auth-container {
     width: 100%;
     height: 100vh;
     padding: 4rem 0;
     background-color: var(--dark-background-color);
 }
 
-.authWrapper {
+.auth-wrapper {
     width: 100%;
     min-width: 250px;
     max-width: 558px;
     margin: auto;
 }
 
-.authHeader {
+.auth-header {
     margin-bottom: 28px;
+}
+
+.project-name {
+    font-size: var(--font-size-md);
+    color: var(--color-white);
+    margin: 0;
+    position: relative;
+    font-weight: 700;
+    font-family: inherit;
 }
 
 .authFormField {
@@ -43,15 +52,6 @@ input,
     font-weight: 500;
     font-size: var(--font-size-base);
     color: var(--color-white);
-}
-
-.projectName {
-    font-size: var(--font-size-md);
-    color: var(--color-white);
-    margin: 0;
-    position: relative;
-    font-weight: 700;
-    font-family: inherit;
 }
 
 .authTitleWrapper {
@@ -99,11 +99,13 @@ input,
     }
 
 .default-button {
-    cursor: pointer;
     background-color: var(--brand-color);
     border-radius: 10px;
     height: 52px;
     width: 100%;
+    border-style: none;
+    font-size: 20px;
+    font-weight: 500;
 }
 
 .margin-bottom-28px {
