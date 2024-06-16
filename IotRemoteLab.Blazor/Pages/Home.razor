@@ -3,201 +3,76 @@
 @layout BlankLayout
 @page "/home"
 
-
-<div class="lobby">
-    <div class="sidebar">
-        <div class="cont">
-            <div class="header">
-                <div class="logo-cont">
-                    <img class="logoframe-1-icon" loading="lazy" alt="" src="./src/logo.svg" />
-
-                    <h3 class="untitled">Untitled</h3>
-                </div>
-                <img class="align-justify-icon" loading="lazy" alt="" src="./src/burgerMenu.svg" />
-            </div>
-            <div class="search-field">
-                <img class="search-icon" alt="" src="./src/search.svg" />
-
-                <input class="search" placeholder="Search" type="text" />
-            </div>
-            <div class="menu-group">
-                <div class="menu-items">
-                    <img class="home-icon" loading="lazy" alt="" src="./src/home.svg" />
-
-                    <div class="home">Home</div>
-                </div>
-                <div class="menu-items1">
-                    <img class="box-icon" loading="lazy" alt="" src="./src/dashboard.svg" />
-
-                    <div class="home1">Dashboard</div>
-                </div>
-                <div class="menu-items2">
-                    <img class="file-text-icon" loading="lazy" alt="" src="./src/projects.svg" />
-
-                    <div class="home2">Projects</div>
-                </div>
-                <div class="menu-items3">
-                    <img class="layers-icon" loading="lazy" alt="" src="./src/tasks.svg" />
-
-                    <div class="home3">Tasks</div>
-                </div>
-                <div class="menu-items4">
-                    <img class="sliders-icon" loading="lazy" alt="" src="./src/reporting.svg" />
-
-                    <div class="home4">Reporting</div>
-                </div>
+<div class="homePage">
+    <div class="accountBioAccountHeader">
+        <div class="leftContent">
+            <img src="" class="profilePic">
+            <div class="profileInfo">
+                <span class="welcomeTitle">Добро пожаловать, <span class="userName">@($"{_user.FirstName} {_user.MiddleName}")</span></span>
+                <ul class="userInfo">
+                    <li class="group">
+                        <span>Ваша группа:</span>
+                        <span class="value">@_user.GroupNumber</span>
+                    </li>
+                    <li class="role">
+                        <span>Ваша роль:</span>
+                        <span class="value">Студент</span>
+                    </li>
+                    <li class="mailContact">
+                        <span>Почта:</span>
+                        <span class="value">@_user.Email</span>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="container">
-            <div class="menu-group1">
-                <div class="notifications">
-                    <div class="menu-items5">
-                        <img class="bell-icon" loading="lazy" alt="" src="./src/notification.svg" />
+        <button class="changeBtn">
+            <img class="all-iconssettings" alt="" src="./src/Settings.svg" />
+            <span class="BtnText">Изменить данные профиля</span>
+        </button>
+    </div>
 
-                        <div class="home5">Notifications</div>
+    <div class="bottomContentWrapper">
+        <div class="listContentWrapper">
+            <h2 class="listTitle">Ваша команда</h2>
+            <ul class="list">
+                <li class="card">
+                    <img class="avatar" src="./src/avatar.svg" />
+                    <div class="info">
+                        <span class="name">Шапошников Игорь Викторович</span>
+                        <span class="">РИ-310949</span>
                     </div>
-                    <div class="notification">
-                        <div class="div">12</div>
-                    </div>
-                </div>
-                <div class="menu-items6">
-                    <img class="help-circle-icon" loading="lazy" alt="" src="./src/suport.svg" />
+                </li>
+            </ul>
+        </div>
 
-                    <div class="home6">Suport</div>
-                </div>
-                <div class="menu-items7">
-                    <img class="settings-icon" loading="lazy" alt="" src="./src/settingsWhite.svg" />
-
-                    <div class="home7">Settings</div>
-                </div>
+        <div class="listContentWrapper">
+            <h2 class="listTitle">Список стендов</h2>
+            <div class="listWrapper">
+                <span class="available">Доступные стенды</span>
+                <ul class="list">
+                    <li class="card">
+                        <img class="avatar" src="./src/avatar.svg" />
+                        <div class="info">
+                            <span class="name">Название стенда</span>
+                            <span class="">Доступ до 13:00 28.09.2024</span>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            <div class="profile-widget">
-                <div class="profile">
-                    <div class="avatar">
-                        <div class="status"></div>
-                    </div>
-                    <div class="text-cont">
-                        <div class="brooklyn-simmons">Brooklyn Simmons</div>
-                        <div class="brooklynsimmonscom">brooklyn@simmons.com</div>
-                    </div>
-                </div>
-                <img class="more-vertical-icon" loading="lazy" alt="" src="./src/more-vertical.svg" />
+            <div class="listWrapper">
+                <span class="available">Недоступные стенды</span>
+                <ul class="list">
+                    <li class="card">
+                        <img class="avatar" src="./src/avatar.svg" />
+                        <div class="info">
+                            <span class="name">Название стенда</span>
+                            <span class="">Доступ до 13:00 28.09.2024</span>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    <footer class="content-wrapper-wrapper">
-        <section class="content-wrapper">
-            <div class="header1">
-                <div class="header-background"></div>
-                <div class="block-user-data">
-                    <div class="header-head">
-                        <h3 class="h3">
-                            <span>Добро пожаловать,</span>
-                            <span class="span"> Игорь Викторович</span>
-                        </h3>
-                        <button class="default-full-lefticon-button" id="defaultFullLeftIconButton">
-                            <img class="all-iconssettings" alt="" src="./src/Settings.svg" />
-
-                            <div class="content">Изменить данные профиля</div>
-                        </button>
-                    </div>
-                    <div class="header-head1">
-                        <div class="div1">
-                            <span>Ваша группа:</span>
-                            <span class="span1"> РИ-310949</span>
-                        </div>
-                        <div class="div2">
-                            <span>Ваша роль:</span>
-                            <span class="span2"> Студент</span>
-                        </div>
-                        <div class="igorshaposhnikovurfume">
-                            <span>Почта:</span>
-                            <span class="igorshaposhnikovurfume1">
-                                Igor.Shaposhnikov@urfu.me
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="content1">
-                <div class="your-team">
-                    <div class="div3">Ваша команда</div>
-                    <div class="userslist">
-                        <div class="user">
-                            <div class="avatar1">
-                                <div class="status1"></div>
-                            </div>
-                            <div class="namegroup">
-                                <div class="div4">Шапошников Игорь Викторович</div>
-                                <div class="div5">РИ-310949</div>
-                            </div>
-                        </div>
-                        <div class="user1">
-                            <div class="avatar2">
-                                <div class="status2"></div>
-                            </div>
-                            <div class="namegroup1">
-                                <div class="div6">Шапошников Игорь Викторович</div>
-                                <div class="div7">РИ-310949</div>
-                            </div>
-                        </div>
-                        <div class="user2">
-                            <div class="avatar3">
-                                <div class="status3"></div>
-                            </div>
-                            <div class="namegroup2">
-                                <div class="div8">Шапошников Игорь Викторович</div>
-                                <div class="div9">РИ-310949</div>
-                            </div>
-                        </div>
-                        <div class="user3">
-                            <div class="avatar4">
-                                <div class="status4"></div>
-                            </div>
-                            <div class="namegroup3">
-                                <div class="div10">Шапошников Игорь Викторович</div>
-                                <div class="div11">РИ-310949</div>
-                            </div>
-                        </div>
-                        <div class="user4">
-                            <div class="avatar5">
-                                <div class="status5"></div>
-                            </div>
-                            <div class="namegroup4">
-                                <div class="div12">Шапошников Игорь Викторович</div>
-                                <div class="div13">РИ-310949</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="available-stands">
-                    <div class="div14">Список стендов</div>
-                    <div class="list">
-                        <div class="available-stands1">
-                            <div class="div15">Доступные стенды</div>
-                            <div class="stand-list-item" id="standListItem">
-                                <div class="stand-separator"></div>
-                                <div class="namegroup5">
-                                    <div class="div16">Название стенда</div>
-                                    <div class="div17">Доступ до 13:00 28.09.2024</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="not-available-stands">
-                            <div class="div18">нЕДоступные стенды</div>
-                            <div class="stand-list-item1">
-                                <div class="stand-list-item-child"></div>
-                                <div class="namedata">
-                                    <div class="div19">Название стенда</div>
-                                    <div class="div20">Доступно с 13:00 30.09.2024</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </footer>
 </div>
 
 
@@ -205,14 +80,30 @@
 {
     [Inject]
     private HttpClient _httpClient { get; set; }
-    [Inject]
-    private ILocalStorageService localStorage { get; set; }
+
+    class User
+    {
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string? Surname { get; set; }
+        public string? MiddleName { get; set; }
+        public string? GroupNumber { get; set; }
+    }
+
+    private User _user = new User()
+        {
+            Id = Guid.NewGuid(),
+            Email = "Igor.Shaposhnikov@urfu.me",
+            FirstName = "Игорь",
+            MiddleName = "Викторович",
+            Surname = "Шапошников",
+            GroupNumber = "РИ-310949"
+        };
+
 
     protected async override void OnInitialized()
     {
-        var response = await _httpClient.PostAsJsonAsync("https://localhost:7216/api/Auth/login", new { email = "string@str.ru", password = "1" });
-        Console.WriteLine(response);
-        await localStorage.RemoveItemAsync(StorageFieldNames.TokenName);
         base.OnInitialized();
     }
 }

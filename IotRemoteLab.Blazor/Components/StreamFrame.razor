@@ -3,6 +3,20 @@
 
 @inject JanusWebRtcService _janusWebRtcService;
 
+<style>
+    .unactive {
+        display: flex;
+        border-radius: 5px;
+        align-items: center;
+        justify-content: center;
+        background: #1e1e1e;
+    }
+
+        .unactive span {
+            color: white;
+        }
+</style>
+
 <div id="@(Name ?? GetId())" class="video-block">
     <div class="video-block_player">
         <button id="watch" @onclick=StartStream>Start</button>
@@ -10,7 +24,7 @@
 
         <div class="container" id="stream">
 
-            <div class="row hide" id="info">
+@*             <div class="row hide" id="info">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"><i class="fa fa-info-circle"></i></h3>
@@ -19,8 +33,14 @@
                         <pre id="metadata" style="word-break: break-word;"></pre>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6" id="videos">
+            </div> *@
+            <div id="videos">
+@*                 @if (!_isStreamActive)
+                {
+                    <div class="unactive">
+                        <span>Трансляция неактивна.</span>
+                    </div>
+                } *@
             </div>
         </div>
     </div>

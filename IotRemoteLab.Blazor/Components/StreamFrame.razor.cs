@@ -4,6 +4,8 @@ namespace IotRemoteLab.Blazor.Components
 {
     public partial class StreamFrame : Component
     {
+        private bool _isStreamActive;
+
         protected override Task OnAfterRenderAsync(bool firstRender)
 		{
             if (firstRender)
@@ -22,11 +24,13 @@ namespace IotRemoteLab.Blazor.Components
         async void StartStream()
         {
             await _janusWebRtcService.StartVideoStreaming();
+            _isStreamActive = true;
         }
 
         async void StopStream()
         {
             await _janusWebRtcService.StopVideoStreaming();
+            _isStreamActive = false;
         }
     }
 }
