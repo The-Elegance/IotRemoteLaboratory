@@ -63,11 +63,6 @@ namespace IotRemoteLab.Domain.Stand
         /// Id для редактора кода
         /// </summary>
         public Guid CodeEditorId { get; set; }
-      
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
     }
 
 
@@ -187,8 +182,8 @@ namespace IotRemoteLab.Domain.Stand
                     ]
                 },
                 HasLighting = true,
-                LightingBrightnessLevel = 50,
-                LightingRaspberryPiPort = 4,
+                LigthingBrightnessLevel = 50,
+                LigthingRaspberryPiPort = 4,
                 HasSerialPort = true,
                 SerialPortSpeed = 5,
                 HasWebcam = true,

@@ -14,6 +14,8 @@
         public const string ButtonState = Base + "gpio/output/#";
         // code complied output
         public const string DebugCodeOutput = Base + "debug/upload";
+        // led on/off -> (0/1)
+        public const string LedState = Base + "led";
         // webcamera on/off -> (0/1)
         public const string Webcamera = Base + "webcamera";
         // uart type -> 1,2,3,4

@@ -45,7 +45,7 @@ namespace IotRemoteLab.Mqtt
             }
 
             Options = builder.Build();
-
+            
             Client.UseConnectedHandler(Connected);
             Client.UseDisconnectedHandler(Disconnected);
         }

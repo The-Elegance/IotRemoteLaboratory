@@ -8,7 +8,7 @@ namespace IotRemoteLab.Blazor.Components
         private bool _isLoadingStream;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
-		{
+        {
             await Init();
 			await base.OnAfterRenderAsync(firstRender);
         }
@@ -18,7 +18,7 @@ namespace IotRemoteLab.Blazor.Components
             await _janusWebRtcService.InitializeJanus();
             //await Task.Delay(6000);
             //await StartStream();
-		}
+        }
 
         async Task StartStream()
         {

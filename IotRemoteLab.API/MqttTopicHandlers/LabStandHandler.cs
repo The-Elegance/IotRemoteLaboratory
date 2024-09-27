@@ -30,7 +30,9 @@
             _topicParts = topic.Replace("/lab/stand/", "").Split("/");
             Guid.TryParse(_topicParts[0], out StandId);
 
-			ActionByTopic["led"] = LedStateChanged;
+            StandId = Guid.Parse(_topicParts[0]);
+            
+            ActionByTopic["led"] = LedStateChanged;
             ActionByTopic["webcamera"] = WebcameraStateChanged;
             ActionByTopic["serial-in"] = SerialInChanged;
             ActionByTopic["debug-upload"] = DebugUploadChanged;

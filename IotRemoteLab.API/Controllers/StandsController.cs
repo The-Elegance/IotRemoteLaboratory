@@ -57,7 +57,7 @@ namespace IotRemoteLab.API.Controllers
 
         #region Current Stand data
 
-        /// TODO !!! ������������ ������ �� ��, ������ ��������� �����������
+        /// TODO !!! использовать данные из БД, вместо статичных конструкций
 
         private static readonly List<Uart> _availableUarts =
         [
@@ -72,9 +72,9 @@ namespace IotRemoteLab.API.Controllers
 
 
         /// <summary>
-        /// ���������� ������ ��������� Uart.
+        /// Возвращает список доступных Uart.
         /// </summary>
-        /// <param name="standId">Id ������ ��� �������� ��������� �������� ����������</param>
+        /// <param name="standId">Id стенда для которого требуется получить информацию</param>
         /// <returns></returns>
         [HttpGet("{standId}/availableUarts")]
         public async Task<ActionResult<List<Uart>>> GetAvailableUartsList(Guid standId)

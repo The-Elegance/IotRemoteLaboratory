@@ -107,8 +107,8 @@ namespace IotRemoteLab.Blazor.Components
 
 
         #endregion Private Methods
-        
-        
+
+
         protected override void OnInitialized()
         {
             base.OnInitialized();

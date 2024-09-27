@@ -105,7 +105,7 @@
 .workflow-box-grid {
     display: grid;
     grid-auto-flow: row;
-    /*margin-right: 16px;*/
+    margin-right: 16px;
 }
 
 .workflow-box-buttons {

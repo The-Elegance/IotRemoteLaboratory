@@ -1,5 +1,6 @@
 ﻿@page "/stand/{Id:guid}"
 @inject HttpClient _httpClient;
+@using IotRemoteLab.Domain
 @using Microsoft.AspNetCore.SignalR.Client
 @layout BlankLayout
 @inject HubConnection _hubConnection
@@ -18,6 +19,19 @@
             </div>
             <div class="workflow-box__item">
                 <IotRemoteLab.Blazor.Components.StreamFrame />
+
+                <div class="stream-frame">
+                    @if (Service.IsWebcameraEnable)
+                    {
+                        <span>Попытка подключение к трансляции</span>
+                    }
+                    else
+                    {
+                        <span>Отсутствует активная трансляция</span>
+                    }
+                </div>
+
+                @* <IotRemoteLaboratory.Components.Controls.StreamFrame /> *@
             </div>
 
             <div class="workflow-box__item workflow-box-grid">         
@@ -49,7 +63,7 @@
 
         <div class="workflow-box">
             <div class="workflow-box__item -stretch">
-                @* <IotRemoteLab.Blazor.Components.MonacoEditor @ref="codeEditor" MonacoEditorId="@Service.EditorElementId" DebugUpload="@Service.DebugUpload" DefaultBoilerplateCode="@Service.DefaultBoilerplateCode" CodeChanged="@OnCodeChanged" /> *@
+                <IotRemoteLab.Blazor.Components.MonacoEditor @ref="codeEditor" MonacoEditorId="@Service.EditorElementId" DebugUpload="@Service.DebugUpload" DefaultBoilerplateCode="@Service.DefaultBoilerplateCode" CodeChanged="@OnCodeChanged" />
             </div>
         </div>
     </div>
