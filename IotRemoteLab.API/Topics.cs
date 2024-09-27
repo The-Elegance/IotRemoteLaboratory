@@ -15,7 +15,7 @@
         // code complied output
         public const string DebugCodeOutput = Base + "debug/upload";
         // led on/off -> (0/1)
-        public const string LedState = Base + "led";
+        //public const string LedState = Base + "led";
         // webcamera on/off -> (0/1)
         public const string Webcamera = Base + "webcamera";
         // uart type -> 1,2,3,4
@@ -31,7 +31,7 @@
                 LedState,
                 ButtonState,
                 DebugCodeOutput,
-                LedState,
+                //LedState,
                 Webcamera,
                 UartType
             ];

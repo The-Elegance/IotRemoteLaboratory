@@ -4,20 +4,7 @@ namespace IotRemoteLab.Domain.Stand
 {
     [method: JsonConstructor]
     public readonly struct Uart(Guid id, byte index, string name) : IEquatable<Uart>
-    {
-        public Uart()
-        {
-            
-        }
-        
-        public Uart(Guid id, byte index, string name)
-        {
-            Id = id;
-            Index = index;
-            Name = name;
-        }
-        
-        
+    {   
         /// <summary>
         /// Uart id.
         /// </summary>

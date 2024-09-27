@@ -182,8 +182,8 @@ namespace IotRemoteLab.Domain.Stand
                     ]
                 },
                 HasLighting = true,
-                LigthingBrightnessLevel = 50,
-                LigthingRaspberryPiPort = 4,
+                LightingBrightnessLevel = 50,
+                LightingRaspberryPiPort = 4,
                 HasSerialPort = true,
                 SerialPortSpeed = 5,
                 HasWebcam = true,
