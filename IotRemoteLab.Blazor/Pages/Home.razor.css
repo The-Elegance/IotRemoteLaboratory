@@ -1,4 +1,8 @@
-﻿﻿.homePage {
+﻿.ul {
+    padding: 0 !important;
+}
+
+.homePage {
     display: flex;
     flex-direction: column;
     background-color: #333333;

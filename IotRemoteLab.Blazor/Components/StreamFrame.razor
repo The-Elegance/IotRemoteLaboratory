@@ -19,10 +19,7 @@
 
 <div id="@(Name ?? GetId())" class="video-block">
     <div class="video-block_player">
-        <button id="watch" @onclick=StartStream>Start</button>
-        <button @onclick=StopStream>Stop</button>
-
-        <div class="container" id="stream">
+        <div class="container" id="stream" style="min-height: 270px;">
 
 @*             <div class="row hide" id="info">
                 <div class="panel panel-default">

@@ -46,5 +46,10 @@ namespace IotRemoteLab.API.Services
 
             return new StandDeltaData(null, null);
         }
+
+        public void Test() 
+        {
+
+        }
     }
 }

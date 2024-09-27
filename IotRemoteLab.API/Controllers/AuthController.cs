@@ -26,7 +26,6 @@ public class AuthController : ControllerBase
             return BadRequest(result.Error);
         
         return Ok(result.Value);
-
     }
     
     [HttpPost("register")]

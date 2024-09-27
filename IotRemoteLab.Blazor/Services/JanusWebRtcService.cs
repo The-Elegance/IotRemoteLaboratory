@@ -13,7 +13,7 @@ namespace IotRemoteLab.Blazor.Services
 		public JanusWebRtcService(IJSRuntime jSRuntime)
 		{
 			_jsRuntime = jSRuntime;
-		}
+        }
 
 
 		#endregion Constructor

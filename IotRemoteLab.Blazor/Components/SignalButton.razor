@@ -1,4 +1,17 @@
-﻿<button @onclick="OnClicked" style="width: 32px; height: 32px;" @onmousedown="OnMouseDown" @onmouseup="OnMouseUp" />
+﻿<style>
+    .signal-button {
+        border-radius: 8px;
+        border: 0;
+        width: 32px;
+        height: 24px;
+    }
+
+    .signal-button:active {
+        background-color: red;
+    }
+</style>
+
+<button @onclick="OnClicked" class="signal-button" @onmousedown="OnMouseDown" @onmouseup="OnMouseUp" />
 
 @code {
     [Parameter]
