@@ -2,25 +2,25 @@
 {
     public class LabStandHandler
     {
-        public event Action<Guid, bool> Led;
-        public event Action<Guid, bool> Webcamera;
+        public event Action<long, bool> Led;
+        public event Action<long, bool> Webcamera;
         // сообщения, полученные от устройства через UART
-        public event Action<Guid, string> SerialIn;
+        public event Action<long, string> SerialIn;
         // топик для служебных сообщений о состоянии загрузки ПО на отладочную плату
-        public event Action<Guid, string> DebugUpload;
+        public event Action<long, string> DebugUpload;
         /// <summary>
         /// Guid - portId
         /// int - subport
         /// bool - value
         /// </summary>
-        public event Action<Guid, string, bool> GpioButton;
-        public event Action<Guid, string, bool> GpioLed;
+        public event Action<long, string, bool> GpioButton;
+        public event Action<long, string, bool> GpioLed;
 
         private Dictionary<string, Action<string[]>> ActionByTopic = [];
         private readonly string[] _topicParts;
         private readonly string _topic;
         private readonly string _value;
-        public readonly Guid StandId;
+        public readonly long StandId;
 
 
         public LabStandHandler(string topic, string value)
@@ -28,10 +28,9 @@
             _topic = topic;
             _value = value;
             _topicParts = topic.Replace("/lab/stand/", "").Split("/");
-            Guid.TryParse(_topicParts[0], out StandId);
-
-            StandId = Guid.Parse(_topicParts[0]);
             
+            StandId = long.Parse(_topicParts[0]);
+
             ActionByTopic["led"] = LedStateChanged;
             ActionByTopic["webcamera"] = WebcameraStateChanged;
             ActionByTopic["serial-in"] = SerialInChanged;

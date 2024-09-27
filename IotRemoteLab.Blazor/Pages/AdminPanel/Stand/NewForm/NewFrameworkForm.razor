@@ -43,10 +43,9 @@
 
 @code {
     private McuFramework _fram = new();
-
+    
     async void Submit()
     {
-        _fram.Id = Guid.NewGuid();
         fram.Add(_fram);
 
         var res = await _httpClient.PostAsJsonAsync<McuFramework>("/api/mcu/frameworks", _fram);

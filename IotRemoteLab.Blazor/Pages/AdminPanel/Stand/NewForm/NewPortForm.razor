@@ -55,7 +55,6 @@
 
     async void Submit()
     {
-        _port.Id = Guid.NewGuid();
         _port.Type = selectedPortType;
 
         var res = await _httpClient.PostAsJsonAsync<BenchboardPort>("/api/benchboards/ports", _port);

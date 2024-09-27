@@ -95,7 +95,6 @@
 
     async void Submit()
     {
-        _mcu.Id = Guid.NewGuid();
         _mcu.Framework = selectedFram;
 
         var res = await _httpClient.PostAsJsonAsync<Mcu>("/api/mcu", _mcu);

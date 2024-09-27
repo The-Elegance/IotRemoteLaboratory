@@ -1,4 +1,4 @@
-﻿@page "/stand/{Id:guid}"
+﻿@page "/stand/{Id:long}"
 @inject HttpClient _httpClient;
 @using IotRemoteLab.Domain
 @using Microsoft.AspNetCore.SignalR.Client
@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="workflow-box__item">
-                <IotRemoteLab.Blazor.Components.StreamFrame />
+                @* <IotRemoteLab.Blazor.Components.StreamFrame /> *@
 
                 <div class="stream-frame">
                     @if (Service.IsWebcameraEnable)

@@ -1,8 +1,16 @@
-﻿namespace IotRemoteLab.Domain.Stand.Benchboards
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace IotRemoteLab.Domain.Stand.Benchboards
 {
+    /// <summary>
+    /// Стендовая плата
+    /// </summary>
     public class Benchboard
     {
-        public Guid Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
         /// <summary>
         /// Название стендовой платы
         /// </summary>

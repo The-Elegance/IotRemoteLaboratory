@@ -1,8 +1,10 @@
 using IotRemoteLab.Domain.Code;
 using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.Stand;
+using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Controllers
 {
@@ -12,6 +14,13 @@ namespace IotRemoteLab.API.Controllers
     public class StandsController : ControllerBase
     {
         private Random random = new();
+        private ApplicationContext _context;
+
+
+        public StandsController(ApplicationContext context)
+        {
+            _context = context;
+        }
 
 
         //IHubContext<StandHub> _hubContext;
@@ -29,9 +38,14 @@ namespace IotRemoteLab.API.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<Stand>> GetStand(Guid id)
+        public async Task<Stand?> GetStand(long id)
         {
-            return Ok(StandCreator.Get(id));
+            return await _context.Stands.
+                Include(x => x.Mcu).
+                ThenInclude(x => x.Framework).
+                Include(x => x.Benchboard)
+                .ThenInclude(x => x.Ports).
+                FirstOrDefaultAsync(i => i.Id == id);
         }
 
         [HttpPost]
@@ -61,10 +75,10 @@ namespace IotRemoteLab.API.Controllers
 
         private static readonly List<Uart> _availableUarts =
         [
-            new Uart(Guid.NewGuid(), 1, "UART 1.1"),
-            new Uart(Guid.NewGuid(), 2, "UART 1.2"),
-            new Uart(Guid.NewGuid(), 3, "UART 1.3"),
-            new Uart(Guid.NewGuid(), 4, "UART 1.4"),
+            new Uart(0, 1, "UART 1.1"),
+            new Uart(1, 2, "UART 1.2"),
+            new Uart(2, 3, "UART 1.3"),
+            new Uart(3, 4, "UART 1.4"),
         ];
 
 

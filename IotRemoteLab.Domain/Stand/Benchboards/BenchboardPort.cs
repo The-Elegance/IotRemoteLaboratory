@@ -1,8 +1,13 @@
-﻿namespace IotRemoteLab.Domain.Stand.Benchboards
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace IotRemoteLab.Domain.Stand.Benchboards
 {
     public class BenchboardPort
     {
-        public Guid Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
         /// <summary>
         /// Тип порта: ввод, вывод.
         /// </summary>

@@ -13,7 +13,7 @@ namespace IotRemoteLab.Blazor.Pages
         /// Id стенда.
         /// </summary>
         [Parameter]
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public Guid SessionId { get => Guid.NewGuid(); }
 

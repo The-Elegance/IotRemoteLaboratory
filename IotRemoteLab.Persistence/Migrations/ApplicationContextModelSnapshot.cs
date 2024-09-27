@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace IotRemoteLab.Persistence.PostgresMigrations
+namespace IotRemoteLab.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
     partial class ApplicationContextModelSnapshot : ModelSnapshot
@@ -61,9 +61,11 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.Benchboard", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -71,17 +73,19 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Benchboard");
+                    b.ToTable("Benchboards");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.BenchboardPort", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("BenchboardId")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("BenchboardId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("McuPort")
                         .IsRequired()
@@ -102,9 +106,11 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Mcu", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("AssemblyScriptFile")
                         .IsRequired()
@@ -114,8 +120,8 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("FrameworkId")
-                        .HasColumnType("uuid");
+                    b.Property<long>("FrameworkId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -125,14 +131,16 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
                     b.HasIndex("FrameworkId");
 
-                    b.ToTable("Mcu");
+                    b.ToTable("Mcus");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.McuFramework", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CodeFileExtension")
                         .IsRequired()
@@ -152,17 +160,19 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("McuFramework");
+                    b.ToTable("McuFrameworks");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Stand", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("BenchboardId")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("BenchboardId")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid>("CodeEditorId")
                         .HasColumnType("uuid");
@@ -185,8 +195,8 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                     b.Property<long>("LightingRaspberryPiPort")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("McuId")
-                        .HasColumnType("uuid");
+                    b.Property<long>("McuId")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uuid");
@@ -215,9 +225,11 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Uart", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<byte>("Index")
                         .HasColumnType("smallint");
@@ -226,8 +238,8 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("StandId")
-                        .HasColumnType("uuid");
+                    b.Property<long?>("StandId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

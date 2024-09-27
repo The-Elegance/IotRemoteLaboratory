@@ -82,8 +82,9 @@ builder.Services.AddAuthentication(options =>
 builder.Services.ConfigureHttpJsonOptions(p => p.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        x => x.MigrationsAssembly("IotRemoteLab.Persistence") );
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")//,
+        //x => x.MigrationsAssembly("IotRemoteLab.Persistence")
+        );
 });
 
 builder.Services.AddSignalR();

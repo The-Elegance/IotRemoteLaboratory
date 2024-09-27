@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace IotRemoteLab.Persistence.PostgresMigrations
+namespace IotRemoteLab.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240421124603_schedule")]
-    partial class schedule
+    [Migration("20240927123712_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("IotRemoteLab.Domain.Role.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Schedule", b =>
                 {
@@ -49,9 +64,11 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.Benchboard", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -59,17 +76,19 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Benchboard");
+                    b.ToTable("Benchboards");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.BenchboardPort", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("BenchboardId")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("BenchboardId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("McuPort")
                         .IsRequired()
@@ -90,9 +109,11 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Mcu", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("AssemblyScriptFile")
                         .IsRequired()
@@ -102,8 +123,8 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("FrameworkId")
-                        .HasColumnType("uuid");
+                    b.Property<long>("FrameworkId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -113,14 +134,24 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
                     b.HasIndex("FrameworkId");
 
-                    b.ToTable("Mcu");
+                    b.ToTable("Mcus");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.McuFramework", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CodeFileExtension")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CodeFileName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -132,16 +163,21 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("McuFramework");
+                    b.ToTable("McuFrameworks");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Stand", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("BenchboardId")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("BenchboardId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("CodeEditorId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("HasBenchboard")
@@ -162,8 +198,8 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                     b.Property<long>("LightingRaspberryPiPort")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("McuId")
-                        .HasColumnType("uuid");
+                    b.Property<long>("McuId")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uuid");
@@ -187,7 +223,32 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
                     b.HasIndex("ScheduleId");
 
-                    b.ToTable("Stand");
+                    b.ToTable("Stands");
+                });
+
+            modelBuilder.Entity("IotRemoteLab.Domain.Stand.Uart", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<byte>("Index")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("StandId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StandId");
+
+                    b.ToTable("Uart");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Team.Team", b =>
@@ -203,21 +264,6 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                     b.HasKey("Id");
 
                     b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("IotRemoteLab.Domain.User.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.User.User", b =>
@@ -303,9 +349,7 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                 {
                     b.HasOne("IotRemoteLab.Domain.Stand.Benchboards.Benchboard", "Benchboard")
                         .WithMany()
-                        .HasForeignKey("BenchboardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BenchboardId");
 
                     b.HasOne("IotRemoteLab.Domain.Stand.Mcu", "Mcu")
                         .WithMany()
@@ -322,6 +366,13 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
                     b.Navigation("Mcu");
                 });
 
+            modelBuilder.Entity("IotRemoteLab.Domain.Stand.Uart", b =>
+                {
+                    b.HasOne("IotRemoteLab.Domain.Stand.Stand", null)
+                        .WithMany("AvailableUarts")
+                        .HasForeignKey("StandId");
+                });
+
             modelBuilder.Entity("IotRemoteLab.Domain.User.User", b =>
                 {
                     b.HasOne("IotRemoteLab.Domain.Team.Team", null)
@@ -331,7 +382,7 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
 
             modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("IotRemoteLab.Domain.User.Role", null)
+                    b.HasOne("IotRemoteLab.Domain.Role.Role", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -352,6 +403,11 @@ namespace IotRemoteLab.Persistence.PostgresMigrations
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.Benchboard", b =>
                 {
                     b.Navigation("Ports");
+                });
+
+            modelBuilder.Entity("IotRemoteLab.Domain.Stand.Stand", b =>
+                {
+                    b.Navigation("AvailableUarts");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Team.Team", b =>

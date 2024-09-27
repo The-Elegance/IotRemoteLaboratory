@@ -75,7 +75,6 @@
 
     async void Submit()
     {
-        _bench.Id = Guid.NewGuid();
         _bench.Ports = ports;
 
         var res = await _httpClient.PostAsJsonAsync<Benchboard>("/api/benchboards", _bench);

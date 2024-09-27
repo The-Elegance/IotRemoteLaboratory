@@ -21,7 +21,7 @@ namespace IotRemoteLab.Blazor.Services
         /// <summary>
         /// Guid стенда
         /// </summary>
-        private readonly Guid _id;
+        private readonly long _id;
         /// <summary>
         /// Экземпляр класса стенд.
         /// </summary>
@@ -32,7 +32,7 @@ namespace IotRemoteLab.Blazor.Services
         public Guid EditorElementId { get; set; }
 
 
-        private Guid _lastSelectedUart;
+        private long _lastSelectedUart;
 
         /// <summary>
         /// Название стенда.
@@ -41,7 +41,12 @@ namespace IotRemoteLab.Blazor.Services
         /// <summary>
         /// Список доступных стенду uart.
         /// </summary>
-        public List<Uart> AvailableUarts { get => _stand?.AvailableUarts ?? []; }
+        public List<Uart> AvailableUarts = [
+            new Uart(0, 1, "UART 1.1"),
+            new Uart(1, 2, "UART 1.2"),
+            new Uart(2, 3, "UART 1.3"),
+            new Uart(3, 4, "UART 1.4"),
+        ]; //{ get => _stand?.AvailableUarts ?? []; }
         /// <summary>
         /// Выбранный uart.
         /// </summary>
@@ -74,7 +79,7 @@ namespace IotRemoteLab.Blazor.Services
         #region Constructors
 
 
-        public StandService(HttpClient httpClient, HubConnection hubConnection, Guid id, CancellationToken cancellationToken = default)
+        public StandService(HttpClient httpClient, HubConnection hubConnection, long id, CancellationToken cancellationToken = default)
         {
             _httpClient = httpClient;
             _hubConnection = hubConnection;
@@ -86,14 +91,17 @@ namespace IotRemoteLab.Blazor.Services
         /// </summary>
         public async Task Init(CancellationToken cancellationToken = default)
         {
+            ConsoleDebug.WriteLine(_id);
             _stand = await _httpClient.GetFromJsonAsync<Stand>($"api/stands/{_id}", cancellationToken);
 
             // TODO: Если Stand is null, выкидывать на экран ошибку об этом.
-
+            ConsoleDebug.WriteLine(_stand);
             if (_stand == null)
             {
                 throw new Exception("Stand data was null");
             }
+
+            ConsoleDebug.WriteLine(_stand.Mcu);
 
             McuName = _stand.Mcu.Name;
             EditorElementId = _stand.CodeEditorId;
@@ -159,7 +167,7 @@ namespace IotRemoteLab.Blazor.Services
         /// </summary>
         private void SubscribeOnSignalRHubUnits()
         {
-            _hubConnection.On<Guid>("UartTypeChanged", OnUartTypeChanged);
+            _hubConnection.On<long>("UartTypeChanged", OnUartTypeChanged);
             _hubConnection.On<string, bool>("GpioLedStateChanged", OnGpioLedPortChanged);
             _hubConnection.On<Guid, string>("TerminalDataUpdatedFromServer", OnTerminalDataUpdatedFromServer);
             _hubConnection.On<string>("DebugUploadChanged", OnDebugUploadChanged);
@@ -240,11 +248,11 @@ namespace IotRemoteLab.Blazor.Services
             StandStateChanged?.Invoke();
         }
 
-        private void OnUartTypeChanged(Guid guid)
+        private void OnUartTypeChanged(long id)
         {
-            _lastSelectedUart = guid;
+            _lastSelectedUart = id;
 
-            SelectedUart = AvailableUarts.FirstOrDefault(x => x.Id == guid);
+            SelectedUart = AvailableUarts.FirstOrDefault(x => x.Id == id);
             StandStateChanged?.Invoke();
         }
 

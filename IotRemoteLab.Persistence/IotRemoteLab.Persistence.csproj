@@ -21,4 +21,8 @@
       <ProjectReference Include="..\IotRemoteLab.Domain\IotRemoteLab.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>
