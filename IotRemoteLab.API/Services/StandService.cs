@@ -6,7 +6,7 @@ namespace IotRemoteLab.API.Services
 {
     public class StandsService
     {
-        private readonly Dictionary<Guid, StandDeltaData> _deltaDataByStandId = [];
+        private readonly Dictionary<long, StandDeltaData> _deltaDataByStandId = [];
 
         private MqttPublisher _mqttPublisher;
         private ICommandExecutor _commandExecutor;
@@ -17,7 +17,7 @@ namespace IotRemoteLab.API.Services
             _commandExecutor = commandExecutor;
         }
 
-        public void ExecuteCommand(Guid id, string cmd) 
+        public void ExecuteCommand(long id, string cmd) 
         {
             var cmdParts = cmd.Split();
 
@@ -32,13 +32,13 @@ namespace IotRemoteLab.API.Services
             _mqttPublisher.PublishMessageAsync(topic, payload);
         }
 
-        public void AddDeltaData<T>(Guid id, T code, string? debugUploadOutput) 
+        public void AddDeltaData<T>(long id, T code, string? debugUploadOutput) 
         {
             // Immutable or Not?
             //_deltaDataByStandId[id] = new StandDeltaData(code, debugUploadOutput);
         }
 
-        public StandDeltaData GetDeltaData(Guid id) 
+        public StandDeltaData GetDeltaData(long id) 
         {
             if (_deltaDataByStandId.TryGetValue(id, out var standDeltaData)) {
                 return standDeltaData;
