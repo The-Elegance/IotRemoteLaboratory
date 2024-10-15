@@ -25,7 +25,7 @@ builder.Services.AddSingleton<IAccessTokenProvider, AccessTokenProvider>();
 builder.Services.AddSingleton<ILocalStorageService, DefaultLocalStorageService>();
 //builder.Services.AddBlazoredLocalStorageAsSingleton();
 
-builder.Services.AddSingleton(sp => {
+builder.Services.AddScoped(sp => {
 	var navigationManager = sp.GetRequiredService<NavigationManager>();
 	return new HubConnectionBuilder()
 	  .WithUrl("https://localhost:7216/stand-hub")
