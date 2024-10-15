@@ -1,6 +1,6 @@
 ﻿using IotRemoteLab.Blazor.Services;
 
-namespace IotRemoteLab.Blazor.Components
+namespace IotRemoteLab.Blazor.Views.Components
 {
     public partial class StreamFrame : Component
     {

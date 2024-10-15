@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components;
 
-namespace IotRemoteLab.Blazor.Components
+namespace IotRemoteLab.Blazor.Views.Components
 {
     public partial class Terminal : Component
     {

@@ -1,11 +1,10 @@
-
-using IotRemoteLab.Blazor.Components;
 using IotRemoteLab.Blazor.Services;
 using IotRemoteLab.Blazor.Tools;
+using IotRemoteLab.Blazor.Views.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace IotRemoteLab.Blazor.Pages
+namespace IotRemoteLab.Blazor.Views.Pages
 {
     public partial class Stand
     {

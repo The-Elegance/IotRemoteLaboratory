@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using IotRemoteLab.Domain.Code;
 using IotRemoteLab.Blazor.Tools;
 
-namespace IotRemoteLab.Blazor.Components
+namespace IotRemoteLab.Blazor.Views.Components
 {
     public partial class MonacoEditor
     {

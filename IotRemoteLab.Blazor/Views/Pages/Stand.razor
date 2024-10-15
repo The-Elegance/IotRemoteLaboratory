@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="workflow-box__combobox">
-                    <IotRemoteLab.Blazor.Components.ComboBox @bind-SelectedItem="@Service.SelectedUart" Items="@Service.AvailableUarts" />
+                    <ComboBox @bind-SelectedItem="@Service.SelectedUart" Items="@Service.AvailableUarts" />
                 </div>
             </div>
             <div class="workflow-box__item">
@@ -34,12 +34,12 @@
                 @* <IotRemoteLaboratory.Components.Controls.StreamFrame /> *@
             </div>
 
-            <div class="workflow-box__item workflow-box-grid">         
+            <div class="workflow-box__item workflow-box-grid">
                 <div class="workflow-box-buttons">
                     @foreach (var button in Service.StandButton)
                     {
-                        <IotRemoteLab.Blazor.Components.SignalButton PortId="@button.Name" Pressed="OnSignalButtonPressed" Unpressed="OnSignalButtonUnpressed" />
-                        <IotRemoteLab.Blazor.Components.CheckBox Text="@button.Name" StateChanged="@OnButtonStateChanged" IsChecked="@button.IsChecked" />
+                        <SignalButton PortId="@button.Name" Pressed="OnSignalButtonPressed" Unpressed="OnSignalButtonUnpressed" />
+                        <CheckBox Text="@button.Name" StateChanged="@OnButtonStateChanged" IsChecked="@button.IsChecked" />
                     }
                 </div>
 
@@ -55,7 +55,7 @@
             </div>
 
             <div class="workflow-box__item -stretch">
-                <IotRemoteLab.Blazor.Components.Terminal SendMessageAction="@TerminalSendMessage" Logs="@Service.TerminalLogs" />
+                <Terminal SendMessageAction="@TerminalSendMessage" Logs="@Service.TerminalLogs" />
             </div>
         </div>
     </div>
@@ -63,7 +63,7 @@
 
         <div class="workflow-box">
             <div class="workflow-box__item -stretch">
-                <IotRemoteLab.Blazor.Components.MonacoEditor @ref="codeEditor" MonacoEditorId="@Service.EditorElementId" DebugUpload="@Service.DebugUpload" DefaultBoilerplateCode="@Service.DefaultBoilerplateCode" CodeChanged="@OnCodeChanged" />
+                <MonacoEditor @ref="codeEditor" MonacoEditorId="@Service.EditorElementId" DebugUpload="@Service.DebugUpload" DefaultBoilerplateCode="@Service.DefaultBoilerplateCode" CodeChanged="@OnCodeChanged" />
             </div>
         </div>
     </div>

@@ -1,7 +1,7 @@
 ﻿using IotRemoteLab.Blazor.Tools;
 using Microsoft.AspNetCore.Components;
 
-namespace IotRemoteLab.Blazor.Components
+namespace IotRemoteLab.Blazor.Views.Components
 {
     public partial class ComboBox<TItem> : Component
     {

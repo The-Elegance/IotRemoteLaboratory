@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace IotRemoteLab.Blazor.Components
+namespace IotRemoteLab.Blazor.Views.Components
 {
     public abstract class Component : ComponentBase
     {
