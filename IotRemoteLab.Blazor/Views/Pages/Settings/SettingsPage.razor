@@ -10,6 +10,12 @@
         margin-bottom: 32px;
     }
 
+    .settings-layout__header-title {
+        font-size: 24px;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
     .settings-layout__header-menu {
         border: 1px solid #3a3d45;
         border-radius: 5px;
@@ -37,9 +43,9 @@
 <div class="settings-layout">
     <div class="settings-layout__header">
 
-        <h1>Настройки</h1>
+        <p class="settings-layout__header-title">Настройки</p>
 
-        <IotRemoteLab.Blazor.Views.Pages.Settings.Components.Segmented Tabs="@_tabs" SelectedItem="" />
+        <IotRemoteLab.Blazor.Views.Pages.Settings.Components.Segmented Tabs="@_tabs" @bind-Value="selectedTab" />
     </div>
 
     @if (selectedTab.ToLower() == "аккаунт")
@@ -49,7 +55,7 @@
 </div>
 
 @code {
-    List<string> _tabs = ["Аккаунт", "Внешний вид"];
+    List<string> _tabs = ["Аккаунт"];
     string selectedTab = "аккаунт";
 
     [Parameter]

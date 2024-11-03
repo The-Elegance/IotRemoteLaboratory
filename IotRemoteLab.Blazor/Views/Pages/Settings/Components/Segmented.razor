@@ -3,9 +3,9 @@
         display: flex;
         gap: 4px;
         border: 1px solid #22262F;
-        padding: 4px;
+        border-radius: 10px;
     }
-    
+
     .segmete {
         height: 36px;
         padding: 8px 12px;
@@ -13,34 +13,50 @@
         font-size: 14px;
         color: #94979C;
         user-select: none;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
     }
 
-    .segmete.-selected {
-        color: #CECFD2;
-        background-color: #13161B;
-    }
+        .segmete.-selected {
+            color: #CECFD2;
+            background-color: #13161B;
+            border: 1px solid #373A41;
+            border-radius: 9px;
+        }
 </style>
 
 
 <div class="segmeted">
     @foreach (var tab in Tabs)
     {
-        <div class="segmete @(SelectedItem == tab ? "-selected" : "")" @onclick="@(() => { OnSegmentClicked(tab); })">
+        <div class="segmete @(Value == tab ? "-selected" : "")" @onclick="@(() => { OnSegmentClicked(tab); })">
             @tab
         </div>
     }
 </div>
+
 
 @code {
     [Parameter]
     public IEnumerable<string> Tabs { get; set; } = [];
 
     [Parameter]
-    public string SelectedItem { get; set; }
+    public string Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        Value = Tabs.FirstOrDefault();
+    }
 
 
     public void OnSegmentClicked(string tab)
     {
-        SelectedItem = tab;
+        Value = tab;
+        ValueChanged.InvokeAsync(tab);
     }
 }

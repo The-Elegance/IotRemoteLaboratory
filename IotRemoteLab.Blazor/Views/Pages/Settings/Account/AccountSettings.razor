@@ -1,13 +1,23 @@
 ﻿@using IotRemoteLab.Blazor.Views.Pages.Settings.Components
+
+
 <style>
-    .text-block {
-        height: 32px;
-        border: 1px solid #3a3d45;
-        border-radius: 5px;
+    .account-settings__header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .account-settings__header-buttons {
+        display: flex;
+        gap: 12px;
     }
 
     .account-settings__header-title {
         color: #F7F7F7;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0px;
+        margin-bottom: 2px;
     }
 
     .ant-input {
@@ -16,33 +26,76 @@
         border-radius: 5px;
         color: #F7F7F7;
     }
+
+
+    .ant-btn {
+        border: 1px solid #373A41;
+        border-radius: 5px;
+        background-color: #13161B;
+        color: #CECFD2;
+        font-weight: 600;
+    }
+
+        .ant-btn
+        span {
+            color: #CECFD2
+        }
+
+        .ant-btn:hover {
+            background-color: #13161B;
+            color: #fff;
+        }
+
+    .ant-btn-primary {
+        background: #40a9ff;
+        color: #fff;
+    }
+
+        .ant-btn-primary
+        span {
+            color: #fff;
+        }
+
+        .ant-btn-primary:hover, .ant-btn-primary:focus {
+            background: #40a9ff;
+            color: #fff;
+        }
 </style>
 
 
 <div class="account-settings">
     <div class="account-settings__header">
-        <h3 class="account-settings__header-title">Аккаунт</h3>
-        <p style="color: #94979C;">Обновить данные об аккаунте или автарку можно здесь</p>
+        <div class="account-settings__header-info">
+            <p class="account-settings__header-title">Аккаунт</p>
+            <p style="color: #94979C;">Обновить данные об аккаунте или автарку можно здесь</p>
+        </div>
+
+        <div class="account-settings__header-buttons">
+            <Button OnClick="OnCancelClicked">Отменить</Button>
+            <Button Type="@ButtonType.Primary" OnClick="OnSaveClicked">Сохранить</Button>
+        </div>
     </div>
 
     <SettingsRow Title="Имя" IsRequired>
-        <Input TValue="string" @bind-Value="_user.FirstName" />
+        <Input TValue="string" @bind-Value="_userData.FirstName" />
     </SettingsRow>
+
     <SettingsRow Title="Фамилия" IsRequired>
-        <Input TValue="string" @bind-Value="_user.Surname"  />
+        <Input TValue="string" @bind-Value="_userData.Surname" />
     </SettingsRow>
+
     <SettingsRow Title="Отчество" IsRequired>
-        <Input TValue="string" @bind-Value="_user.MiddleName" />
+        <Input TValue="string" @bind-Value="_userData.MiddleName" />
     </SettingsRow>
+
     <SettingsRow Title="Учебная Группа" IsRequired>
-        <Input TValue="string" @bind-Value="_user.GroupNumber" />
+        <Input TValue="string" @bind-Value="_userData.GroupNumber" />
     </SettingsRow>
 
     <SettingsRow Title="Электронная почта" IsRequired>
-        <Input TValue="string" @bind-Value="_user.Email" />
+        <Input TValue="string" @bind-Value="_userData.Email" />
     </SettingsRow>
 </div>
-
 
 
 @code {
@@ -56,13 +109,40 @@
         public string? GroupNumber { get; set; }
     }
 
-    private User _user = new User()
-        {
-            Id = Guid.NewGuid(),
-            Email = "Igor.Shaposhnikov@urfu.me",
-            FirstName = "Игорь",
-            MiddleName = "Викторович",
-            Surname = "Шапошников",
-            GroupNumber = "РИ-310949"
-        };
+    User _userData;
+    bool _isUserDataChanged;
+
+
+    protected override Task OnInitializedAsync()
+    {
+        // Загрузка данных через api.
+        _userData = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "Igor.Shaposhnikov@urfu.me",
+                FirstName = "Игорь",
+                MiddleName = "Викторович",
+                Surname = "Шапошников",
+                GroupNumber = "РИ-310949"
+            };
+        return Task.CompletedTask;
+    }
+
+
+    /// <summary>
+    /// Сохраняет данные пользователя при нажатии кнопки "Сохранить".
+    /// </summary>
+    Task OnSaveClicked()
+    {
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Отменяет введенные пользователем изменения при нажатии кнопки "Отменить".
+    /// </summary>
+    /// <returns></returns>
+    Task OnCancelClicked()
+    {
+        return Task.CompletedTask;
+    }
 }

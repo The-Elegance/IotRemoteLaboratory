@@ -5,6 +5,7 @@
         border-top: 1px solid #3a3d45;
         padding-top: 16px;
         padding-bottom: 16px;
+        align-items: center;
     }
 
         .settings-item:last-child {
@@ -20,7 +21,10 @@
 
 
     .settings-item__info-title {
+        font-size: 16px;
+        font-weight: 600;
         color: #CECFD2;
+        margin: 0;
     }
 
     .settings-item__info {
@@ -31,10 +35,22 @@
 
 <div class="settings-item">
     <div class="settings-item__info">
-        <h3 class="settings-item__info-title">@Title @if(IsRequired) { <span>*</span> }</h3>
-        <p class="settings-item__info-description">
-            @Description
+        <p class="settings-item__info-title">
+            @Title
+
+            @if (IsRequired)
+            {
+                <span>*</span>
+            }
         </p>
+
+        @if (!string.IsNullOrWhiteSpace(Description))
+        {
+
+            <p class="settings-item__info-description">
+                @Description
+            </p>
+        }
     </div>
     <div class="settings-item__content">
         @ChildContent
