@@ -1,0 +1,68 @@
+﻿@using IotRemoteLab.Blazor.Views.Pages.Settings.Components
+<style>
+    .text-block {
+        height: 32px;
+        border: 1px solid #3a3d45;
+        border-radius: 5px;
+    }
+
+    .account-settings__header-title {
+        color: #F7F7F7;
+    }
+
+    .ant-input {
+        background-color: #0C0E12;
+        border: 1px solid #373A41;
+        border-radius: 5px;
+        color: #F7F7F7;
+    }
+</style>
+
+
+<div class="account-settings">
+    <div class="account-settings__header">
+        <h3 class="account-settings__header-title">Аккаунт</h3>
+        <p style="color: #94979C;">Обновить данные об аккаунте или автарку можно здесь</p>
+    </div>
+
+    <SettingsRow Title="Имя" IsRequired>
+        <Input TValue="string" @bind-Value="_user.FirstName" />
+    </SettingsRow>
+    <SettingsRow Title="Фамилия" IsRequired>
+        <Input TValue="string" @bind-Value="_user.Surname"  />
+    </SettingsRow>
+    <SettingsRow Title="Отчество" IsRequired>
+        <Input TValue="string" @bind-Value="_user.MiddleName" />
+    </SettingsRow>
+    <SettingsRow Title="Учебная Группа" IsRequired>
+        <Input TValue="string" @bind-Value="_user.GroupNumber" />
+    </SettingsRow>
+
+    <SettingsRow Title="Электронная почта" IsRequired>
+        <Input TValue="string" @bind-Value="_user.Email" />
+    </SettingsRow>
+</div>
+
+
+
+@code {
+    class User
+    {
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string? Surname { get; set; }
+        public string? MiddleName { get; set; }
+        public string? GroupNumber { get; set; }
+    }
+
+    private User _user = new User()
+        {
+            Id = Guid.NewGuid(),
+            Email = "Igor.Shaposhnikov@urfu.me",
+            FirstName = "Игорь",
+            MiddleName = "Викторович",
+            Surname = "Шапошников",
+            GroupNumber = "РИ-310949"
+        };
+}

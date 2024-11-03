@@ -1,0 +1,46 @@
+﻿<style>
+    .segmeted {
+        display: flex;
+        gap: 4px;
+        border: 1px solid #22262F;
+        padding: 4px;
+    }
+    
+    .segmete {
+        height: 36px;
+        padding: 8px 12px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #94979C;
+        user-select: none;
+    }
+
+    .segmete.-selected {
+        color: #CECFD2;
+        background-color: #13161B;
+    }
+</style>
+
+
+<div class="segmeted">
+    @foreach (var tab in Tabs)
+    {
+        <div class="segmete @(SelectedItem == tab ? "-selected" : "")" @onclick="@(() => { OnSegmentClicked(tab); })">
+            @tab
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<string> Tabs { get; set; } = [];
+
+    [Parameter]
+    public string SelectedItem { get; set; }
+
+
+    public void OnSegmentClicked(string tab)
+    {
+        SelectedItem = tab;
+    }
+}

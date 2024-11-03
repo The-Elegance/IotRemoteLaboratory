@@ -53,9 +53,9 @@
 //
 var server = "/janus";
 if (window.location.protocol === 'http:')
-	server = "http://" + "158.160.175.131" + ":8088/janus";
+	server = "http://" + "10.40.81.71" + ":8088/janus";
 else
-	server = "https://" + "158.160.175.131" + ":8089/janus";
+	server = "https://" + "10.40.81.71" + ":8089/janus";
 
 // When creating a Janus object, we can also specify which STUN/TURN
 // servers we'd like to use to gather additional candidates. This is
@@ -82,4 +82,5 @@ else
 // janus.js will fallback to the Google STUN server by default:
 //
 //var iceServers = [{urls: "turn:10.40.81.71:5349", username: "username1", credential: "password1"}];
-var iceServers = [{ urls: "turn:158.160.175.131:5349", username: "hel2x", credential: "1" }];
+var iceServers = [{ urls: "turn:212.193.88.198:5349", username: "62ec2158a8355a96bdfb61a6", credential: "TwKTvbCP8mu3g03+" }];
+//var iceServers = [{ urls: "turn:212.193.88.198:5349", username: "hel2x", credential: "1" }];

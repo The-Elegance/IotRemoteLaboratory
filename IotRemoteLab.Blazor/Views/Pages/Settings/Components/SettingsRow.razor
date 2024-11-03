@@ -1,0 +1,56 @@
+﻿<style>
+    .settings-item {
+        display: flex;
+        gap: 32px;
+        border-top: 1px solid #3a3d45;
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+        .settings-item:last-child {
+            border-top: 1px solid #3a3d45;
+            border-bottom: 1px solid #3a3d45;
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+    .settings-item__content {
+        width: 512px;
+    }
+
+
+    .settings-item__info-title {
+        color: #CECFD2;
+    }
+
+    .settings-item__info {
+        width: 280px;
+    }
+</style>
+
+
+<div class="settings-item">
+    <div class="settings-item__info">
+        <h3 class="settings-item__info-title">@Title @if(IsRequired) { <span>*</span> }</h3>
+        <p class="settings-item__info-description">
+            @Description
+        </p>
+    </div>
+    <div class="settings-item__content">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter]
+    public bool IsRequired { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

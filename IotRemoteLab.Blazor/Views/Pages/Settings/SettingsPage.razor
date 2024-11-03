@@ -1,0 +1,57 @@
+﻿@page "/settings/{Tab}"
+@using IotRemoteLab.Blazor.Views.Pages.Settings.Account
+
+<style>
+
+    .settings-layout {
+    }
+
+    .settings-layout__header {
+        margin-bottom: 32px;
+    }
+
+    .settings-layout__header-menu {
+        border: 1px solid #3a3d45;
+        border-radius: 5px;
+        padding: 4px;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+
+    .settings-layout__header-menu-button {
+        height: 32px;
+        padding: 8px 12px;
+        color: #94979C;
+        display: flex;
+        align-items: center;
+    }
+
+    h1, p, span {
+        color: white;
+    }
+
+</style>
+
+
+<div class="settings-layout">
+    <div class="settings-layout__header">
+
+        <h1>Настройки</h1>
+
+        <IotRemoteLab.Blazor.Views.Pages.Settings.Components.Segmented Tabs="@_tabs" SelectedItem="" />
+    </div>
+
+    @if (selectedTab.ToLower() == "аккаунт")
+    {
+        <AccountSettings />
+    }
+</div>
+
+@code {
+    List<string> _tabs = ["Аккаунт", "Внешний вид"];
+    string selectedTab = "аккаунт";
+
+    [Parameter]
+    public string Tab { get; set; }
+}
