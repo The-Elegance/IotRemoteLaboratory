@@ -40,8 +40,7 @@
 .workflow-box__header {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
 }
@@ -142,9 +141,9 @@
         background: green;
     }
 
-    .stand-led__name {
-        color: white;
-    }
+.stand-led__name {
+    color: white;
+}
 
 .mcu__button {
     padding: 4px;

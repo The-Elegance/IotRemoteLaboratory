@@ -8,6 +8,9 @@ namespace IotRemoteLab.Blazor.Views.Pages
 {
     public partial class Stand
     {
+        private StandService Service;
+        private MonacoEditor codeEditor;
+
         /// <summary>
         /// Id стенда.
         /// </summary>
@@ -16,10 +19,7 @@ namespace IotRemoteLab.Blazor.Views.Pages
 
         public Guid SessionId { get => Guid.NewGuid(); }
 
-        private StandService Service;
 
-
-        private MonacoEditor codeEditor;
 
 
         #region Public & Protected Methods
@@ -53,7 +53,7 @@ namespace IotRemoteLab.Blazor.Views.Pages
         /// Отправляет сообщение из консоли на сервер.
         /// </summary>
         /// <param name="command">Команда</param>
-        void TerminalSendMessage(string command)
+        private void TerminalSendMessage(string command)
         {
             if (command?.Length == 0)
                 return;
@@ -63,9 +63,7 @@ namespace IotRemoteLab.Blazor.Views.Pages
             Service.TerminalSendCommand(datetime, SessionId, command);
         }
 
-
-        
-        void OnButtonStateChanged(Tuple<string, bool> tuple)
+        private void OnButtonStateChanged(Tuple<string, bool> tuple)
         {
             Service.ButtonStateChanged(tuple.Item1, tuple.Item2);
         }
@@ -81,14 +79,20 @@ namespace IotRemoteLab.Blazor.Views.Pages
             await _hubConnection.SendAsync("CodeUpdate", Id, value);
         }
 
-        private void OnSignalButtonPressed(string portId) 
+        private void OnSignalButtonPressed(string portId)
         {
             Service.ButtonStateChanged(portId, false);
         }
 
-        private void OnSignalButtonUnpressed(string portId) 
+        private void OnSignalButtonUnpressed(string portId)
         {
             Service.ButtonStateChanged(portId, true);
+        }
+
+
+        private void OnBackClicked()
+        {
+            _navigation.NavigateTo("/profile");
         }
 
 

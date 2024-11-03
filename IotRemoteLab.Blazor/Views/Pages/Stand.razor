@@ -4,13 +4,21 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @layout BlankLayout
 @inject HubConnection _hubConnection
+@inject NavigationManager _navigation;
 
 <div class="stand-workflow">
     <div class="stand-workflow__left">
         <div class="workflow-box">
             <div class="workflow-box__header">
-                <div class="workflow-box__title">
-                    @Service.McuName
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div @onclick="OnBackClicked" role="button" class="ant-page-header-back-button task-back__button back-task-button__space-item" style="font-size: 16px; color: white;">
+                        <Icon Type="arrow-left" Theme="outline" />
+                    </div>
+
+
+                    <div class="workflow-box__title">
+                        @Service.McuName
+                    </div>
                 </div>
 
                 <div class="workflow-box__combobox">
@@ -20,18 +28,18 @@
             <div class="workflow-box__item">
                 @* <StreamFrame /> *@
 
-@*                 <div class="stream-frame">
-                    @if (Service.IsWebcameraEnable)
-                    {
-                        <span>Попытка подключение к трансляции</span>
-                    }
-                    else
-                    {
-                        <span>Отсутствует активная трансляция</span>
-                    }
+                @*                 <div class="stream-frame">
+                @if (Service.IsWebcameraEnable)
+                {
+                <span>Попытка подключение к трансляции</span>
+                }
+                else
+                {
+                <span>Отсутствует активная трансляция</span>
+                }
                 </div> *@
 
-                <StreamFrame />
+                @*                 <StreamFrame /> *@
             </div>
 
             <div class="workflow-box__item workflow-box-grid">
