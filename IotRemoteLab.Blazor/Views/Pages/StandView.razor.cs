@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace IotRemoteLab.Blazor.Views.Pages
 {
-    public partial class Stand
+    public partial class StandView
     {
         private StandService Service;
         private MonacoEditor codeEditor;
