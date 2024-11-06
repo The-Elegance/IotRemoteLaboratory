@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using IotRemoteLab.Domain.Code;
 using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.Stand;
@@ -8,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion(1.0)]
     [Authorize]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class StandsController : ControllerBase
     {
         private Random random = new();
@@ -23,33 +24,32 @@ namespace IotRemoteLab.API.Controllers
         }
 
 
-        //IHubContext<StandHub> _hubContext;
-        //public StandsController(IHubContext<StandHub> hubContext)
-        //{
-        //    _hubContext = hubContext;
-        //}
+        #region Methods
+
 
         [HttpGet]
         public async Task<IEnumerable<Stand>> GetStands()
         {
             return await _context.Stands
-                .Include(x => x.Mcu).
-                    ThenInclude(x => x.Framework).
-                Include(x => x.Benchboard)
+                .Include(x => x.Mcu)
+                    .ThenInclude(x => x.Framework)
+                .Include(x => x.Benchboard)
                     .ThenInclude(x => x.Ports)
+                .Include(x => x.AvailableUarts)
                 .ToListAsync();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:long}")]
         [AllowAnonymous]
         public async Task<Stand?> GetStand(long id)
         {
-            return await _context.Stands.
-                Include(x => x.Mcu).
-                ThenInclude(x => x.Framework).
-                Include(x => x.Benchboard)
-                .ThenInclude(x => x.Ports).
-                FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.Stands
+                .Include(x => x.Mcu)
+                    .ThenInclude(x => x.Framework)
+                .Include(x => x.Benchboard)
+                    .ThenInclude(x => x.Ports)
+                .Include(x => x.AvailableUarts)
+                .FirstOrDefaultAsync(i => i.Id == id);
         }
 
         [HttpPost]
@@ -77,6 +77,9 @@ namespace IotRemoteLab.API.Controllers
         {
             return NotFound();
         }
+
+
+        #endregion Methods
 
 
         #region Current Stand data

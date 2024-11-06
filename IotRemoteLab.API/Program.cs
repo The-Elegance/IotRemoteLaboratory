@@ -143,6 +143,12 @@ builder.Services.AddCLI();
 builder.Services.AddSingleton<StandHubBroadcast>();
 builder.Services.AddSingleton<StandsService>();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddApiVersioning(options => 
+{
+    options.ReportApiVersions = true;
+});
+
 var app = builder.Build();
 
 app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
