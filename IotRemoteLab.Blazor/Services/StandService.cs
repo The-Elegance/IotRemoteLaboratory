@@ -39,15 +39,6 @@ namespace IotRemoteLab.Blazor.Services
         /// </summary>
         public string McuName { get; private set; }
         /// <summary>
-        /// Список доступных стенду uart.
-        /// </summary>
-        public List<Uart> AvailableUarts = [
-            new Uart(0, 1, "UART 1.1"),
-            new Uart(1, 2, "UART 1.2"),
-            new Uart(2, 3, "UART 1.3"),
-            new Uart(3, 4, "UART 1.4"),
-        ]; //{ get => _stand?.AvailableUarts ?? []; }
-        /// <summary>
         /// Выбранный uart.
         /// </summary>
         private Uart _selectedUart;
@@ -79,35 +70,17 @@ namespace IotRemoteLab.Blazor.Services
         #region Constructors
 
 
-        public StandService(HttpClient httpClient, HubConnection hubConnection, long id, CancellationToken cancellationToken = default)
+        public StandService(Stand stand, HttpClient httpClient, HubConnection hubConnection)
         {
             _httpClient = httpClient;
             _hubConnection = hubConnection;
-            _id = id;
-        }
+            _id = stand.Id;
+            _stand = stand;
 
-        /// <summary>
-        /// Инициализация StandService.
-        /// </summary>
-        public async Task Init(CancellationToken cancellationToken = default)
-        {
-            ConsoleDebug.WriteLine(_id);
-            _stand = await _httpClient.GetFromJsonAsync<Stand>($"api/stands/{_id}", cancellationToken);
-
-            // TODO: Если Stand is null, выкидывать на экран ошибку об этом.
-            ConsoleDebug.WriteLine(_stand);
-            if (_stand == null)
-            {
-                throw new Exception("Stand data was null");
-            }
-
-            ConsoleDebug.WriteLine(_stand.Mcu);
-
-            McuName = _stand.Mcu.Name;
             EditorElementId = _stand.CodeEditorId;
             DefaultBoilerplateCode = new BoilerplateCode("cpp", "14", _stand.Framework.Pattern);
 
-            var selectedUart = AvailableUarts.FirstOrDefault();
+            var selectedUart = stand.AvailableUarts.First();
             _lastSelectedUart = selectedUart.Id;
             SelectedUart = selectedUart;
 
@@ -115,11 +88,6 @@ namespace IotRemoteLab.Blazor.Services
 
             // SignalR Prepare
             SubscribeOnSignalRHubUnits();
-
-            // регистрируем пользователя в SignalR группу для данного стенда
-            await _hubConnection.SendAsync("EnterToStand", _id);
-            //_hubConnection.On<Guid, Guid, string>("CodeExecuteResultChanged", OnCodeExecuteResultChanged);
-            ConsoleDebug.WriteLine("Init finished");
         }
 
 
@@ -252,7 +220,7 @@ namespace IotRemoteLab.Blazor.Services
         {
             _lastSelectedUart = id;
 
-            SelectedUart = AvailableUarts.FirstOrDefault(x => x.Id == id);
+            SelectedUart = _stand.AvailableUarts.FirstOrDefault(x => x.Id == id);
             StandStateChanged?.Invoke();
         }
 
