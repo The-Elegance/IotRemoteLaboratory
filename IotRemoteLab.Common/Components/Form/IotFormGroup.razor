@@ -1,0 +1,87 @@
+﻿@{
+    string cardTitleStyle = "background: #F0F2F5; margin:5px";
+    string cardBodyStyle = "background: #FFFFFF;";
+}
+
+<style>
+    .head-disable
+    .ant-card-head {
+        display: none;
+    }
+</style>
+
+<Card Style="@cardTitleStyle"
+      Class="@(string.IsNullOrEmpty(Title) ? "head-disable" : "")" Title="@Title"
+      BodyStyle="@cardBodyStyle"
+      Size="small"
+      Extra="@GeneratedExtraContent"
+      Bordered="@Bordered">
+    @GeneratedBodyContent
+</Card>
+
+@code {
+
+    /// <summary>
+    /// Заголовок группы
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; }
+
+    /// <summary>
+    /// Показывать обводку
+    /// </summary>
+    [Parameter]
+    public bool Bordered { get; set; } = true;
+
+    /// <summary>
+    /// Вложенный компонент
+    /// </summary>
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    /// <summary>
+    /// Тело, если есть кнопки
+    /// </summary>
+    [Parameter]
+    public RenderFragment Body { get; set; }
+
+    /// <summary>
+    /// Кнопки сверху
+    /// </summary>
+    [Parameter]
+    public RenderFragment ActionButtons { get; set; }
+
+    /// <summary>
+    /// Генерируемый контент для Extra
+    /// </summary>
+    public RenderFragment GeneratedExtraContent { get; set; }
+
+    /// <summary>
+    /// Генерируемый контент для Body
+    /// </summary>
+    public RenderFragment GeneratedBodyContent { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        GeneratedExtraContent = builder =>
+        {
+            if (ActionButtons != null)
+            {
+                builder.AddContent(0, ActionButtons);
+            }
+        };
+
+        GeneratedBodyContent = builder =>
+        {
+            if (Body != null)
+            {
+                builder.AddContent(0, Body);
+            }
+            else if (ChildContent != null)
+            {
+                builder.AddContent(0, ChildContent);
+            }
+        };
+    }
+}

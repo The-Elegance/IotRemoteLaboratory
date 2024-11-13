@@ -5,32 +5,33 @@
 @using System.ComponentModel.DataAnnotations
 
 @using System.Text.Json;
+@using IotRemoteLab.Common.Components.Form
 @using IotRemoteLab.Domain.Stand
 @using IotRemoteLab.Domain.Stand.Benchboards
 
 <h1>List stands</h1>
 
 <Table @ref="_standTable" TItem="Stand" PageSize="5" Total="_total" DataSource="_dataSource" @bind-SelectedRows="_selectedRows" OnChange="OnChange">
-     <TitleTemplate>
-         <Flex Justify="end" Gap="10">
+    <TitleTemplate>
+        <Flex Justify="end" Gap="10">
             <Button Type="primary" OnClick="@ShowModalNew">New</Button>
             <Button Disabled="!_selectedRows.Any()" Danger OnClick="@ShowModalDeleteAll">Delete</Button>
-         </Flex>
-     </TitleTemplate>
-     <ColumnDefinitions Context="row">
-         <Selection />
-         <GenerateColumns Definitions="@definitions" HideColumnsByName="@(new []{"Framework", "Benchboard", "HasSerialPort", "SerialPortSpeed", "HasWebcam", "HasWebcam", "WebcamUrl", "AvailableUarts", "CodeEditorId"})" />
-         <ActionColumn Title="Action">
-             <a @onclick="() => StartEdit(row)">Edit</a>
-          </ActionColumn>
-     </ColumnDefinitions>
- </Table>
+        </Flex>
+    </TitleTemplate>
+    <ColumnDefinitions Context="row">
+        <Selection />
+        <GenerateColumns Definitions="@definitions" HideColumnsByName="@(new []{"Framework", "Benchboard", "HasSerialPort", "SerialPortSpeed", "HasWebcam", "HasWebcam", "WebcamUrl", "AvailableUarts", "CodeEditorId"})" />
+        <ActionColumn Title="Action">
+            <a @onclick="() => StartEdit(row)">Edit</a>
+        </ActionColumn>
+    </ColumnDefinitions>
+</Table>
 
- <Modal Title="@("Confirm")"
-        Visible="@_visibleFlagDeleteAll"
-        OnOk="@HandleOkDeleteAll"
-        OnCancel="@HandleCancelDeleteAll">
-     <p>@_modalTextDeleteAll</p>
+<Modal Title="@("Confirm")"
+       Visible="@_visibleFlagDeleteAll"
+       OnOk="@HandleOkDeleteAll"
+       OnCancel="@HandleCancelDeleteAll">
+    <p>@_modalTextDeleteAll</p>
 </Modal>
 
 <Modal Title="@("New")"
@@ -40,19 +41,88 @@
     @FormTemplateNew()
 </Modal>
 
-<Modal Title="@("Edit")"
-       @bind-Visible="@_visibleEdit" 
+<Modal Title="@("Edit")" style="width: 600px;"
+       @bind-Visible="@_visibleEdit"
        OnOk="@HandleOkEdit"
        OnCancel="@HandleCancelEdit">
-     @FormTemplateEdit() 
+    <Form Model="@modelEdit"
+          OnFinish="OnFinishEdit"
+          OnFinishFailed="OnFinishFailedEdit"
+          @ref="@_formEdit">
+
+        <IotFormGroup Bordered="false">
+            <IotFormItem Label="Mcu">
+                <Select Mode="default"
+                        DataSource="@listMcu"
+                        @bind-Value="@context.Mcu"
+                        LabelName="@nameof(Mcu.Name)">
+                </Select>
+            </IotFormItem>
+
+            <IotFormItem Label="Url">
+                <Input @bind-Value="@context.Url" />
+            </IotFormItem>
+
+            <IotFormItem Label="HasBenchboard">
+                <Switch @bind-Value="@context.HasBenchboard" />
+            </IotFormItem>
+
+            @if (context.HasBenchboard == true)
+            {
+                <IotFormItem Label="Benchboard">
+                    <Select Mode="default"
+                            DataSource="@listBench"
+                            @bind-Value="@context.Benchboard"
+                            LabelName="@nameof(Benchboard.Name)">
+                    </Select>
+                </IotFormItem>
+            }
+
+            <IotFormItem Label="HasLighting">
+                <Switch @bind-Value="@context.HasLighting" />
+            </IotFormItem>
+
+            @if (context.HasLighting == true)
+            {
+                <IotFormItem Label="LightingBrightnessLevel">
+                    <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
+                </IotFormItem>
+                <IotFormItem Label="LightingRaspberryPiPort">
+                    <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
+                </IotFormItem>
+            }
+
+            <IotFormItem Label="HasSerialPort">
+                <Switch @bind-Value="@context.HasSerialPort" />
+            </IotFormItem>
+
+            @if (context.HasSerialPort == true)
+            {
+                <IotFormItem Label="SerialPortSpeed">
+                    <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
+                </IotFormItem>
+            }
+
+            <IotFormItem Label="HasWebcam" Required>
+                <Switch @bind-Value="@context.HasWebcam" />
+            </IotFormItem>
+
+            @if (context.HasWebcam == true)
+            {
+                <IotFormItem Label="WebcamUrl">
+                    <Input @bind-Value="@context.WebcamUrl" />
+                </IotFormItem>
+            }
+        </IotFormGroup>
+    </Form>
 </Modal>
 
 @inject ModalService _modalService
 @inject ConfirmService ComfirmService;
 @inject HttpClient _httpClient
-@code 
- {
-@*      async void LoadData()
+@code
+{
+    @*      async void LoadData()
     {
         var _stand2 = await _httpClient.GetFromJsonAsync<List<Stand>>("/api/Stands");
         await InvokeAsync(StateHasChanged);
@@ -63,32 +133,32 @@
     static Mcu _mcu = new Mcu { Id = 1, Name = "Mcu1", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" };
 
     List<Stand> fakeList = new List<Stand>
-    {
+                {
         new Stand {Id = 1, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()},
         new Stand {Id = 2, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()},
         new Stand {Id = 3, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()}
-    };
+                };
 
     List<Benchboard> listBench = new List<Benchboard>
-    {
+                {
         new Benchboard { Id = 1, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } },
         new Benchboard { Id = 2, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } },
         new Benchboard { Id = 3, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } }
-    };
+                };
 
     List<McuFramework> listFram = new List<McuFramework>
-    {
+                {
         new McuFramework { Id = 1, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" },
         new McuFramework { Id = 2, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" },
         new McuFramework { Id = 3, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" }
-    };
+                };
 
     List<Mcu> listMcu = new List<Mcu>
-    {
+                {
         new Mcu { Id = 1, Name = "Mcu1", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" },
         new Mcu { Id = 2, Name = "Mcu2", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" },
         new Mcu { Id = 3, Name = "Mcu3", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" }
-    };
+                };
 
     List<Stand> mockDb = new();
     IEnumerable<Stand> _selectedRows = [];
@@ -128,11 +198,11 @@
     {
         return
     @<Form Model="@modelNew"
-                   LabelColSpan="8"
-                   WrapperColSpan="16"
-                   OnFinish="OnFinishNew"
-                   OnFinishFailed="OnFinishFailedNew"
-                   @ref="@_formNew">
+               LabelColSpan="8"
+               WrapperColSpan="16"
+               OnFinish="OnFinishNew"
+               OnFinishFailed="OnFinishFailedNew"
+               @ref="@_formNew">
         <FormItem Label="Mcu">
             <Select Mode="default"
                     DataSource="@listMcu"
@@ -146,8 +216,9 @@
         <FormItem Label="HasBenchboard">
             <Switch @bind-Value="@context.HasBenchboard" />
         </FormItem>
-        @{if (context.HasBenchboard == true)
-        {
+        @{
+    if (context.HasBenchboard == true)
+    {
             <FormItem Label="Benchboard">
                 <Select Mode="default"
                         DataSource="@listBench"
@@ -155,46 +226,46 @@
                         LabelName="@nameof(Benchboard.Name)">
                 </Select>
             </FormItem>
-        }
+    }
         }
         <FormItem Label="HasLighting">
             <Switch @bind-Value="@context.HasLighting" />
         </FormItem>
         @{
-            if (context.HasLighting == true)
-            {
+    if (context.HasLighting == true)
+    {
             <FormItem Label="LightingBrightnessLevel">
                 <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
             </FormItem>
             <FormItem Label="LightingRaspberryPiPort">
                 <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
             </FormItem>
-            }
+    }
         }
         <FormItem Label="HasSerialPort">
             <Switch @bind-Value="@context.HasSerialPort" />
         </FormItem>
         @{
-            if (context.HasSerialPort == true)
-            {
+    if (context.HasSerialPort == true)
+    {
             <FormItem Label="SerialPortSpeed">
                 <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
             </FormItem>
-            }
+    }
         }
         <FormItem Label="HasWebcam">
             <Switch @bind-Value="@context.HasWebcam" />
         </FormItem>
         @{
-            if (context.HasWebcam == true)
-            {
+    if (context.HasWebcam == true)
+    {
             <FormItem Label="WebcamUrl">
                 <Input @bind-Value="@context.WebcamUrl" />
             </FormItem>
-            }
+    }
         }
     </Form>
-    ;
+        ;
     }
 
     RenderFragment FormTemplateEdit()
@@ -220,8 +291,8 @@
             <Switch @bind-Value="@context.HasBenchboard" />
         </FormItem>
         @{
-            if (context.HasBenchboard == true)
-            {
+    if (context.HasBenchboard == true)
+    {
             <FormItem Label="Benchboard">
                 <Select Mode="default"
                         DataSource="@listBench"
@@ -229,46 +300,46 @@
                         LabelName="@nameof(Benchboard.Name)">
                 </Select>
             </FormItem>
-            }
+    }
         }
         <FormItem Label="HasLighting">
             <Switch @bind-Value="@context.HasLighting" />
         </FormItem>
         @{
-            if (context.HasLighting == true)
-            {
+    if (context.HasLighting == true)
+    {
             <FormItem Label="LightingBrightnessLevel">
                 <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
             </FormItem>
             <FormItem Label="LightingRaspberryPiPort">
                 <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
             </FormItem>
-            }
+    }
         }
         <FormItem Label="HasSerialPort">
             <Switch @bind-Value="@context.HasSerialPort" />
         </FormItem>
         @{
-            if (context.HasSerialPort == true)
-            {
+    if (context.HasSerialPort == true)
+    {
             <FormItem Label="SerialPortSpeed">
                 <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
             </FormItem>
-            }
+    }
         }
         <FormItem Label="HasWebcam">
             <Switch @bind-Value="@context.HasWebcam" />
         </FormItem>
         @{
-            if (context.HasWebcam == true)
-            {
+    if (context.HasWebcam == true)
+    {
             <FormItem Label="WebcamUrl">
                 <Input @bind-Value="@context.WebcamUrl" />
             </FormItem>
-            }
+    }
         }
     </Form>
-    ;
+        ;
     }
 
     bool _visibleNew = false;
@@ -350,11 +421,11 @@
             tagCol.CellRender = cellData =>
     @<span>
         @{
-            var value = cellData.FieldValue;
+    var value = cellData.FieldValue;
         }
 
         <Tag>@value.Name</Tag>
-        
+
     </span>
     ;
 
@@ -369,4 +440,4 @@
     {
         mockDb = Enumerable.Range(0, fakeList.Count).Select(i => fakeList[i]).ToList();
     }
-} 
+}

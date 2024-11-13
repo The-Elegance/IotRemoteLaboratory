@@ -1,0 +1,78 @@
+﻿@using System.Linq.Expressions
+@using Microsoft.AspNetCore.Components.Forms
+<style>
+    .inline {
+        display: flex;
+    }
+
+    .direction-column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+</style>
+
+<div style="padding: 5px">
+    <GridRow Class="@(DirectionColumn ? "direction-column ant-row-middle-1" : "")" Align="middle">
+        <GridCol Span="@LabelSpan" Class="inline">
+            <span>@Label</span>
+            @if (Required)
+            {
+                <span style="color: #FF4D4F">*</span>
+            }
+        </GridCol>
+        <GridCol Span="@(DirectionColumn ? -1 : _childContentSpan)" Offset="@(DirectionColumn ? 0 : 4)">
+            @ChildContent
+            @if (ValidationFor != null)
+            {
+                <ValidationMessage For="ValidationFor" Class="ant-form-item-explain-error" />
+            }
+        </GridCol>
+    </GridRow>
+</div>
+
+@code {
+    private int _childContentSpan = 16;
+
+    /// <summary>
+    /// Указывает, является ли поле обязательным.
+    /// </summary>
+    [Parameter]
+    public bool Required { get; set; } = false;
+
+    [Parameter]
+    public Expression<Func<object>> ValidationFor { get; set; }
+
+    /// <summary>
+    /// Название (лейбл) для поля ввода.
+    /// </summary>
+    [Parameter]
+    public string Label { get; set; }
+
+    /// <summary>
+    /// Располагать элементы в колонку.
+    /// </summary>
+    [Parameter]
+    public bool DirectionColumn { get; set; } = false;
+
+    /// <summary>
+    /// Вложенный компонент ввода (например, InputText).
+    /// </summary>
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public int LabelSpan { get; set; } = 4;
+
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        if (parameters.TryGetValue<int>(nameof(LabelSpan), out var newLabelSpan))
+        {
+            // P.S На самом деле костыль, для модалок хватит, потом может ченить придумаю.
+            _childContentSpan = 20 - newLabelSpan;
+        }
+
+        return base.SetParametersAsync(parameters);
+    }
+}
