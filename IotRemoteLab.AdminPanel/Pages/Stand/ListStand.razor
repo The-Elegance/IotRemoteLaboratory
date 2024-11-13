@@ -11,7 +11,7 @@
 
 <h1>List stands</h1>
 
-<Table @ref="_standTable" TItem="Stand" PageSize="5" Total="_total" DataSource="_dataSource" @bind-SelectedRows="_selectedRows" OnChange="OnChange">
+<Table @ref="_standTable" TItem="Stand" PageSize="5" Total="_total" DataSource="_stands" @bind-SelectedRows="_selectedRows">
     <TitleTemplate>
         <Flex Justify="end" Gap="10">
             <Button Type="primary" OnClick="@ShowModalNew">New</Button>
@@ -122,22 +122,11 @@
 @inject HttpClient _httpClient
 @code
 {
-    @*      async void LoadData()
-    {
-        var _stand2 = await _httpClient.GetFromJsonAsync<List<Stand>>("/api/Stands");
-        await InvokeAsync(StateHasChanged);
-    }  *@
-
     static Benchboard _bench = new Benchboard { Id = 1, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } };
     static McuFramework _mcuFram = new McuFramework { Id = 1, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" };
     static Mcu _mcu = new Mcu { Id = 1, Name = "Mcu1", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" };
 
-    List<Stand> fakeList = new List<Stand>
-                {
-        new Stand {Id = 1, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()},
-        new Stand {Id = 2, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()},
-        new Stand {Id = 3, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()}
-                };
+    List<Stand> _stands = new();
 
     List<Benchboard> listBench = new List<Benchboard>
                 {
@@ -163,7 +152,6 @@
     List<Stand> mockDb = new();
     IEnumerable<Stand> _selectedRows = [];
     ITable _standTable;
-    List<Stand> _dataSource;
     int _total;
 
     bool _visibleFlagDeleteAll = false;
@@ -171,6 +159,21 @@
 
     bool _visibleFlagDelete = false;
     string _modalTextDelete = "";
+
+
+    [Parameter]
+    public string Id { get; set; }
+
+
+    protected override Task OnInitializedAsync()
+    {
+        return UpdateList();
+    }
+
+    async Task UpdateList()
+    {
+        _stands = await _httpClient.GetFromJsonAsync<List<Stand?>>("stands");
+    }
 
     private void ShowModalDeleteAll()
     {
@@ -406,12 +409,6 @@
         Console.WriteLine($"Failed:{JsonSerializer.Serialize(modelEdit)}");
     }
 
-    void OnChange(QueryModel<Stand> query)
-    {
-        _total = mockDb.AsQueryable().ExecuteTableQuery(query).Count();
-        _dataSource = mockDb.AsQueryable().ExecuteTableQuery(query).CurrentPagedRecords(query).ToList();
-    }
-
     void definitions(string propertyName, IFieldColumn column)
     {
         if (propertyName == "Mcu")
@@ -438,6 +435,6 @@
 
     protected override void OnInitialized()
     {
-        mockDb = Enumerable.Range(0, fakeList.Count).Select(i => fakeList[i]).ToList();
+        mockDb = Enumerable.Range(0, _stands.Count).Select(i => _stands[i]).ToList();
     }
 }

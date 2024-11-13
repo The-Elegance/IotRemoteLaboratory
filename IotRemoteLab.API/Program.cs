@@ -83,7 +83,7 @@ builder.Services.ConfigureHttpJsonOptions(p => p.SerializerOptions.Converters.Ad
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DebugConnection")//,
-        //x => x.MigrationsAssembly("IotRemoteLab.Persistence")
+                                                                                  //x => x.MigrationsAssembly("IotRemoteLab.Persistence")
         );
 });
 
@@ -93,46 +93,51 @@ builder.Services.AddSignalR();
 #region Mqtt Prepare
 
 
-var mqttConnectionType = builder.Configuration.GetSection("Mqtt:ConnectionType").Value;
-
-if (string.IsNullOrEmpty(mqttConnectionType)) 
+try
 {
-    throw new Exception("Mqtt ConnectionType must be Certificated/NoCertificated.");
-}
 
-var mqttIp = builder.Configuration.GetSection($"Mqtt:{mqttConnectionType}:Ip").Value;
-var mqttPortString = builder.Configuration.GetSection($"Mqtt:{mqttConnectionType}:Port").Value;
+    var mqttConnectionType = builder.Configuration.GetSection("Mqtt:ConnectionType").Value;
 
-if (string.IsNullOrEmpty(mqttIp)) 
-{
-    throw new Exception("MQTT Ip must be not empty");
-}
-
-if (!short.TryParse(mqttPortString, out var mqttPort))
-{
-    throw new Exception("MQTT Port must be not empty/null or higher than 65565");
-}
-
-if (mqttConnectionType == "Certificated") 
-{
-    var caCertFilePath = builder.Configuration.GetSection("Mqtt:Certificated:CertificateFilePath:Ca").Value;
-    var clientCertFilePath = builder.Configuration.GetSection("Mqtt:Certificated:CertificateFilePath:Client").Value;
-
-    if (!(string.IsNullOrEmpty(caCertFilePath) && string.IsNullOrEmpty(clientCertFilePath)))
+    if (string.IsNullOrEmpty(mqttConnectionType))
     {
-        var ca = X509Certificate.CreateFromCertFile(caCertFilePath);
-        var client = new X509Certificate2(clientCertFilePath);
-        builder.Services.AddMqtt(mqttIp, mqttPort, ca, client, Topics.ToArray());
+        throw new Exception("Mqtt ConnectionType must be Certificated/NoCertificated.");
+    }
+
+    var mqttIp = builder.Configuration.GetSection($"Mqtt:{mqttConnectionType}:Ip").Value;
+    var mqttPortString = builder.Configuration.GetSection($"Mqtt:{mqttConnectionType}:Port").Value;
+
+    if (string.IsNullOrEmpty(mqttIp))
+    {
+        throw new Exception("MQTT Ip must be not empty");
+    }
+
+    if (!short.TryParse(mqttPortString, out var mqttPort))
+    {
+        throw new Exception("MQTT Port must be not empty/null or higher than 65565");
+    }
+
+    if (mqttConnectionType == "Certificated")
+    {
+        var caCertFilePath = builder.Configuration.GetSection("Mqtt:Certificated:CertificateFilePath:Ca").Value;
+        var clientCertFilePath = builder.Configuration.GetSection("Mqtt:Certificated:CertificateFilePath:Client").Value;
+
+        if (!(string.IsNullOrEmpty(caCertFilePath) && string.IsNullOrEmpty(clientCertFilePath)))
+        {
+            var ca = X509Certificate.CreateFromCertFile(caCertFilePath);
+            var client = new X509Certificate2(clientCertFilePath);
+            builder.Services.AddMqtt(mqttIp, mqttPort, ca, client, Topics.ToArray());
+        }
+        else
+        {
+            throw new Exception("CertificateFilePath.[Ca/Client] must be not empty with connection type Certificated");
+        }
     }
     else
     {
-        throw new Exception("CertificateFilePath.[Ca/Client] must be not empty with connection type Certificated");
+        builder.Services.AddMqtt(mqttIp, mqttPort, Topics.ToArray());
     }
 }
-else 
-{
-    builder.Services.AddMqtt(mqttIp, mqttPort, Topics.ToArray());
-}
+catch { }
 
 
 #endregion MqttPrepare
@@ -144,7 +149,7 @@ builder.Services.AddSingleton<StandHubBroadcast>();
 builder.Services.AddSingleton<StandsService>();
 
 builder.Services.AddProblemDetails();
-builder.Services.AddApiVersioning(options => 
+builder.Services.AddApiVersioning(options =>
 {
     options.ReportApiVersions = true;
 });

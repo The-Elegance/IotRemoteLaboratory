@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace IotRemoteLab.API.Controllers
 {
     [ApiVersion(1.0)]
-    [Authorize]
+    //[Authorize]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class StandsController : ControllerBase
     {
