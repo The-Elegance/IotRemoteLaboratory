@@ -1,7 +1,7 @@
 ﻿@page "/editStand"
 @layout AdminPanelLayout
 @inject DialogService DialogService
-@inject NotificationService NotificationService
+@* @inject NotificationService NotificationService*@
 @inject HttpClient _httpClient
 
 
@@ -15,7 +15,7 @@
 @using System.Collections
 
 <p>@mcu.Name</p>
-<RadzenTemplateForm Data="@stand">
+@* <RadzenTemplateForm Data="@stand">
 
     <RadzenFieldset Text="Редактировать стенд">
 
@@ -145,7 +145,7 @@
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="1rem" Class="rz-mt-8 rz-mb-4">
         <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Save" Click="@Submit" />
     </RadzenStack>
-</RadzenTemplateForm>
+</RadzenTemplateForm> *@
 
 
 @code {
@@ -192,7 +192,7 @@
 
     void Submit()
     {
-        listStand.Add(stand);
+        // listStand.Add(stand);
     }
 
     void Cancel()
@@ -205,30 +205,30 @@
         stand.Url = newValue;
     }
 
-    private void OnClick(string text)
-    {
-        NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "ToggleButton Clicked", Detail = text });
-    }
+    // private void OnClick(string text)
+    // {
+    //     NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Info, Summary = "ToggleButton Clicked", Detail = text });
+    // }
 
-    public async Task OpenFormNewBench()
-    {
-        await DialogService.OpenAsync<NewBenchForm>($"Создание новой платы",
-               new Dictionary<string, object>(),
-               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
-    }
+    // public async Task OpenFormNewBench()
+    // {
+    //     await DialogService.OpenAsync<NewBenchForm>($"Создание новой платы",
+    //            new Dictionary<string, object>(),
+    //            new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    // }
 
-    public async Task OpenNewFramForm()
-    {
-        await DialogService.OpenAsync<NewFrameworkForm>($"Создать фреймворк",
-               new Dictionary<string, object>(),
-               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
-    }
+    // public async Task OpenNewFramForm()
+    // {
+    //     await DialogService.OpenAsync<NewFrameworkForm>($"Создать фреймворк",
+    //            new Dictionary<string, object>(),
+    //            new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    // }
 
-    public async Task OpenFormNewMcu()
-    {
-        await DialogService.OpenAsync<NewMcuForm>($"Создать новый фреймворк",
-               new Dictionary<string, object>(),
-               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
-    }
+    // public async Task OpenFormNewMcu()
+    // {
+    //     await DialogService.OpenAsync<NewMcuForm>($"Создать новый фреймворк",
+    //            new Dictionary<string, object>(),
+    //            new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    // }
 
 }

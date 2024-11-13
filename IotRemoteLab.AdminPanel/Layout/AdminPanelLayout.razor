@@ -1,30 +1,153 @@
 ﻿@inherits LayoutComponentBase
-@using Radzen
-@using Radzen.Blazor
 
-<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'">
-    <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-        </RadzenStack>
-    </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="@sidebarExpanded">
-        <RadzenPanelMenu>
-            <RadzenPanelMenuItem Path="listStande" Text="List Stand" Icon="home" Selected="true" />
-            <RadzenPanelMenuItem Path="listGroup" Text="List Group" Icon="account_box" />
-            <RadzenPanelMenuItem Path="addStand" Text="Add stand" Icon="account_box" />
-            <RadzenPanelMenuItem Path="addGroup" Text="Add group" Icon="account_box" />
-        </RadzenPanelMenu>
-    </RadzenSidebar>
-    <RadzenBody>
-        <div class="rz-p-4">
-            @Body
+@* @using AntDesign
+@using AntDesign.TableModels
+@using System.ComponentModel.DataAnnotations *@
+
+@* <Layout Style="min-height: 100vh; ">
+    <Sider Collapsible>
+        <div class="logo" />
+        <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Inline" DefaultSelectedKeys=@(new[]{"1"})>
+            <MenuItem Key="1">
+                <Icon Type="pie-chart" Theme="outline" />
+                <NavLink href="/">
+                    <span> Главная </span>
+                </NavLink>
+            </MenuItem>
+            <MenuItem Key="2">
+                <NavLink href="listGroup">Группы</NavLink>
+            </MenuItem>
+            <MenuItem Key="3">
+                <NavLink href="AddStand">Добавить стенд</NavLink>
+            </MenuItem>
+            <MenuItem Key="4">
+                <NavLink href="AddGroup">Добавить группу</NavLink>
+            </MenuItem>
+        </Menu>
+    </Sider>
+    <Layout Class="site-layout">
+        <Header Class="site-layout-background" Style=" padding: 0 ;"></Header>
+        <Content Style="margin:0 16px;">
+            <div class="site-layout-background" style="padding: 24; min-height: 360px">
+                @Body
+            </div>
+        </Content>
+        <Footer Style="text-align:center ">Ant Design ©2018 Created by Ant UED</Footer>
+    </Layout>
+</Layout> *@
+
+@* <Layout Style="min-height: 100vh;">
+    <Sider Collapsible>
+        <div>
+             <img class="logoIcon" src="./src/logo.svg" />
+            <span class="top-row px-4">
+                 logo
+             </span>
+         </div>
+         <Menu Theme="MenuTheme.Dark" DefaultSelectedKeys=@(new[]{"1"}) Mode="MenuMode.Inline">
+             <MenuItem Key="1">
+                 <Icon Type="user" Theme="outline" />
+                 <span>
+                     Главная
+                     <NavLink href="/"></NavLink>
+                 </span>
+             </MenuItem>
+             <MenuItem Key="2">
+                 <Icon Type="user" Theme="outline" />
+                 <span>
+                     Стенды
+                     <NavLink href="listStand"></NavLink>
+                 </span>
+             </MenuItem>
+             <MenuItem Key="3">
+                 <Icon Type="user" Theme="outline" />
+                 <span>
+                     Группы
+                     <NavLink href="listGroup"></NavLink>
+                 </span>
+             </MenuItem>
+             <MenuItem Key="4">
+                 <Icon Type="user" Theme="outline" />
+                 <span>
+                     Добавить стенд
+                     <NavLink href="AddStand"></NavLink>
+                 </span>
+             </MenuItem>
+             <MenuItem Key="5">
+                 <Icon Type="user" Theme="outline" />
+                 <span>
+                     Добавить группу
+                     <NavLink href="AddGroup"></NavLink>
+                 </span>
+             </MenuItem>
+         </Menu>
+     </Sider>
+     <Layout Class="site-layout">
+        <Header Style="text-align:right ">
+            <div class="top-row px-4">
+                <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            </div>
+         </Header>
+        <Content Class="site-layout-background" Style="margin: 24px 16px;padding: 24px;min-height: 280px;">
+            <div class="site-layout-background" style="padding: 24; min-height: 360px">
+                @Body
+            </div>
+        </Content>
+    </Layout>
+</Layout> *@
+
+@* <div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
-    </RadzenBody>
-</RadzenLayout>
-<RadzenDialog />
 
-@code {
-    bool sidebarExpanded = true;
-}
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div> *@
+
+@* <style>
+    #components-layout-demo-custom-trigger .trigger {
+        font-size: 18px;
+        line-height: 64px;
+        padding: 0 24px;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    #components-layout-demo-custom-trigger .trigger:hover {
+        color: #1890ff;
+    }
+
+    #components-layout-demo-custom-trigger .logo {
+        height: 32px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 16px;
+        color:aliceblue;
+    }
+
+    .site-layout .site-layout-background {
+        background: #fff;
+    }
+</style> *@
+
+@* @code {
+    bool collapsed;
+
+    void toggle()
+    {
+        collapsed = !collapsed;
+    }
+
+    void OnCollapse(bool isCollapsed)
+    {
+        Console.WriteLine($"Collapsed: {isCollapsed}");
+    }
+} *@
 

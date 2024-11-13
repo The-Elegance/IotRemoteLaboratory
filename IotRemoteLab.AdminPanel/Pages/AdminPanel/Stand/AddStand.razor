@@ -1,7 +1,7 @@
-﻿@page "/addStand"
-@layout AdminPanelLayout
+﻿@page "/AddStand"
+
 @inject DialogService DialogService
-@inject NotificationService NotificationService
+@* @inject NotificationService NotificationService*@
 @inject HttpClient _httpClient
 
 
@@ -17,10 +17,10 @@
 <h1>AddStand</h1>
 
 
-<RadzenTemplateForm Data="@stand">
+@* <RadzenTemplateForm Data="@stand">
     <RadzenFieldset Text="Добавить стенд">
         <RadzenStack Gap="1rem" >
-            @*Поле для добавляния/создания нового микроконтроллера *@
+            @*Поле для добавляния/создания нового микроконтроллера 
 
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
@@ -33,7 +33,7 @@
                     <RadzenButton Text="Создать Mcu" ButtonStyle="ButtonStyle.Secondary" Click=@OpenFormNewMcu />
                 </RadzenColumn>
             </RadzenRow>
-            @*Поле для добавляния URL Стенда *@
+            @*Поле для добавляния URL Стенда 
 
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
@@ -43,7 +43,7 @@
                     <RadzenTextBox Name="url" @bind-Value="@stand.Url" Style="width: 40%" />
                 </RadzenColumn>
             </RadzenRow>
-            @*Поле для выбора наличия и добавления/создания стендовой платы *@
+            @*Поле для выбора наличия и добавления/создания стендовой платы 
 
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
@@ -68,7 +68,7 @@
                     </RadzenColumn>
                 </RadzenRow>
             }
-            @*Поле для выбора наличия и добавления подсветки стенда *@
+            @*Поле для выбора наличия и добавления подсветки стенда 
 
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
@@ -98,7 +98,7 @@
                     </RadzenColumn>
                 </RadzenRow>
             }
-            @*Поле для выбора наличия и добавления последовтаельного порта *@
+            @*Поле для выбора наличия и добавления последовтаельного порта 
 
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
@@ -120,7 +120,7 @@
                     </RadzenColumn>
                 </RadzenRow>
             }
-            @*Поле для выбора наличия веб камеры и добавления ссылки на трансляцию *@
+            @*Поле для выбора наличия веб камеры и добавления ссылки на трансляцию 
 
             <RadzenRow AlignItems="AlignItems.Center" Gap="1rem">
                 <RadzenColumn Size="3">
@@ -149,7 +149,7 @@
         <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Large" Icon="save" Text="Сохранить" Click="@Submit" />
     </RadzenStack>
 
-</RadzenTemplateForm>
+</RadzenTemplateForm> *@
 
 @code {
     Stand stand = new();
@@ -194,17 +194,17 @@
         Console.WriteLine(res.StatusCode.ToString());
     }
 
-    public async Task OpenFormNewMcu()
-    {
-        await DialogService.OpenAsync<NewMcuForm>($"Создание нового микроконтроллера",
-               new Dictionary<string, object>(),
-               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
-    }
+    // public async Task OpenFormNewMcu()
+    // {
+    //     await DialogService.OpenAsync<NewMcuForm>($"Создание нового микроконтроллера",
+    //            new Dictionary<string, object>(),
+    //            new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    // }
 
-    public async Task OpenFormNewBench()
-    {
-        await DialogService.OpenAsync<NewBenchForm>($"Создание новой стендовой платы",
-               new Dictionary<string, object>(),
-               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
-    }
+    // public async Task OpenFormNewBench()
+    // {
+    //     await DialogService.OpenAsync<NewBenchForm>($"Создание новой стендовой платы",
+    //            new Dictionary<string, object>(),
+    //            new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    // }
 }

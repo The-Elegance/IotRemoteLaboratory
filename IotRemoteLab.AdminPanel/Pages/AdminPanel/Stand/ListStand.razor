@@ -1,74 +1,372 @@
-﻿@page "/stands/list"
-@layout AdminPanelLayout
-@inject DialogService DialogService
-@inject NotificationService NotificationService
-@inject HttpClient _httpClient
+﻿@page "/ListStand"
 
+@using AntDesign
+@using AntDesign.TableModels
+@using System.ComponentModel.DataAnnotations
 
-@using Radzen
-@using Radzen.Blazor
+@using System.Text.Json;
 @using IotRemoteLab.Domain.Stand
 @using IotRemoteLab.Domain.Stand.Benchboards
 
-<h1>ListStand</h1>
+<h1>List stands</h1>
 
+<Table @ref="_standTable" TItem="Stand" PageSize="5" Total="_total" DataSource="_dataSource" @bind-SelectedRows="_selectedRows" OnChange="OnChange">
+     <TitleTemplate>
+         <Flex Justify="end" Gap="10">
+            <Button Type="primary" OnClick="@ShowModalNew">New</Button>
+            <Button Disabled="!_selectedRows.Any()" Danger OnClick="@ShowModalDeleteAll">Delete</Button>
+         </Flex>
+     </TitleTemplate>
+     <ColumnDefinitions Context="row">
+         <Selection />
+         <GenerateColumns Definitions="@definitions" HideColumnsByName="@(new []{"Framework", "Benchboard", "HasSerialPort", "SerialPortSpeed", "HasWebcam", "HasWebcam", "WebcamUrl", "AvailableUarts", "CodeEditorId"})" />
+         <ActionColumn Title="Action">
+             <a @onclick="() => StartEdit(row)">Edit</a>
+          </ActionColumn>
+     </ColumnDefinitions>
+ </Table>
 
-<RadzenDataGrid EmptyText="Not stand" @ref="StandGrid" AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-                Data="@listStand" TItem="Stand" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
-    <Columns>
-        <RadzenDataGridColumn TItem="Stand" Property="Id" Title="id" Frozen="true" Width="100px" />
-        <RadzenDataGridColumn TItem="Stand" Property="Mcu.Name" Title="МКУ" Frozen="true" Width="160px" />
-        <RadzenDataGridColumn TItem="Stand" Property="Mcu.Framework.Name" Title="Фреймворк" Frozen="true" Width="160px" />
-        <RadzenDataGridColumn TItem="Stand" Property="Url" Title="ЮРЛ" Frozen="true" Width="160px" />
+ <Modal Title="@("Confirm")"
+        Visible="@_visibleFlagDeleteAll"
+        OnOk="@HandleOkDeleteAll"
+        OnCancel="@HandleCancelDeleteAll">
+     <p>@_modalTextDeleteAll</p>
+</Modal>
 
-        <RadzenDataGridColumn TItem="Stand" Width="160px" Property="Mcu.Name">
-            <Template Context="data">
-                <RadzenButton Text="inf" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" class="m-1" Click=@(() => OpenStendDetailsCard(data.Id, data.Mcu.Name)) />
-                <RadzenButton Text="edit" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" class="m-1" Click=@(() => OpenEditStand( data.Mcu)) />
-            </Template>
-        </RadzenDataGridColumn>
+<Modal Title="@("New")"
+       @bind-Visible="@_visibleNew"
+       OnOk="@HandleOkNew"
+       OnCancel="@HandleCancelNew">
+    @FormTemplateNew()
+</Modal>
 
-    </Columns>
-</RadzenDataGrid>
+<Modal Title="@("Edit")"
+       @bind-Visible="@_visibleEdit" 
+       OnOk="@HandleOkEdit"
+       OnCancel="@HandleCancelEdit">
+     @FormTemplateEdit() 
+</Modal>
 
-@code {
-    private RadzenDataGrid<Stand> StandGrid = new RadzenDataGrid<Stand>();
-
-    public static List<Stand> listStand = new();
-
-    protected override async Task OnAfterRenderAsync(bool isFirstRender)
+@inject ModalService _modalService
+@inject ConfirmService ComfirmService;
+@inject HttpClient _httpClient
+@code 
+ {
+@*      async void LoadData()
     {
-        await base.OnAfterRenderAsync(isFirstRender);
-
-        if (isFirstRender)
-        {
-            LoadData();
-        }
-    }
-
-    async void LoadData()
-    {
-        listStand = await _httpClient.GetFromJsonAsync<List<Stand>>("/api/Stands");
-
-        Console.WriteLine(listStand);
-
-        StandGrid.Reload();
-
+        var _stand2 = await _httpClient.GetFromJsonAsync<List<Stand>>("/api/Stands");
         await InvokeAsync(StateHasChanged);
-    }
+    }  *@
 
+    static Benchboard _bench = new Benchboard { Id = 1, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } };
+    static McuFramework _mcuFram = new McuFramework { Id = 1, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" };
+    static Mcu _mcu = new Mcu { Id = 1, Name = "Mcu1", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" };
 
-    public async Task OpenStendDetailsCard(long id, string name)
+    List<Stand> fakeList = new List<Stand>
     {
-        await DialogService.OpenAsync<StandDetailsCard>($"Детали стенда",
-               new Dictionary<string, object> { { "id", id }, { "mcuname", name } },
-               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+        new Stand {Id = 1, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()},
+        new Stand {Id = 2, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()},
+        new Stand {Id = 3, Mcu = _mcu, Url = "http//webcam.com", HasBenchboard = true, Benchboard = _bench, HasLighting = true, LightingBrightnessLevel = 2, LightingRaspberryPiPort = 3, HasSerialPort = true, SerialPortSpeed = 3, HasWebcam = true, WebcamUrl = "http//webcam.com", AvailableUarts = new List<Uart>(), CodeEditorId = Guid.NewGuid()}
+    };
+
+    List<Benchboard> listBench = new List<Benchboard>
+    {
+        new Benchboard { Id = 1, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } },
+        new Benchboard { Id = 2, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } },
+        new Benchboard { Id = 3, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } }
+    };
+
+    List<McuFramework> listFram = new List<McuFramework>
+    {
+        new McuFramework { Id = 1, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" },
+        new McuFramework { Id = 2, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" },
+        new McuFramework { Id = 3, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" }
+    };
+
+    List<Mcu> listMcu = new List<Mcu>
+    {
+        new Mcu { Id = 1, Name = "Mcu1", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" },
+        new Mcu { Id = 2, Name = "Mcu2", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" },
+        new Mcu { Id = 3, Name = "Mcu3", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" }
+    };
+
+    List<Stand> mockDb = new();
+    IEnumerable<Stand> _selectedRows = [];
+    ITable _standTable;
+    List<Stand> _dataSource;
+    int _total;
+
+    bool _visibleFlagDeleteAll = false;
+    string _modalTextDeleteAll = "";
+
+    bool _visibleFlagDelete = false;
+    string _modalTextDelete = "";
+
+    private void ShowModalDeleteAll()
+    {
+        _visibleFlagDeleteAll = true;
+        _modalTextDeleteAll = $"Are you sure delete {_selectedRows.Count()} rows?";
+
     }
 
-    public async Task OpenEditStand(Mcu mcuOrig)
+    private async Task HandleOkDeleteAll(MouseEventArgs e)
     {
-        await DialogService.OpenAsync<EditStand>($"Редактирование",
-               new Dictionary<string, object> { { "mcu", mcuOrig } },
-               new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+        mockDb = mockDb.Except(_selectedRows).ToList();
+        _selectedRows = [];
+        _standTable.ReloadData();
+        _visibleFlagDeleteAll = false;
+
     }
-}
+
+    private void HandleCancelDeleteAll(MouseEventArgs e)
+    {
+        Console.WriteLine("Clicked cancel button");
+        _visibleFlagDeleteAll = false;
+    }
+
+    RenderFragment FormTemplateNew()
+    {
+        return
+    @<Form Model="@modelNew"
+                   LabelColSpan="8"
+                   WrapperColSpan="16"
+                   OnFinish="OnFinishNew"
+                   OnFinishFailed="OnFinishFailedNew"
+                   @ref="@_formNew">
+        <FormItem Label="Mcu">
+            <Select Mode="default"
+                    DataSource="@listMcu"
+                    @bind-Value="@context.Mcu"
+                    LabelName="@nameof(Mcu.Name)">
+            </Select>
+        </FormItem>
+        <FormItem Label="Url">
+            <Input @bind-Value="@context.Url" />
+        </FormItem>
+        <FormItem Label="HasBenchboard">
+            <Switch @bind-Value="@context.HasBenchboard" />
+        </FormItem>
+        @{if (context.HasBenchboard == true)
+        {
+            <FormItem Label="Benchboard">
+                <Select Mode="default"
+                        DataSource="@listBench"
+                        @bind-Value="@context.Benchboard"
+                        LabelName="@nameof(Benchboard.Name)">
+                </Select>
+            </FormItem>
+        }
+        }
+        <FormItem Label="HasLighting">
+            <Switch @bind-Value="@context.HasLighting" />
+        </FormItem>
+        @{
+            if (context.HasLighting == true)
+            {
+            <FormItem Label="LightingBrightnessLevel">
+                <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
+            </FormItem>
+            <FormItem Label="LightingRaspberryPiPort">
+                <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
+            </FormItem>
+            }
+        }
+        <FormItem Label="HasSerialPort">
+            <Switch @bind-Value="@context.HasSerialPort" />
+        </FormItem>
+        @{
+            if (context.HasSerialPort == true)
+            {
+            <FormItem Label="SerialPortSpeed">
+                <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
+            </FormItem>
+            }
+        }
+        <FormItem Label="HasWebcam">
+            <Switch @bind-Value="@context.HasWebcam" />
+        </FormItem>
+        @{
+            if (context.HasWebcam == true)
+            {
+            <FormItem Label="WebcamUrl">
+                <Input @bind-Value="@context.WebcamUrl" />
+            </FormItem>
+            }
+        }
+    </Form>
+    ;
+    }
+
+    RenderFragment FormTemplateEdit()
+    {
+        return
+    @<Form Model="@modelEdit"
+               LabelColSpan="8"
+               WrapperColSpan="16"
+               OnFinish="OnFinishEdit"
+               OnFinishFailed="OnFinishFailedEdit"
+               @ref="@_formEdit">
+        <FormItem Label="Mcu">
+            <Select Mode="default"
+                    DataSource="@listMcu"
+                    @bind-Value="@context.Mcu"
+                    LabelName="@nameof(Mcu.Name)">
+            </Select>
+        </FormItem>
+        <FormItem Label="Url">
+            <Input @bind-Value="@context.Url" />
+        </FormItem>
+        <FormItem Label="HasBenchboard">
+            <Switch @bind-Value="@context.HasBenchboard" />
+        </FormItem>
+        @{
+            if (context.HasBenchboard == true)
+            {
+            <FormItem Label="Benchboard">
+                <Select Mode="default"
+                        DataSource="@listBench"
+                        @bind-Value="@context.Benchboard"
+                        LabelName="@nameof(Benchboard.Name)">
+                </Select>
+            </FormItem>
+            }
+        }
+        <FormItem Label="HasLighting">
+            <Switch @bind-Value="@context.HasLighting" />
+        </FormItem>
+        @{
+            if (context.HasLighting == true)
+            {
+            <FormItem Label="LightingBrightnessLevel">
+                <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
+            </FormItem>
+            <FormItem Label="LightingRaspberryPiPort">
+                <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
+            </FormItem>
+            }
+        }
+        <FormItem Label="HasSerialPort">
+            <Switch @bind-Value="@context.HasSerialPort" />
+        </FormItem>
+        @{
+            if (context.HasSerialPort == true)
+            {
+            <FormItem Label="SerialPortSpeed">
+                <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
+            </FormItem>
+            }
+        }
+        <FormItem Label="HasWebcam">
+            <Switch @bind-Value="@context.HasWebcam" />
+        </FormItem>
+        @{
+            if (context.HasWebcam == true)
+            {
+            <FormItem Label="WebcamUrl">
+                <Input @bind-Value="@context.WebcamUrl" />
+            </FormItem>
+            }
+        }
+    </Form>
+    ;
+    }
+
+    bool _visibleNew = false;
+    private Form<Stand> _formNew;
+    public Stand modelNew = new Stand();
+
+    bool _visibleEdit = false;
+    private Form<Stand> _formEdit;
+    public Stand modelEdit = new Stand();
+
+    private void ShowModalNew()
+    {
+        _visibleNew = true;
+    }
+
+    private void StartEdit(Stand row)
+    {
+        _visibleEdit = true;
+        modelEdit = row;
+    }
+
+    private async Task HandleOkNew(MouseEventArgs e)
+    {
+        mockDb.Add(modelNew);
+        _standTable.ReloadData();
+        await Task.Delay(1000);
+        _formNew.Submit();
+    }
+
+    private async Task HandleOkEdit(MouseEventArgs e)
+    {
+        _standTable.ReloadData();
+        await Task.Delay(1000);
+        _formNew.Submit();
+    }
+
+    private void HandleCancelNew(MouseEventArgs e)
+    {
+        Console.WriteLine(e);
+    }
+
+    private void HandleCancelEdit(MouseEventArgs e)
+    {
+        Console.WriteLine(e);
+    }
+
+    private void OnFinishNew(EditContext editContext)
+    {
+        _visibleNew = false;
+    }
+
+    private void OnFinishEdit(EditContext editContext)
+    {
+        _visibleEdit = false;
+    }
+
+    private void OnFinishFailedNew(EditContext editContext)
+    {
+        Console.WriteLine($"Failed:{JsonSerializer.Serialize(modelNew)}");
+    }
+
+    private void OnFinishFailedEdit(EditContext editContext)
+    {
+        Console.WriteLine($"Failed:{JsonSerializer.Serialize(modelEdit)}");
+    }
+
+    void OnChange(QueryModel<Stand> query)
+    {
+        _total = mockDb.AsQueryable().ExecuteTableQuery(query).Count();
+        _dataSource = mockDb.AsQueryable().ExecuteTableQuery(query).CurrentPagedRecords(query).ToList();
+    }
+
+    void definitions(string propertyName, IFieldColumn column)
+    {
+        if (propertyName == "Mcu")
+        {
+            var tagCol = ((Column<Mcu>)column);
+
+            tagCol.CellRender = cellData =>
+    @<span>
+        @{
+            var value = cellData.FieldValue;
+        }
+
+        <Tag>@value.Name</Tag>
+        
+    </span>
+    ;
+
+            return;
+        }
+
+        column.Sortable = true;
+        column.Filterable = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        mockDb = Enumerable.Range(0, fakeList.Count).Select(i => fakeList[i]).ToList();
+    }
+} 

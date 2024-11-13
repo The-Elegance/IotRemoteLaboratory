@@ -1,7 +1,84 @@
 ﻿@page "/"
 
-<Button Type="primary">Hello World!</Button>
+
+@using AntDesign
+@using AntDesign.TableModels
+@using System.ComponentModel.DataAnnotations
+
+@inject ModalService ModalService;
+@inject ConfirmService ComfirmService;
+
+<Table @ref="_table1" TItem="ItemData1" PageSize="5" Total="_total1" DataSource="_dataSource1" @bind-SelectedRows="_selectedRows1" OnChange="OnChange1">
+    <TitleTemplate>
+        СТЕНДЫ
+    </TitleTemplate>
+    <ColumnDefinitions Context="row">
+        <Selection />
+        <GenerateColumns Definitions="@((n,c) => { c.Filterable = true; c.Sortable = true; })" />
+    </ColumnDefinitions>
+</Table>
+
+ <Table @ref="_table2" TItem="ItemData2" PageSize="5" Total="_total2" DataSource="_dataSource2" @bind-SelectedRows="_selectedRows2" OnChange="OnChange2">
+     <TitleTemplate>
+         ГРУППЫ
+     </TitleTemplate>
+     <ColumnDefinitions Context="row">
+         <Selection />
+         <GenerateColumns Definitions="@((n,c) => { c.Filterable = true; c.Sortable = true; })" />
+     </ColumnDefinitions>
+ </Table>
+
 
 @code {
+    List<ItemData1> mockDb1 = new();
+    IEnumerable<ItemData1> _selectedRows1 = [];
+    ITable _table1;
+    List<ItemData1> _dataSource1;
+    int _total1;
 
+    List<ItemData2> mockDb2 = new();
+    IEnumerable<ItemData2> _selectedRows2 = [];
+    ITable _table2;
+    List<ItemData2> _dataSource2;
+    int _total2;
+
+    void OnChange1(QueryModel<ItemData1> query)
+    {
+        _total1 = mockDb1.AsQueryable().ExecuteTableQuery(query).Count();
+        _dataSource1 = mockDb1.AsQueryable().ExecuteTableQuery(query).CurrentPagedRecords(query).ToList();
+    }
+
+    void OnChange2(QueryModel<ItemData2> query)
+    {
+        _total2 = mockDb2.AsQueryable().ExecuteTableQuery(query).Count();
+        _dataSource2 = mockDb2.AsQueryable().ExecuteTableQuery(query).CurrentPagedRecords(query).ToList();
+    }
+
+    protected override void OnInitialized()
+    {
+        mockDb1 = Enumerable.Range(0, 5).Select(i => new ItemData1 { Id = i + 1, Name = $"Stand {i}", Framework = "mbed", Url = $"https://urlStand{i}" }).ToList();
+        mockDb2 = Enumerable.Range(0, 5).Select(i => new ItemData2 { Id = i + 1, Name = $"Group {i}", CountNumber = 5 }).ToList();
+    }
+
+    private async Task<bool> Comfirm1(string message)
+    {
+        return await ComfirmService.Show(message, "Confirm", ConfirmButtons.YesNo, ConfirmIcon.Warning) == ConfirmResult.Yes;
+    }
+
+    record ItemData1
+    {
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public string Framework { get; set; }
+        public string Url { get; set; }
+    }
+
+    record ItemData2
+    {
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public int CountNumber { get; set; }
+    }
 }
