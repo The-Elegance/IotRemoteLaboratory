@@ -82,7 +82,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.ConfigureHttpJsonOptions(p => p.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")//,
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DebugConnection")//,
         //x => x.MigrationsAssembly("IotRemoteLab.Persistence")
         );
 });
@@ -142,6 +142,12 @@ builder.Services.AddCLI();
 
 builder.Services.AddSingleton<StandHubBroadcast>();
 builder.Services.AddSingleton<StandsService>();
+
+builder.Services.AddProblemDetails();
+builder.Services.AddApiVersioning(options => 
+{
+    options.ReportApiVersions = true;
+});
 
 var app = builder.Build();
 

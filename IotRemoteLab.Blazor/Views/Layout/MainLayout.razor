@@ -1,12 +1,61 @@
-﻿@using Radzen.Blazor
+﻿<!-- Landing Page -->
+<!-- User Profile Sidebar here -->
+<!-- Stand Page -->
 @inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <Sidebar/>
-    </div>
 
-    <main>
-        @Body
-    </main>
+<style>
+    .layout-with-sidebar {
+        display: flex;
+        overflow-y: hidden;
+    }
+
+    .logo {
+        height: 56px;
+        background: black;
+    }
+
+    .sidebar {
+        overflow: auto;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        background-color: #1f1f21;
+    }
+
+    .site-layout {
+        background-color: #161618;
+        margin-left: 200px;
+        height: 100vh;
+    }
+</style>
+
+
+<div class="layout-with-idebar">
+    <Sider Class="sidebar">
+        <div class="logo" />
+        <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Inline" DefaultSelectedKeys=@(new[]{"4"})>
+            <MenuItem Key="profile" RouterLink="/profile">
+                <Icon Type="user" Theme="outline" />
+                <span class="nav-text">Профиль</span>
+            </MenuItem>
+            <MenuItem Key="schedule" RouterLink="/schedule">
+                <Icon Type="gear" Theme="outline" />
+                <span class="nav-text">Расписание</span>
+            </MenuItem>
+            <MenuItem Key="settings" RouterLink="/settings/profile">
+                <Icon Type="gear" Theme="outline" />
+                <span class="nav-text">Настройки</span>
+            </MenuItem>
+        </Menu>
+    </Sider>
+    <Layout Class="site-layout">
+        <Content Style="overflow: initial; height: 100%; padding: 16px 24px;">
+            @Body
+        </Content>
+    </Layout>
 </div>
-<RadzenComponents/>
+
+
+@code {
+
+}

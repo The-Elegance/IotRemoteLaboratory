@@ -1,4 +1,5 @@
 //using Blazored.LocalStorage;
+using AntDesign;
 using IotRemoteLab.Blazor;
 using IotRemoteLab.Blazor.Providers;
 using IotRemoteLab.Blazor.Services;
@@ -7,17 +8,16 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
-using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped<DialogService>();
+builder.Services.AddAntDesign();
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-	BaseAddress = new Uri("https://localhost:7216")
+	BaseAddress = new Uri("https://localhost:7216/api/v1/")
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -33,7 +33,6 @@ builder.Services.AddScoped(sp => {
 	  .Build();
 });
 
-builder.Services.AddRadzenComponents();
 builder.Services.AddScoped<MonacoEditorService>();
 builder.Services.AddSingleton<JanusWebRtcService>();
 

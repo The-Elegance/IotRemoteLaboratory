@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using IotRemoteLab.Domain.Code;
 using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Domain.Stand;
@@ -8,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion(1.0)]
     [Authorize]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class StandsController : ControllerBase
     {
         private Random random = new();
@@ -23,41 +24,50 @@ namespace IotRemoteLab.API.Controllers
         }
 
 
-        //IHubContext<StandHub> _hubContext;
-        //public StandsController(IHubContext<StandHub> hubContext)
-        //{
-        //    _hubContext = hubContext;
-        //}
+        #region Methods
+
 
         [HttpGet]
-        public async Task<IActionResult> GetStands()
+        public async Task<IEnumerable<Stand>> GetStands()
         {
-            //await _hubContext.Clients.All.SendAsync("RaspberryPiInPortChange", Guid.NewGuid(), random.Next(0,5));
-            return Ok();
+            return await _context.Stands
+                .Include(x => x.Mcu)
+                    .ThenInclude(x => x.Framework)
+                .Include(x => x.Benchboard)
+                    .ThenInclude(x => x.Ports)
+                .Include(x => x.AvailableUarts)
+                .ToListAsync();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:long}")]
         [AllowAnonymous]
         public async Task<Stand?> GetStand(long id)
         {
-            return await _context.Stands.
-                Include(x => x.Mcu).
-                ThenInclude(x => x.Framework).
-                Include(x => x.Benchboard)
-                .ThenInclude(x => x.Ports).
-                FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.Stands
+                .Include(x => x.Mcu)
+                    .ThenInclude(x => x.Framework)
+                .Include(x => x.Benchboard)
+                    .ThenInclude(x => x.Ports)
+                .Include(x => x.AvailableUarts)
+                .FirstOrDefaultAsync(i => i.Id == id);
         }
 
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
         public IActionResult Add(Stand stand)
         {
-            return Ok("stand add");
+            _context.Add(stand);
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         [HttpPut]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult Update(Stand stand)
         {
+            _context.Update(stand);
+            _context.SaveChanges();
             return Ok();
         }
 
@@ -65,40 +75,21 @@ namespace IotRemoteLab.API.Controllers
         [Authorize(Roles = Roles.Admin)]
         public IActionResult Delete(Guid id)
         {
-            return Ok();
+            return NotFound();
         }
+
+
+        #endregion Methods
 
 
         #region Current Stand data
 
         /// TODO !!! использовать данные из БД, вместо статичных конструкций
 
-        private static readonly List<Uart> _availableUarts =
-        [
-            new Uart(0, 1, "UART 1.1"),
-            new Uart(1, 2, "UART 1.2"),
-            new Uart(2, 3, "UART 1.3"),
-            new Uart(3, 4, "UART 1.4"),
-        ];
-
-
         private static readonly BoilerplateCode _cppBoilerplateCode = new("cpp", "17", "void main() {\n}");
 
-
-        /// <summary>
-        /// Возвращает список доступных Uart.
-        /// </summary>
-        /// <param name="standId">Id стенда для которого требуется получить информацию</param>
-        /// <returns></returns>
-        [HttpGet("{standId}/availableUarts")]
-        public async Task<ActionResult<List<Uart>>> GetAvailableUartsList(Guid standId)
-        {
-            return Ok(_availableUarts);
-        }
-
-
         [HttpGet("{standId}/defaultBoilderplaceCode")]
-        public async Task<ActionResult<BoilerplateCode>> GetDefaultProgrammingPattern(Guid standId) 
+        public async Task<ActionResult<BoilerplateCode>> GetDefaultProgrammingPattern(Guid standId)
         {
             return Ok(_cppBoilerplateCode);
         }

@@ -16,8 +16,12 @@
     </NotFound>
 </Router>
 
+<AntContainer />
+
 
 @code {
+    [Inject]
+    public IServiceProvider _serviceProvider { get; set; }
 
     private CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -39,6 +43,11 @@
         {
             return ConnectWithRetryAsync(cts.Token);
         };
+
+        using var scope = _serviceProvider.CreateScope();
+        var configService = scope.ServiceProvider.GetRequiredService<ConfigService>();
+        // TODO: Настроить тему
+        //configService.SetCustomTheme();
     }
 
     private async Task<bool> ConnectWithRetryAsync(CancellationToken token)

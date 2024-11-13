@@ -29,7 +29,7 @@ namespace IotRemoteLab.Blazor.Services
 
 		public async Task StartVideoStreaming()
 		{
-			await _jsRuntime.InvokeVoidAsync("startStream", 10);
+			await _jsRuntime.InvokeVoidAsync("startStream", 1);
 		}
 
 		public async Task StopVideoStreaming()

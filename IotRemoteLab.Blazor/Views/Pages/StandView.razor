@@ -1,0 +1,196 @@
+﻿@page "/stand/{Id:long}"
+@inject HttpClient _httpClient;
+@using IotRemoteLab.Blazor.Services
+@using IotRemoteLab.Blazor.Tools
+@using IotRemoteLab.Domain
+@using IotRemoteLab.Domain.Stand
+@using Microsoft.AspNetCore.SignalR.Client
+@layout BlankLayout
+@inject HubConnection _hubConnection
+@inject NavigationManager _navigation;
+
+@if (_stand == null && !_isLoading)
+{
+    <span>Стенд не найден</span>
+}
+else if (_isLoading)
+{
+    <span>Идет загрузка информации о стенде...</span>
+}
+else
+{
+    <div class="stand-workflow">
+        <div class="stand-workflow__left">
+            <div class="workflow-box">
+                <div class="workflow-box__header">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div @onclick="OnBackClicked" role="button" class="ant-page-header-back-button task-back__button back-task-button__space-item" style="font-size: 16px; color: white;">
+                            <Icon Type="arrow-left" Theme="outline" />
+                        </div>
+
+
+                        <div class="workflow-box__title">
+                            @_stand.Mcu.Name
+                        </div>
+                    </div>
+
+                    <div class="workflow-box__combobox">
+                        <ComboBox @bind-SelectedItem="@_service.SelectedUart" Items="@_stand.AvailableUarts" />
+                    </div>
+                </div>
+                <div class="workflow-box__item">
+                    @* <StreamFrame /> *@
+
+                    @*                 <div class="stream-frame">
+                @if (_service.IsWebcameraEnable)
+                {
+                <span>Попытка подключение к трансляции</span>
+                }
+                else
+                {
+                <span>Отсутствует активная трансляция</span>
+                }
+                </div> *@
+
+                    @*                 <StreamFrame /> *@
+                </div>
+
+                <div class="workflow-box__item workflow-box-grid">
+                    <div class="workflow-box-buttons">
+                        @foreach (var button in _service.StandButton)
+                        {
+                            <SignalButton PortId="@button.Name"
+                                          Pressed="OnSignalButtonPressed"
+                                          Unpressed="OnSignalButtonUnpressed" />
+                            <CheckBox Text="@button.Name"
+                                      StateChanged="@OnButtonStateChanged"
+                                      IsChecked="@button.IsChecked" />
+                        }
+                    </div>
+
+                    <div class="workflow-box-leds">
+                        @foreach (var led in _service.StandLeds)
+                        {
+                            <div class="stand-led">
+                                <div class="stand-led__light @(led.IsEnable ? "-enable" : "")" />
+                                <span class="stand-led__name">@led.Name</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="workflow-box__item -stretch">
+                    <Terminal SendMessageAction="@TerminalSendMessage" Logs="@_service.TerminalLogs" />
+                </div>
+            </div>
+        </div>
+        <div class="stand-workflow__right">
+
+            <div class="workflow-box">
+                <div class="workflow-box__item -stretch">
+                    <MonacoEditor @ref="_codeEditor"
+                                  MonacoEditorId="@_stand.CodeEditorId"
+                                  DebugUpload="@_service.DebugUpload"
+                                  DefaultBoilerplateCode="@_service.DefaultBoilerplateCode"
+                                  CodeChanged="@OnCodeChanged" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    StandService _service;
+    MonacoEditor _codeEditor;
+    Stand? _stand;
+    bool _isLoading;
+
+    /// <summary>
+    /// Id стенда.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public long Id { get; set; }
+
+    public Guid SessionId { get => Guid.NewGuid(); }
+
+
+    #region Public & Protected Methods
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+
+        _stand = await _httpClient.GetFromJsonAsync<Stand?>($"stands/{Id}");
+
+        // TODO: Если Stand is null, выкидывать на экран ошибку об этом.
+        if (_stand == null)
+        {
+            //throw new Exception("Stand data was null");
+        }
+
+        _service = new StandService(_stand, _httpClient, _hubConnection);
+
+        // регистрируем пользователя в SignalR группу для данного стенда
+        //await _hubConnection.SendAsync("EnterToStand", Id);
+
+        _isLoading = false;
+    }
+
+
+    #endregion Public & Protected Methods
+
+
+    #region Private Method
+
+
+    /// <summary>
+    /// Отправляет сообщение из консоли на сервер.
+    /// </summary>
+    /// <param name="command">Команда</param>
+    private void TerminalSendMessage(string command)
+    {
+        if (command?.Length == 0)
+            return;
+
+        var datetime = DateTime.Now;
+
+        _service.TerminalSendCommand(datetime, SessionId, command);
+    }
+
+    private void OnButtonStateChanged(Tuple<string, bool> tuple)
+    {
+        _service.ButtonStateChanged(tuple.Item1, tuple.Item2);
+    }
+
+    private void Service_StandStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async void OnCodeChanged(string value)
+    {
+        ConsoleDebug.WriteLine(value);
+        await _hubConnection.SendAsync("CodeUpdate", Id, value);
+    }
+
+    private void OnSignalButtonPressed(string portId)
+    {
+        _service.ButtonStateChanged(portId, false);
+    }
+
+    private void OnSignalButtonUnpressed(string portId)
+    {
+        _service.ButtonStateChanged(portId, true);
+    }
+
+
+    private void OnBackClicked()
+    {
+        _navigation.NavigateTo("/profile");
+    }
+
+
+    #endregion Private Methods
+}
