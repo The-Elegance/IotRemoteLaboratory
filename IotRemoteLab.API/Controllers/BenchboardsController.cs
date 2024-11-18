@@ -1,5 +1,8 @@
-﻿using IotRemoteLab.Domain.Stand.Benchboards;
+﻿using IotRemoteLab.Domain.Stand;
+using IotRemoteLab.Domain.Stand.Benchboards;
+using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Controllers
 {
@@ -7,13 +10,22 @@ namespace IotRemoteLab.API.Controllers
     [ApiController]
     public class BenchboardsController : ControllerBase
     {
+        private ApplicationContext _context;
+
+        public BenchboardsController(ApplicationContext context)
+        {
+            _context = context;
+        }
+
         #region Benchboard
 
 
         [HttpGet]
-        public async Task<IActionResult> GetBenchboards()
+        public async Task<IEnumerable<Benchboard>> GetBenchboards()
         {
-            return Ok();
+            return await _context.Benchboards
+                .Include(b => b.Ports)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -23,13 +35,16 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddBenchboard(Benchboard stand)
+        public IActionResult AddBenchboard(Benchboard benchboard)
         {
+            _context.Add(benchboard);
+            _context.SaveChanges();
+
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult UpdateBenchboard(Benchboard stand)
+        public IActionResult UpdateBenchboard(Benchboard benchboard)
         {
             return Ok();
         }
@@ -48,9 +63,9 @@ namespace IotRemoteLab.API.Controllers
 
 
         [HttpGet("ports")]
-        public async Task<IActionResult> GetBenchboardPorts()
+        public async Task<IEnumerable<BenchboardPort>> GetBenchboardPorts()
         {
-            return Ok();
+            return await _context.BenchboardPort.ToListAsync();
         }
 
         [HttpGet("ports/{id}")]
@@ -62,6 +77,9 @@ namespace IotRemoteLab.API.Controllers
         [HttpPost("ports")]
         public IActionResult AddBenchboardPort(BenchboardPort port)
         {
+            _context.Add(port);
+            _context.SaveChanges();
+
             return Ok();
         }
 

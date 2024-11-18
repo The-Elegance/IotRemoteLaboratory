@@ -1,0 +1,80 @@
+﻿@page "/ListTeam"
+
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text.Json;
+@using IotRemoteLab.Common.Components.Form
+@using IotRemoteLab.Domain.Team
+@using IotRemoteLab.Domain.User
+@using IotRemoteLab.Domain.Role
+
+
+@inject ModalService _modalService
+@inject ConfirmService ComfirmService;
+@inject HttpClient _httpClient
+
+<h1>List groups</h1>
+
+<Table @ref="_groupTable" TItem="Team" PageSize="5" Total="_total" DataSource="_teams" @bind-SelectedRows="_selectedRows">
+    <TitleTemplate>
+        <Flex Justify="end" Gap="10">
+@*           <Button Type="primary" OnClick="@ShowModalNew">New</Button>
+             <Button Disabled="!_selectedRows.Any()" Danger OnClick="@ShowModalDeleteAll">Delete</Button>
+ *@         </Flex>
+     </TitleTemplate>
+     <ColumnDefinitions Context="row">
+         <Selection />
+        <GenerateColumns HideColumnsByName="@(new []{"Users"})" />
+         <ActionColumn Title="Action">
+@*              <a @onclick="() => StartEdit(row)">Edit</a>
+ *@         </ActionColumn>
+     </ColumnDefinitions>
+ </Table>
+
+ @code
+{
+    ITable _groupTable;
+    List<Team> _teams = new List<Team>
+    {
+        new Team { Id = Guid.NewGuid(), Name = "1", Users = new List<User> { new User { Id = Guid.NewGuid(), Email ="0", PasswordHash = "0", Name = "Name1", Surname = "0", GroupNumber = "0", Roles = new List<Role> { } } } },
+        new Team { Id = Guid.NewGuid(), Name = "1", Users = new List<User> { new User { Id = Guid.NewGuid(), Email ="1", PasswordHash = "1", Name = "Name222", Surname = "1", GroupNumber = "1", Roles = new List<Role> { } } } },
+        new Team { Id = Guid.NewGuid(), Name = "1", Users = new List<User> { new User { Id = Guid.NewGuid(), Email ="2", PasswordHash = "2", Name = "Name33", Surname = "2", GroupNumber = "2", Roles = new List<Role> { } } } },
+    };
+    List<Team> mockDb = new();
+    IEnumerable<Team> _selectedRows = [];
+    
+    int _total;
+
+    void definitions(string propertyName, IFieldColumn column)
+    {
+        if (propertyName == "Users")
+        {
+            var tagCol = ((Column<List<User>>)column);
+
+            tagCol.CellRender = cellData =>
+
+            @<span>
+            @{
+                var value = cellData.FieldValue;
+
+                foreach (var user in value)
+                {
+                    var color = user.Name.Length > 5 ? "geekblue" : "green";
+                    <Tag Color="@color">@user.Name</Tag>
+                }
+
+            }
+            </span>;
+
+            return;
+        }
+
+        column.Sortable = true;
+        column.Filterable = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        mockDb = Enumerable.Range(0, _teams.Count).Select(i => _teams[i]).ToList();
+    }
+}

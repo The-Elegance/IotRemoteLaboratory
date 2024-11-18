@@ -1,5 +1,8 @@
 ﻿using IotRemoteLab.Domain.Stand;
+using IotRemoteLab.Domain.Stand.Benchboards;
+using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Controllers
 {
@@ -7,13 +10,21 @@ namespace IotRemoteLab.API.Controllers
     [ApiController]
     public class McuController : ControllerBase
     {
+        private ApplicationContext _context;
+
+        public McuController(ApplicationContext context)
+        {
+            _context = context;
+        }
         #region Mcu
 
 
         [HttpGet]
-        public async Task<IActionResult> GetMcuList()
+        public async Task<IEnumerable<Mcu>> GetMcuList()
         {
-            return Ok();
+            return await _context.Mcus
+                .Include(b => b.Framework)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -25,6 +36,9 @@ namespace IotRemoteLab.API.Controllers
         [HttpPost]
         public IActionResult AddBenchboard(Mcu mcu)
         {
+            _context.Add(mcu);
+            _context.SaveChanges();
+
             return Ok();
         }
 
@@ -48,9 +62,9 @@ namespace IotRemoteLab.API.Controllers
 
 
         [HttpGet("frameworks")]
-        public async Task<IActionResult> GetMcuFrameworks()
+        public async Task<IEnumerable<McuFramework>> GetMcuFrameworks()
         {
-            return Ok();
+            return await _context.McuFrameworks.ToListAsync();
         }
 
         [HttpGet("frameworks/{id}")]
@@ -60,13 +74,16 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpPost("frameworks")]
-        public IActionResult AddMcuFramework(Mcu mcu)
+        public IActionResult AddMcuFramework(McuFramework mcuFramework)
         {
+            _context.Add(mcuFramework);
+            _context.SaveChanges();
+
             return Ok();
         }
 
         [HttpPut("frameworks")]
-        public IActionResult UpdateMcuFramework(Mcu stand)
+        public IActionResult UpdateMcuFramework(McuFramework mcuFramework)
         {
             return Ok();
         }

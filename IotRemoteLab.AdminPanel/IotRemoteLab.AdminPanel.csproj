@@ -18,4 +18,8 @@
     <ProjectReference Include="..\IotRemoteLab.Domain\IotRemoteLab.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Schedule\" />
+  </ItemGroup>
+
 </Project>

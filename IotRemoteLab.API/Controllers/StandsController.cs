@@ -53,7 +53,7 @@ namespace IotRemoteLab.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Roles.Admin)]
+        //[Authorize(Roles = Roles.Admin)]
         public IActionResult Add(Stand stand)
         {
             _context.Add(stand);
