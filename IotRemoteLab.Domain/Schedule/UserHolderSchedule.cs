@@ -1,12 +1,12 @@
 ﻿namespace IotRemoteLab.Domain.Schedule
 {
-    public class UserHolderSchedule : ScheduleBase
+    public class UserHolderSchedule : ScheduleBase<User>
     {
         public User Holder { get; set; }
 
-        public override T GetHolder<T>()
+        public override User GetHolder()
         {
-            throw new NotImplementedException();
+            return Holder;
         }
     }
 }
