@@ -1,8 +1,8 @@
-﻿using IotRemoteLab.Common.Provider;
+﻿using IotRemoteLab.Common.Time;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace IotRemoteLab.Common.Time
+namespace IotRemoteLab.Common.Times
 {
     public sealed class InitializeTimeZone : ComponentBase
     {
