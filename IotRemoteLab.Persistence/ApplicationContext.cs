@@ -1,10 +1,9 @@
-﻿using IotRemoteLab.Domain;
-using IotRemoteLab.Domain.Stand;
+﻿using IotRemoteLab.Domain.Stand;
 using IotRemoteLab.Domain.Role;
-using IotRemoteLab.Domain.Team;
-using IotRemoteLab.Domain.User;
 using Microsoft.EntityFrameworkCore;
 using IotRemoteLab.Domain.Stand.Benchboards;
+using IotRemoteLab.Domain.Schedule;
+using IotRemoteLab.Domain;
 
 namespace IotRemoteLab.Persistence;
 
@@ -13,7 +12,7 @@ public class ApplicationContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Team> Teams { get; set; }
     public DbSet<Role> Roles { get; set; }
-    public DbSet<Schedule> Schedule { get; set; }
+    public DbSet<ScheduleBase> Schedule { get; set; }
     public DbSet<Stand> Stands { get; set; }
     public DbSet<Mcu> Mcus { get; set; }
     public DbSet<McuFramework> McuFrameworks { get; set; }
@@ -59,6 +58,10 @@ public class ApplicationContext : DbContext
                     .HasConstraintName("FK_TeamUser_Team")
                     .OnDelete(DeleteBehavior.Cascade)
             );
+
+
+        modelBuilder.Entity<TeamHolderSchedule>();
+        modelBuilder.Entity<UserHolderSchedule>();
 
         base.OnModelCreating(modelBuilder);
     }

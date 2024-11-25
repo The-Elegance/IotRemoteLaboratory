@@ -2,8 +2,8 @@
 using System.Security.Cryptography;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Application.User.Dtos;
+using IotRemoteLab.Domain;
 using IotRemoteLab.Domain.Role;
-using IotRemoteLab.Domain.User;
 
 namespace IotRemoteLab.API.Services;
 

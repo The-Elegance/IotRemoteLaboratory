@@ -1,5 +1,5 @@
 ﻿using IotRemoteLab.Application;
-using IotRemoteLab.Domain.Team;
+using IotRemoteLab.Domain;
 using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Mvc;
 

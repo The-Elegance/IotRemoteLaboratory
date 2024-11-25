@@ -1,4 +1,4 @@
-﻿using IotRemoteLab.Domain.User;
+﻿using IotRemoteLab.Domain;
 
 namespace IotRemoteLab.API.Repositories;
 
