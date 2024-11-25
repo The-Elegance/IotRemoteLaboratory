@@ -1,4 +1,4 @@
-﻿using IotRemoteLab.Domain.User;
+﻿using IotRemoteLab.Domain;
 using IotRemoteLab.Persistence;
 using Microsoft.EntityFrameworkCore;
 
