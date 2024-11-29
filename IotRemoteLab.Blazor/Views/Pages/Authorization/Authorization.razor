@@ -4,54 +4,55 @@
 @using System.Text.RegularExpressions
 
 @layout AuthorizationLayout
-@page "/login"
+@page "/Account/Login"
+@attribute [AllowAnonymous]
 
 <div class="auth-container">
-	<div class="auth-wrapper">
-		<div class="auth-header">
-			<h1 class="project-name">Iot Remote Laboratory</h1>
-			<div class="authTitleWrapper">
-				<span class="authTitle">Log In</span>
-				<span class="authDescription">Welcome back! Please enter your details.</span>
-			</div>
-		</div>
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <h1 class="project-name">Iot Remote Laboratory</h1>
+            <div class="authTitleWrapper">
+                <span class="authTitle">Log In</span>
+                <span class="authDescription">Welcome back! Please enter your details.</span>
+            </div>
+        </div>
 
-		<EditForm Model="@data" OnSubmit="Submit">
-			<DataAnnotationsValidator />
+        <EditForm Model="@data" OnSubmit="Submit">
+            <DataAnnotationsValidator />
 
-			<div class="authFormField margin-bottom-28px">
-				<label class="fieldLabel">Login</label>
-				<InputText class="authInput" id="email" @bind-Value="data.Email" />
-				<ValidationMessage For="@(() => data.Email)" />
-			</div>
+            <div class="authFormField margin-bottom-28px">
+                <label class="fieldLabel">Login</label>
+                <InputText class="authInput" id="email" @bind-Value="data.Email" />
+                <ValidationMessage For="@(() => data.Email)" />
+            </div>
 
-			<div class="authFormField margin-bottom-28px">
-				<label class="fieldLabel">Password</label>
-				<InputText class="authInput" id="email" @bind-Value="data.Password" />
-				<ValidationMessage For="@(() => data.Password)" />
-			</div>
+            <div class="authFormField margin-bottom-28px">
+                <label class="fieldLabel">Password</label>
+                <InputText class="authInput" id="email" @bind-Value="data.Password" />
+                <ValidationMessage For="@(() => data.Password)" />
+            </div>
 
-			<button class="default-button margin-bottom-28px" type="submit">Sign In</button>
+            <button class="default-button margin-bottom-28px" type="submit">Sign In</button>
 			@* <button class="ghost-button margin-bottom-28px" type="submit">Sign In with Urfu</button> *@
 
-			<div class="signupWrapper">
-				<span class="text">Not a member?</span>
-				<a href="/signup" class="link">Create an account</a>
-			</div>
+            <div class="signupWrapper">
+                <span class="text">Not a member?</span>
+                <a href="/signup" class="link">Create an account</a>
+            </div>
 
-		</EditForm>
-	</div>
+        </EditForm>
+    </div>
 </div>
 
 
 @code {
-	private AuthorizationUserData data = new();
+    private AuthorizationUserData data = new();
 
-	[Inject]
-	private IAuthService _authService { get; set; } 
+    [Inject]
+    private IAuthService _authService { get; set; }
 
-	async void Submit()
-	{
-		var response = _authService.Login(Regex.Replace(data.Email, @"\s+", ""), data.Password);
-	}
+    async void Submit()
+    {
+        var response = _authService.Login(Regex.Replace(data.Email, @"\s+", ""), data.Password);
+    }
 }

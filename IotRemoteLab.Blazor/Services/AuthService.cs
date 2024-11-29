@@ -40,7 +40,7 @@ public class AuthService :  IAuthService
 
     public async Task<bool> Register(string login, string email, string password)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/auth/register", new { login = login, email = email, password = password });
+        var response = await _httpClient.PostAsJsonAsync("auth/register", new { login = login, email = email, password = password });
 
         if (response.StatusCode != HttpStatusCode.OK)
             return false;
