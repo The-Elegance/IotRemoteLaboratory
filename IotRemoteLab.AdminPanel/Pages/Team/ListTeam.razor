@@ -16,20 +16,23 @@
 <h1>List groups</h1>
 
 <Table @ref="_groupTable" TItem="Team" PageSize="5" Total="_total" DataSource="_teams" @bind-SelectedRows="_selectedRows">
-    <TitleTemplate>
-        <Flex Justify="end" Gap="10">
-@*           <Button Type="primary" OnClick="@ShowModalNew">New</Button>
-             <Button Disabled="!_selectedRows.Any()" Danger OnClick="@ShowModalDeleteAll">Delete</Button>
- *@         </Flex>
-     </TitleTemplate>
-     <ColumnDefinitions Context="row">
-         <Selection />
-        <GenerateColumns HideColumnsByName="@(new []{"Users"})" />
-         <ActionColumn Title="Action">
-@*              <a @onclick="() => StartEdit(row)">Edit</a>
- *@         </ActionColumn>
-     </ColumnDefinitions>
+    <PropertyColumn Property="c=>c.Id">
+        <a>@context.Name</a>
+    </PropertyColumn>
+    <PropertyColumn Property="c=>c.Name">
+        <a>@context.Name</a>
+    </PropertyColumn>
+    <PropertyColumn Property="c=>c.Users">
+        @foreach (var user in context.Users)
+        {
+            var color = user.Name.Length > 5 ? "geekblue" : "green";
+            <Tag Color="@color">@user.Name</Tag>
+        }
+    </PropertyColumn>
  </Table>
+
+@* HideColumnsByName="@(new []{"Users"})" *@
+
 
  @code
 {
@@ -45,33 +48,32 @@
     
     int _total;
 
-    void definitions(string propertyName, IFieldColumn column)
-    {
-        if (propertyName == "Users")
-        {
-            var tagCol = ((Column<List<User>>)column);
+    // void definitions(string propertyName, IFieldColumn column)
+    // {
+    //     if (propertyName == "Users")
+    //     {
+    //         var tagCol = ((Column<IReadOnlyList<User>>)column);
 
-            tagCol.CellRender = cellData =>
+    //         tagCol.CellRender = cellData =>
 
-            @<span>
-            @{
-                var value = cellData.FieldValue;
+    //         @<span>
+    //         @{
+    //             var value = cellData.FieldValue;
 
-                foreach (var user in value)
-                {
-                    var color = user.Name.Length > 5 ? "geekblue" : "green";
-                    <Tag Color="@color">@user.Name</Tag>
-                }
+    //             foreach (var user in value)
+    //             {
+    //                 // var color = user.Name.Length > 5 ? "geekblue" : "green";
+    //                 <Tag>@user.Name</Tag>
+    //             }
+    //         }
+    //         </span>;
 
-            }
-            </span>;
+    //         return;
+    //     }
 
-            return;
-        }
-
-        column.Sortable = true;
-        column.Filterable = true;
-    }
+    //     column.Sortable = true;
+    //     column.Filterable = true;
+    // }
 
     protected override void OnInitialized()
     {

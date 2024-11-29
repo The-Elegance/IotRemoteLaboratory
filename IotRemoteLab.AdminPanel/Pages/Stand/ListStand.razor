@@ -10,7 +10,9 @@
 @inject ConfirmService ComfirmService;
 @inject HttpClient _httpClient
 
-<h1>List stands</h1>
+<h1>Список всех стендов</h1>
+
+@* Таблица всех стендов *@
 
 <Table @ref="_standTable" TItem="Stand" PageSize="5" Total="_total" DataSource="_stands" @bind-SelectedRows="_selectedRows">
     <TitleTemplate>
@@ -28,6 +30,8 @@
     </ColumnDefinitions>
 </Table>
 
+ @* Модалка для удаления по кнопке сверху таблицы *@
+
 <Modal Title="@("Confirm")"
        Visible="@_visibleFlagDeleteAll"
        OnOk="@HandleOkDeleteAll"
@@ -35,15 +39,17 @@
     <p>@_modalTextDeleteAll</p>
 </Modal>
 
+@* Модалка и форма для создания нового элемента *@
+
 <Modal Title="@("New")" style="width: 600px"
        @bind-Visible="@_visibleNew"
        OnOk="@HandleOkNew"
        OnCancel="@HandleCancelNew">
+
     <Form Model="@modelNew"
-          OnFinish="OnFinishNew"
-          OnFinishFailed="OnFinishFailedNew"
           @ref="@_formNew">
         <IotFormGroup Bordered="false">
+
             <IotFormItem Label="Mcu">
                 <Select Mode="default"
                         DataSource="@_mcus"
@@ -70,6 +76,10 @@
                     </Select>
                 </IotFormItem>
             }
+            else
+            {
+                context.Benchboard = null;
+            }
 
             <IotFormItem Label="HasLighting">
                 <Switch @bind-Value="@context.HasLighting" />
@@ -84,6 +94,11 @@
                     <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
                 </IotFormItem>
             }
+            else
+            {
+                context.LightingBrightnessLevel = 0;
+                context.LightingRaspberryPiPort = 0;
+            }
 
             <IotFormItem Label="HasSerialPort">
                 <Switch @bind-Value="@context.HasSerialPort" />
@@ -94,6 +109,10 @@
                 <IotFormItem Label="SerialPortSpeed">
                     <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
                 </IotFormItem>
+            }
+            else
+            {
+                context.SerialPortSpeed = 0;
             }
 
             <IotFormItem Label="HasWebcam" Required>
@@ -106,19 +125,25 @@
                     <Input @bind-Value="@context.WebcamUrl" />
                 </IotFormItem>
             }
+            else
+            {
+                context.WebcamUrl = "";
+            }
         </IotFormGroup>
     </Form>
 </Modal>
 
+@* Модалка и форма для редактирования элемента *@
+
 <Modal Title="@("Edit")" style="width: 600px;"
        @bind-Visible="@_visibleEdit"
        OnOk="@HandleOkEdit"
-       OnCancel="@HandleCancelEdit">
+       OnCancel="HandleCancelEdit">
+
     <Form Model="@modelEdit"
-          OnFinish="OnFinishEdit"
-          OnFinishFailed="OnFinishFailedEdit"
           @ref="@_formEdit">
         <IotFormGroup Bordered="false">
+
             <IotFormItem Label="Mcu">
                 <Select Mode="default"
                         DataSource="@_mcus"
@@ -203,15 +228,15 @@
     bool _visibleFlagDelete = false;
     string _modalTextDelete = "";
 
+    bool _visibleNew = false;
+    private Form<Stand> _formNew;
+    public Stand modelNew = new Stand();
 
-    [Parameter]
-    public string Id { get; set; }
+    bool _visibleEdit = false;
+    private Form<Stand> _formEdit;
+    public Stand modelEdit = new Stand();
 
-
-    protected override Task OnInitializedAsync()
-    {
-        return UpdateList();
-    }
+    protected override Task OnInitializedAsync() => UpdateList();
 
     async Task UpdateList()
     {
@@ -220,14 +245,12 @@
         _benches = await _httpClient.GetFromJsonAsync<List<Benchboard?>>("api/Benchboards");
 
         _mcus = await _httpClient.GetFromJsonAsync<List<Mcu?>>("api/Mcu");
-
     }
 
     private void ShowModalDeleteAll()
     {
         _visibleFlagDeleteAll = true;
         _modalTextDeleteAll = $"Are you sure delete {_selectedRows.Count()} rows?";
-
     }
 
     private async Task HandleOkDeleteAll(MouseEventArgs e)
@@ -236,22 +259,12 @@
         _selectedRows = [];
         _standTable.ReloadData();
         _visibleFlagDeleteAll = false;
-
     }
 
     private void HandleCancelDeleteAll(MouseEventArgs e)
     {
-        Console.WriteLine("Clicked cancel button");
         _visibleFlagDeleteAll = false;
     }
-
-    bool _visibleNew = false;
-    private Form<Stand> _formNew;
-    public Stand modelNew = new Stand();
-
-    bool _visibleEdit = false;
-    private Form<Stand> _formEdit;
-    public Stand modelEdit = new Stand();
 
     private void ShowModalNew()
     {
@@ -263,7 +276,6 @@
         _visibleEdit = true;
         modelEdit = row;
     }
-
 
     private Stand test = new Stand
     {
@@ -284,19 +296,15 @@
     async Task HandleOkNew(MouseEventArgs e)
     {
         // mockDb.Add(modelNew);
-        // _standTable.ReloadData();
-        await _httpClient.PostAsJsonAsync<Stand>("api/v1/stands", test);
-
+        await _httpClient.PostAsJsonAsync<Stand>("api/v1/stands", modelNew);
+        _standTable.ReloadData();
         Console.WriteLine("OK");
-
-        await Task.Delay(1000);
         _formNew.Submit();
     }
 
     private async Task HandleOkEdit(MouseEventArgs e)
     {
         _standTable.ReloadData();
-        await Task.Delay(1000);
         _formNew.Submit();
     }
 
@@ -320,16 +328,6 @@
         _visibleEdit = false;
     }
 
-    private void OnFinishFailedNew(EditContext editContext)
-    {
-        Console.WriteLine($"Failed:{JsonSerializer.Serialize(modelNew)}");
-    }
-
-    private void OnFinishFailedEdit(EditContext editContext)
-    {
-        Console.WriteLine($"Failed:{JsonSerializer.Serialize(modelEdit)}");
-    }
-
     void definitions(string propertyName, IFieldColumn column)
     {
         if (propertyName == "Mcu")
@@ -337,16 +335,14 @@
             var tagCol = ((Column<Mcu>)column);
 
             tagCol.CellRender = cellData =>
-    @<span>
-        @{
-    var value = cellData.FieldValue;
-        }
+            @<span>
+                @{
+                    var value = cellData.FieldValue;
+                 }
 
-        <Tag>@value.Name</Tag>
-
-    </span>
-    ;
-
+                <Tag>@value.Name</Tag>
+            </span>
+            ;
             return;
         }
 
