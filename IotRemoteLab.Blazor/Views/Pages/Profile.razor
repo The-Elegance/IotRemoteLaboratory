@@ -1,4 +1,5 @@
 ﻿@using IotRemoteLab.Blazor.Services.LocalStorage
+@using IotRemoteLab.Domain
     
 @page "/profile"
 
@@ -21,7 +22,7 @@
         <div class="leftContent">
             <img src="" class="profilePic">
             <div class="profileInfo">
-                <span class="welcomeTitle">Добро пожаловать, <span class="userName">@($"{_user.FirstName} {_user.MiddleName}")</span></span>
+                <span class="welcomeTitle">Добро пожаловать, <span class="userName">@($"{_user.Name} {_user.Surname}")</span></span>
                 <ul class="userInfo">
                     <li class="group">
                         <span>Ваша группа:</span>
@@ -93,26 +94,18 @@
 {
     [Inject]
     private HttpClient _httpClient { get; set; }
-
-    class User
-    {
-        public Guid Id { get; set; }
-        public string Email { get; set; }
-        public string FirstName { get; set; }
-        public string? Surname { get; set; }
-        public string? MiddleName { get; set; }
-        public string? GroupNumber { get; set; }
-    }
-
     private User _user = new User()
-        {
-            Id = Guid.NewGuid(),
-            Email = "Igor.Shaposhnikov@urfu.me",
-            FirstName = "Игорь",
-            MiddleName = "Викторович",
-            Surname = "Шапошников",
-            GroupNumber = "РИ-310949"
-        };
+    {
+        Id = Guid.NewGuid(),
+        Email = "Igor.Shaposhnikov@urfu.me",
+        PasswordHash = "111",
+        Name = "Игорь",
+        Surname = "Шапошников",
+        GroupNumber = "PN-410945",
+    };
+
+
+    
 
 
     protected async override void OnInitialized()

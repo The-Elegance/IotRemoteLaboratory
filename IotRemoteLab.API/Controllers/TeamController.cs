@@ -4,6 +4,7 @@ using IotRemoteLab.Domain;
 using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace IotRemoteLab.API.Controllers;
 
@@ -44,10 +45,19 @@ public class TeamController : ControllerBase
             .FirstOrDefaultAsync(team => team.Id == id);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> EditTeam(Team team) 
+    [HttpGet("team/byUser/{userId:guid}")]
+    public Task<Team?> TeamByUser([FromRoute] Guid userId)
     {
-        try 
+        return _dbContext.Teams
+            .Include(t => t.Members)
+            .FirstOrDefaultAsync(team =>
+                team.Members.FirstOrDefault(u => u.Id == userId) != null);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> EditTeam(Team team)
+    {
+        try
         {
             _dbContext.Teams.Update(team);
             await _dbContext.SaveChangesAsync();
@@ -62,7 +72,7 @@ public class TeamController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteTeam([FromRoute] Guid id)
     {
-        try 
+        try
         {
             _dbContext.Remove(id);
             await _dbContext.SaveChangesAsync();
@@ -73,7 +83,7 @@ public class TeamController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
-    
+
     [HttpPost("member/{teamId:guid}/{userId:guid}")]
     public async Task<IActionResult> AddMember([FromRoute] Guid teamId, [FromRoute] Guid userId)
     {
@@ -82,7 +92,7 @@ public class TeamController : ControllerBase
             var targetTeam = await _dbContext.Teams
                 .FirstOrDefaultAsync(t => t.Id == teamId);
 
-            if (targetTeam == null) 
+            if (targetTeam == null)
             {
                 return NotFound($"Team with ID - {teamId} not found");
             }
