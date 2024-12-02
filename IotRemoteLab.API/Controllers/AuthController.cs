@@ -1,13 +1,14 @@
-﻿using IotRemoteLab.API.Services;
+﻿using Asp.Versioning;
+using IotRemoteLab.API.Services;
 using IotRemoteLab.Application.User.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
 [AllowAnonymous]
+[ApiVersion(1.0)]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

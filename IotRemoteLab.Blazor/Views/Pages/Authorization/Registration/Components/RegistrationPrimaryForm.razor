@@ -1,0 +1,45 @@
+﻿@using IotRemoteLab.Blazor.Models
+
+
+<div>
+    <Form @ref="_form" Model="@Model" ValidateOnChange="true">
+        <DataAnnotationsValidator />
+
+        <IotFormGroup Bordered="false">
+            <IotFormItem Label="Email" ValidationFor="(() => context.Email)" DirectionColumn Required>
+                <Input @bind-Value="@context.Email" />
+            </IotFormItem>
+
+            <IotFormItem Label="Password" ValidationFor="(() => context.Password)" DirectionColumn Required>
+                <InputPassword @bind-Value="@context.Password" />
+            </IotFormItem>
+        </IotFormGroup>
+    </Form>
+
+    <Button OnClick="Next" HtmlType="submit">Далее</Button>
+</div>
+
+
+@code {
+    Form<RegistrationUserData> _form;
+
+
+    [Parameter, EditorRequired]
+    public RegistrationUserData Model { get; set; }
+
+    [Parameter]
+    public EventCallback<RegistrationUserData> NextStep { get; set; }
+
+    [Parameter]
+    public Action ToNextStep { get; set; }
+
+    void Next()
+    {
+        if (!_form.Validate())
+        {
+            return;
+        }
+
+        ToNextStep?.Invoke();
+    }
+}

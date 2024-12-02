@@ -1,11 +1,15 @@
-﻿@using IotRemoteLab.Application.User.Dtos
+﻿@page "/Account/Login"
+@attribute [AllowAnonymous]
+
+@using IotRemoteLab.Application.User.Dtos
 @using IotRemoteLab.Blazor.Models
 @using IotRemoteLab.Blazor.Services
 @using System.Text.RegularExpressions
 
 @layout AuthorizationLayout
-@page "/Account/Login"
-@attribute [AllowAnonymous]
+
+@inject NavigationManager _navigation;
+@inject AuthService _authService;
 
 <div class="auth-container">
     <div class="auth-wrapper">
@@ -46,13 +50,17 @@
 
 
 @code {
-    private AuthorizationUserData data = new();
+    AuthorizationUserData data = new();
 
-    [Inject]
-    private IAuthService _authService { get; set; }
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    string? _returnUrl { get; set; } = string.Empty;
 
     async void Submit()
     {
-        var response = _authService.Login(Regex.Replace(data.Email, @"\s+", ""), data.Password);
+        var response = await _authService.Login(Regex.Replace(data.Email, @"\s+", ""), data.Password);
+        if (response)
+        {
+            _navigation.NavigateTo(_returnUrl, true);
+        }
     }
 }

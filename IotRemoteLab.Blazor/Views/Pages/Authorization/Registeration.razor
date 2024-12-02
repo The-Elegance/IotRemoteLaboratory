@@ -4,59 +4,66 @@
 @using IotRemoteLab.Blazor.Models
 @using IotRemoteLab.Blazor.Services
 @using System.Text.RegularExpressions
+@using IotRemoteLab.Blazor.Views.Pages.Authorization.Registration.Components
+
+@inject AuthService _authService
 
 @attribute [AllowAnonymous]
 
-<div class="auth-container">
-	<div class="auth-wrapper">
-		<div class="auth-header">
-			<h1 class="project-name">Iot Remote Laboratory</h1>
-			<div class="authTitleWrapper">
-				<span class="authTitle">Create your account</span>
-				<span class="authDescription">Welcome back! Please enter your details.</span>
-			</div>
-		</div>
+<div>
+    <Steps Current="_currentStep">
+        @foreach (var step in _stepItems)
+        {
+            <Step Title="@step.Title" />
+        }
+    </Steps>
 
-		<EditForm Model="@data" OnSubmit="Submit">
-			<DataAnnotationsValidator />
-
-			<div class="authFormField margin-bottom-28px">
-				<label class="fieldLabel">Login</label>
-				<InputText class="authInput" id="email" @bind-Value="data.Email" />
-				<ValidationMessage For="@(() => data.Email)" />
-			</div>
-
-			<div class="authFormField margin-bottom-28px">
-				<label class="fieldLabel">Login</label>
-				<InputText class="authInput" id="email" @bind-Value="data.Login" />
-				<ValidationMessage For="@(() => data.Login)" />
-			</div>
-
-			<div class="authFormField margin-bottom-28px">
-				<label class="fieldLabel">Password</label>
-				<InputText class="authInput" id="email" @bind-Value="data.Password" />
-				<ValidationMessage For="@(() => data.Password)" />
-			</div>
-
-			<button class="default-button margin-bottom-28px" type="submit">Create Account</button>
-
-			<div class="signupWrapper">
-				<span class="text">Already have an account?</span>
-				<a href="/login" class="link">Log In</a>
-			</div>
-
-		</EditForm>
-	</div>
+    <div>
+        @if (_currentStep == 0)
+        {
+            <RegistrationPrimaryForm Model="@Model" ToNextStep="Next" />
+        }
+        else if (_currentStep == 1)
+        {
+            <RegistrationStudentForm Model="@Model" ToNextStep="Next" SendRegistrationRequest="@SendRequest" />
+        }
+        else
+        {
+            <Result Status="success"
+                    Title="Заявка на регистрацию ученика отправлена!"
+                    SubTitle="Одобрение заявки занимает некоторое время, вы получите ответ на вашу электронную почту.">
+            </Result>
+        }
+    </div>
 </div>
 
 @code {
-    private RegistrationUserData data = new();
+    record StepItem(string Title);
 
-    [Inject]
-    private IAuthService _authService { get; set; }
+    RegistrationUserData Model = new();
 
-    async void Submit()
+    StepItem[] _stepItems = [
+        new("Primary"),
+    new("Student"),
+    new("Finished")
+    ];
+
+    int _currentStep { get; set; } = 0;
+
+    void Next()
     {
-        var response = await _authService.Register(data.Login, Regex.Replace(data.Email, @"\s+", ""), data.Password);
+        _currentStep++;
+        StateHasChanged();
+    }
+}
+
+@code {
+
+
+    async Task SendRequest(RegistrationUserData data)
+    {
+        data.Email = Regex.Replace(Model.Email, @"\s+", "");
+
+        var response = await _authService.Register(data);
     }
 }

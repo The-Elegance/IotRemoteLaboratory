@@ -1,0 +1,63 @@
+﻿@using IotRemoteLab.Blazor.Models
+
+
+<div>
+    <Form @ref="_form" Model="@Model">
+        <DataAnnotationsValidator />
+
+        <IotFormGroup Bordered="false">
+            <IotFormItem Label="Имя" ValidationFor="() => context.Name" DirectionColumn Required>
+                <Input @bind-Value="@context.Name" />
+            </IotFormItem>
+
+            <IotFormItem Label="Фамилия" ValidationFor="() => context.Surname" DirectionColumn Required>
+                <Input @bind-Value="@context.Surname" />
+            </IotFormItem>
+
+            <IotFormItem Label="Отчество" ValidationFor="() => context.MiddleName" DirectionColumn Required>
+                <Input @bind-Value="@context.MiddleName" />
+            </IotFormItem>
+
+            <IotFormItem Label="Университет" ValidationFor="() => context.University" DirectionColumn Required>
+                <Input @bind-Value="@context.University" />
+            </IotFormItem>
+
+            <IotFormItem Label="Учебная группа" ValidationFor="() => context.UniversityGroup" DirectionColumn Required>
+                <Input @bind-Value="@context.UniversityGroup" />
+            </IotFormItem>
+
+            <IotFormItem Label="Кодовое слово" DirectionColumn>
+                <Input @bind-Value="@context.Keyword" />
+            </IotFormItem>
+        </IotFormGroup>
+    </Form>
+
+    <Button OnClick="Next">Отправить заявку</Button>
+</div>
+
+
+@code {
+    Form<RegistrationUserData> _form;
+
+
+    [Parameter, EditorRequired]
+    public RegistrationUserData Model { get; set; }
+
+    [Parameter]
+    public EventCallback<RegistrationUserData> SendRegistrationRequest { get; set; }
+
+    [Parameter]
+    public Action ToNextStep { get; set; }
+
+    Task Next()
+    {
+        Console.WriteLine(_form.Validate());
+        if (!_form.Validate())
+        {
+            return Task.CompletedTask;
+        }
+
+        ToNextStep?.Invoke();
+        return SendRegistrationRequest.InvokeAsync(Model);
+    }
+}

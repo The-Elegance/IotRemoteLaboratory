@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AntDesign" Version="0.20.4.2" />
+    <PackageReference Include="AntDesign" Version="1.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="JWTDecoder" Version="0.9.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IotRemoteLab.Application\IotRemoteLab.Application.csproj" />
+    <ProjectReference Include="..\IotRemoteLab.Common\IotRemoteLab.Common.csproj" />
     <ProjectReference Include="..\IotRemoteLab.Domain\IotRemoteLab.Domain.csproj" />
   </ItemGroup>
 

@@ -21,7 +21,7 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri("https://localhost:7216/api/v1/")
 });
 
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IAccessTokenProvider, AccessTokenProvider>();
 builder.Services.AddScoped<ILocalStorageService, DefaultLocalStorageService>();
 //builder.Services.AddBlazoredLocalStorageAsSingleton();

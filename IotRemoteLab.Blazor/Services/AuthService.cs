@@ -1,19 +1,18 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using IotRemoteLab.Application.User.Dtos;
+using IotRemoteLab.Blazor.Models;
 using IotRemoteLab.Blazor.Services.LocalStorage;
-using Microsoft.AspNetCore.Components;
 
 namespace IotRemoteLab.Blazor.Services;
 
-public class AuthService :  IAuthService
+public class AuthService
 {
     private readonly HttpClient _httpClient;
     private readonly ILocalStorageService _storageService;
-    private readonly NavigationManager _navigationManager;
 
 
-    public AuthService(HttpClient client, ILocalStorageService storageService, NavigationManager navigationManager)
+    public AuthService(HttpClient client, ILocalStorageService storageService)
     {
         _httpClient = client;
         _storageService = storageService;
@@ -22,7 +21,7 @@ public class AuthService :  IAuthService
 
     public async Task<bool> Login(string email, string password)
     {
-		var response = await _httpClient.PostAsJsonAsync("api/Auth/login/", new LoginUserDto(email, password));
+		var response = await _httpClient.PostAsJsonAsync("auth/login/", new LoginUserDto(email, password));
 
 		if (!response.IsSuccessStatusCode)
             return false;
@@ -38,9 +37,9 @@ public class AuthService :  IAuthService
         await _storageService.RemoveItemAsync(StorageFieldNames.TokenName);
     }
 
-    public async Task<bool> Register(string login, string email, string password)
+    public async Task<bool> Register(RegistrationUserData registrationUserData)
     {
-        var response = await _httpClient.PostAsJsonAsync("auth/register", new { login = login, email = email, password = password });
+        var response = await _httpClient.PostAsJsonAsync("auth/register", registrationUserData);
 
         if (response.StatusCode != HttpStatusCode.OK)
             return false;
