@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Repositories;
 
-public class RolesRepository : IRolesRepository
+public class RolesRepository
 {
     private readonly ApplicationContext _applicationContext;
 

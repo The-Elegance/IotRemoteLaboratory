@@ -45,5 +45,11 @@ namespace IotRemoteLab.API.Controllers
 
             return university.Groups;
         }
+
+        [HttpGet("academygroup/{id:guid}")]
+        public Task<AcademyGroup?> GetAcademyGroup(Guid id)
+        {
+            return _dbContext.AcademyGroup.FirstOrDefaultAsync(a => a.Id == id);
+        }
     }
 }

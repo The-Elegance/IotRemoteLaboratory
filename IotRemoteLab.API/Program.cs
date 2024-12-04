@@ -17,10 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-builder.Services.AddScoped<IRolesRepository, RolesRepository>();
+builder.Services.AddScoped<UsersRepository>();
+builder.Services.AddScoped<RolesRepository>();
 //builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddSingleton<IUpperIotService, UpperNodeRedService>();
 builder.Services.AddControllers();

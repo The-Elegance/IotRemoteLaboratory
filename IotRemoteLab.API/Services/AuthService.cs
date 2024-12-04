@@ -7,16 +7,16 @@ using IotRemoteLab.Domain.Role;
 
 namespace IotRemoteLab.API.Services;
 
-public class AuthService : IAuthService
+public class AuthService
 {
-    private readonly IRolesRepository _rolesRepository;
-    private readonly IUsersRepository _usersRepository;
+    private readonly RolesRepository _rolesRepository;
+    private readonly UsersRepository _usersRepository;
     private readonly IJwtService _jwtService;
     private readonly IConfiguration _configuration;
     private readonly HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA512;
 
 
-    public AuthService(IRolesRepository rolesRepository, IUsersRepository usersRepository, IJwtService jwtService, IConfiguration configuration)
+    public AuthService(RolesRepository rolesRepository, UsersRepository usersRepository, IJwtService jwtService, IConfiguration configuration)
     {
         _rolesRepository = rolesRepository;
         _usersRepository = usersRepository;
@@ -52,12 +52,17 @@ public class AuthService : IAuthService
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
+            new Claim("Id", user.Id.ToString()),
         };
         claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
 
         return Result.Ok(_jwtService.GenerateAccessToken(claims));
+    }
+
+
+    public Task<User?> UserProfile(Guid id) 
+    {
+        return _usersRepository.GetUserById(id);
     }
 
     private async Task<User> ConvertDto(RegisterUserDto userDto)

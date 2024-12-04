@@ -24,6 +24,7 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IAccessTokenProvider, AccessTokenProvider>();
 builder.Services.AddScoped<ILocalStorageService, DefaultLocalStorageService>();
+builder.Services.AddScoped<UserContext>();
 //builder.Services.AddBlazoredLocalStorageAsSingleton();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddCascadingAuthenticationState();

@@ -34,21 +34,11 @@ public class User : IScheduleHolder
     /// <summary>
     /// Id учебного заведения
     /// </summary>
-    [ForeignKey(nameof(University))]
     public Guid UniversityId { get; set; }
-    /// <summary>
-    /// Учебное заведение
-    /// </summary>
-    public University? University { get; set; }
     /// <summary>
     /// Id академической группы
     /// </summary>
-    [ForeignKey(nameof(AcademyGroup))]
     public Guid AcademyGroupId { get; set; }
-    /// <summary>
-    /// Академическая группа
-    /// </summary>
-    public AcademyGroup? AcademyGroup { get; set; }
     /// <summary>
     /// Роли пользователя
     /// </summary>
