@@ -1,5 +1,7 @@
 ﻿@using IotRemoteLab.Blazor.Models
+@using IotRemoteLab.Domain
 
+@inject HttpClient _httpClient;
 
 <div>
     <Form @ref="_form" Model="@Model">
@@ -18,12 +20,29 @@
                 <Input @bind-Value="@context.MiddleName" />
             </IotFormItem>
 
-            <IotFormItem Label="Университет" ValidationFor="() => context.University" DirectionColumn Required>
-                <Input @bind-Value="@context.University" />
+            <IotFormItem Label="Университет" ValidationFor="() => context.UniversityId" DirectionColumn Required>
+                <Select @bind-Value="@context.UniversityId"
+                        TItemValue="Guid"
+                        Loading="@_isUniversitiesLoading"
+                        TItem="University"
+                        DataSource="@_universities"
+                        LabelName="@nameof(University.Name)"
+                        ValueName="@nameof(University.Id)"
+                        DefaultActiveFirstOption="false"
+                        OnSelectedItemChanged="OnSelectedUniversityChanged"
+                        Placeholder="Выберите учебное заведение" />
             </IotFormItem>
 
-            <IotFormItem Label="Учебная группа" ValidationFor="() => context.UniversityGroup" DirectionColumn Required>
-                <Input @bind-Value="@context.UniversityGroup" />
+            <IotFormItem Label="Учебная группа" ValidationFor="() => context.AcademyGroupId" DirectionColumn Required>
+                <Select @bind-Value="@context.AcademyGroupId"
+                        TItemValue="Guid"
+                        Loading="@_isAcademyGroupsLoading"
+                        TItem="AcademyGroup"
+                        DataSource="@_academyGroups"
+                        LabelName="@nameof(AcademyGroup.Name)"
+                        ValueName="@nameof(AcademyGroup.Id)"
+                        DefaultActiveFirstOption="false"
+                        Placeholder="Выберите учебную группу" />
             </IotFormItem>
 
             <IotFormItem Label="Кодовое слово" DirectionColumn>
@@ -33,11 +52,23 @@
     </Form>
 
     <Button OnClick="Next">Отправить заявку</Button>
+    <Button OnClick="Prev">Back</Button>
 </div>
 
 
 @code {
     Form<RegistrationUserData> _form;
+
+    bool _isUniversitiesLoading;
+    bool _isAcademyGroupsLoading;
+
+
+    IEnumerable<University> _universities;
+    IEnumerable<AcademyGroup> _academyGroups;
+    University? _selectedUniversity;
+
+
+    #region Parameters
 
 
     [Parameter, EditorRequired]
@@ -49,9 +80,34 @@
     [Parameter]
     public Action ToNextStep { get; set; }
 
+    [Parameter]
+    public Action ToPrevStep { get; set; }
+
+
+    #endregion Parameters
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isUniversitiesLoading = true;
+        _universities = await _httpClient.GetFromJsonAsync<List<University>>("university") ?? [];
+        _isUniversitiesLoading = false;
+    }
+
+
+    #region Private Methods
+
+
+    async Task OnSelectedUniversityChanged(University university)
+    {
+        _isAcademyGroupsLoading = true;
+        _academyGroups = await _httpClient.GetFromJsonAsync<List<AcademyGroup>>($"university/{university.Id}/academygroups") ?? [];
+        _isAcademyGroupsLoading = false;
+    }
+
+
     Task Next()
     {
-        Console.WriteLine(_form.Validate());
         if (!_form.Validate())
         {
             return Task.CompletedTask;
@@ -60,4 +116,12 @@
         ToNextStep?.Invoke();
         return SendRegistrationRequest.InvokeAsync(Model);
     }
+
+    void Prev()
+    {
+        ToPrevStep?.Invoke();
+    }
+
+
+    #endregion Private Methods
 }

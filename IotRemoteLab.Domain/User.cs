@@ -5,15 +5,52 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace IotRemoteLab.Domain;
 public class User : IScheduleHolder
 {
+    /// <summary>
+    /// Id
+    /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
-    [Required]
+    /// <summary>
+    /// Электронная почта
+    /// </summary>
     public string Email { get; set; }
+    /// <summary>
+    /// Пароль
+    /// </summary>
     public string PasswordHash { get; set; }
+    /// <summary>
+    /// Имя
+    /// </summary>
     public string? Name { get; set; }
+    /// <summary>
+    /// Отчество
+    /// </summary>
+    public string? MiddleName { get; set; }
+    /// <summary>
+    /// Фамилия
+    /// </summary>
     public string? Surname { get; set; }
-    public string? GroupNumber { get; set; }
-    [Required]
+    /// <summary>
+    /// Id учебного заведения
+    /// </summary>
+    [ForeignKey(nameof(University))]
+    public Guid UniversityId { get; set; }
+    /// <summary>
+    /// Учебное заведение
+    /// </summary>
+    public University? University { get; set; }
+    /// <summary>
+    /// Id академической группы
+    /// </summary>
+    [ForeignKey(nameof(AcademyGroup))]
+    public Guid AcademyGroupId { get; set; }
+    /// <summary>
+    /// Академическая группа
+    /// </summary>
+    public AcademyGroup? AcademyGroup { get; set; }
+    /// <summary>
+    /// Роли пользователя
+    /// </summary>
     public IReadOnlyList<Role.Role> Roles { get; set; }
 }

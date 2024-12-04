@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("register")]
-    public async Task<ActionResult<string>> Register([FromBody] RegisterUserDto registerUserDto)
+    public async Task<ActionResult<string>> Register([FromBody]RegisterUserDto registerUserDto)
     {
         var result = await _authService.RegisterUserAsync(registerUserDto);
 

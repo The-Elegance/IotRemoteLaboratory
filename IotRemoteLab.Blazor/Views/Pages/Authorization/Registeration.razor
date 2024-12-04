@@ -25,13 +25,13 @@
         }
         else if (_currentStep == 1)
         {
-            <RegistrationStudentForm Model="@Model" ToNextStep="Next" SendRegistrationRequest="@SendRequest" />
+            <RegistrationStudentForm Model="@Model" ToNextStep="Next" ToPrevStep="Prev" SendRegistrationRequest="@SendRequest" />
         }
         else
         {
             <Result Status="success"
                     Title="Заявка на регистрацию ученика отправлена!"
-                    SubTitle="Одобрение заявки занимает некоторое время, вы получите ответ на вашу электронную почту.">
+                    SubTitle="Одобрение заявки занимает некоторое время, вы пна вашу электронную почту.">
             </Result>
         }
     </div>
@@ -40,25 +40,26 @@
 @code {
     record StepItem(string Title);
 
+
     RegistrationUserData Model = new();
-
-    StepItem[] _stepItems = [
-        new("Primary"),
-    new("Student"),
-    new("Finished")
-    ];
-
+    StepItem[] _stepItems = [new("Primary"), new("Student"), new("Finished")];
     int _currentStep { get; set; } = 0;
+
+
+    #region Private Methods
+
 
     void Next()
     {
         _currentStep++;
         StateHasChanged();
     }
-}
 
-@code {
-
+    void Prev()
+    {
+        _currentStep--;
+        StateHasChanged();
+    }
 
     async Task SendRequest(RegistrationUserData data)
     {
@@ -66,4 +67,7 @@
 
         var response = await _authService.Register(data);
     }
+
+
+    #endregion Private Methods
 }

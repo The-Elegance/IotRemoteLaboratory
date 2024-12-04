@@ -16,12 +16,15 @@
         </IotFormGroup>
     </Form>
 
-    <Button OnClick="Next" HtmlType="submit">Далее</Button>
+    <Button OnClick="Next" HtmlType="submit">Продолжить</Button>
 </div>
 
 
 @code {
     Form<RegistrationUserData> _form;
+
+
+    #region Parameters
 
 
     [Parameter, EditorRequired]
@@ -33,13 +36,32 @@
     [Parameter]
     public Action ToNextStep { get; set; }
 
+
+    #endregion Parameters
+
+
+    #region Private Methods
+
+
     void Next()
     {
-        if (!_form.Validate())
+        FieldIdentifier[] fieldIdentifiers = [_form.EditContext.Field("Email"), _form.EditContext.Field("Password")];
+        var isValid = true;
+
+        foreach (var fieldIdentifier in fieldIdentifiers)
+        {
+            _form.EditContext.NotifyFieldChanged(fieldIdentifier);
+            isValid &= !_form.EditContext.GetValidationMessages(fieldIdentifier).Any();
+        }
+
+        if (!isValid) 
         {
             return;
         }
 
         ToNextStep?.Invoke();
     }
+
+
+    #endregion Private Methods
 }

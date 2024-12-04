@@ -28,7 +28,7 @@ public class AuthService : IAuthService
     {
         var existed = await _usersRepository.GetUserByEmailAsync(registerUserDto.Email);
 
-        if (!existed.IsSuccess) 
+        if (!existed.IsSuccess)
             return Result.Fail<string>("Пользователь с такой почтой уже существует");
 
         //TODO: можно автомапер заюзать
@@ -69,7 +69,9 @@ public class AuthService : IAuthService
             Email = userDto.Email,
             Name = userDto.Name,
             Surname = userDto.Surname,
-            GroupNumber = userDto.UniversityGroup,
+            MiddleName = userDto.MiddleName,
+            UniversityId = userDto.UniversityId,
+            AcademyGroupId = userDto.AcademyGroupId,
             PasswordHash = Convert.ToHexString(GenerateHash(userDto.Password)),
             Roles = [] //new[] { role.Value }!
         };
