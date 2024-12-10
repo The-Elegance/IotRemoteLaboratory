@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using IotRemoteLab.Application;
 using IotRemoteLab.Domain;
+using IotRemoteLab.Domain.Stand;
 using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,13 @@ public class TeamController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("userById/{id:guid}")]
+    public Task<User?> GetStands([FromRoute] Guid id)
+    {
+        return _dbContext.Users
+            .FirstOrDefaultAsync(user => user.Id == id);
+
+    }
 
     [HttpGet("{id:guid}")]
     public Task<Team?> Team([FromRoute] Guid id)
@@ -45,7 +53,7 @@ public class TeamController : ControllerBase
             .FirstOrDefaultAsync(team => team.Id == id);
     }
 
-    [HttpGet("team/byUser/{userId:guid}")]
+    [HttpGet("byUser/{userId:guid}")]
     public Task<Team?> TeamByUser([FromRoute] Guid userId)
     {
         return _dbContext.Teams

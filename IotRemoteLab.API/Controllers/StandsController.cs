@@ -17,15 +17,12 @@ namespace IotRemoteLab.API.Controllers
         private Random random = new();
         private ApplicationContext _context;
 
-
         public StandsController(ApplicationContext context)
         {
             _context = context;
         }
 
-
         #region Methods
-
 
         [HttpGet]
         public async Task<IEnumerable<Stand>> GetStands()

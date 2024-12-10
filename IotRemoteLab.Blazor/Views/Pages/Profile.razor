@@ -1,5 +1,11 @@
 ﻿@using IotRemoteLab.Blazor.Services.LocalStorage
 @using IotRemoteLab.Domain
+@using IotRemoteLab.Domain.Stand
+@using IotRemoteLab.Domain.Schedule
+
+@inject ModalService _modalService
+@inject ConfirmService ComfirmService;
+@inject HttpClient _httpClient
     
 @page "/profile"
 
@@ -49,13 +55,16 @@
         <div class="listContentWrapper">
             <h2 class="listTitle">Ваша команда</h2>
             <ul class="list">
-                <li class="card">
-                    <img class="avatar" src="./src/avatar.svg" />
-                    <div class="info">
-                        <span class="name">Шапошников Игорь Викторович</span>
-                        <span class="">РИ-310949</span>
-                    </div>
-                </li>
+                @foreach (var user in _members)
+                {
+                    <li class="card">
+                        <img class="avatar" src="./src/avatar.svg" />
+                        <div class="info">
+                            <span class="name">@($"{user.Name} {user.Surname}")</span>
+                            <span class="">@($"{user.GroupNumber}")</span>
+                        </div>
+                    </li>
+                }
             </ul>
         </div>
 
@@ -64,13 +73,15 @@
             <div class="listWrapper">
                 <span class="available">Доступные стенды</span>
                 <ul class="list">
-                    <li class="card">
-                        <img class="avatar" src="./src/avatar.svg" />
-                        <div class="info">
-                            <span class="name">Название стенда</span>
-                            <span class="">Доступ до 13:00 28.09.2024</span>
-                        </div>
-                    </li>
+                    @foreach (var stand in _stands)
+                    {
+                        <li class="card">
+                            <div class="info">
+                                <span class="name">@($"{stand.Id}")</span>
+                                <span class="">Доступ до 13:00 28.09.2024</span>
+                            </div>
+                        </li>
+                    }
                 </ul>
             </div>
             <div class="listWrapper">
@@ -92,20 +103,29 @@
 
 @code
 {
-    [Inject]
-    private HttpClient _httpClient { get; set; }
-    private User _user = new User()
+
+    private User _user = new ();
+    private static Team _team = new ();
+    private ICollection<User> _members;
+    private ICollection<User> _test;
+    private List<Stand> _stands = new();
+
+    private TeamHolderSchedule _holder = new()
     {
-        Id = Guid.NewGuid(),
-        Email = "Igor.Shaposhnikov@urfu.me",
-        PasswordHash = "111",
-        Name = "Игорь",
-        Surname = "Шапошников",
-        GroupNumber = "PN-410945",
+        Holder = _team,
+
     };
 
+    protected override Task OnInitializedAsync() => UpdateList();
 
-    
+    async Task UpdateList()
+    {
+        _user = await _httpClient.GetFromJsonAsync<User?>("Team/userById/af9a52fb-33ed-48e2-b538-bfc67c08f946");
+        _team = await _httpClient.GetFromJsonAsync<Team?>("Team/byUser/af9a52fb-33ed-48e2-b538-bfc67c08f946");
+        _stands = await _httpClient.GetFromJsonAsync<List<Stand?>>("stands");
+
+        _members = _team.Members;
+    }
 
 
     protected async override void OnInitialized()
