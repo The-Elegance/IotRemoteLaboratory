@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +88,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
         );
 });
 
+
 builder.Services.AddSignalR();
 
 
@@ -153,6 +155,8 @@ builder.Services.AddApiVersioning(options =>
 {
     options.ReportApiVersions = true;
 });
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 

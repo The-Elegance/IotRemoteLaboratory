@@ -43,4 +43,12 @@ public class User : IScheduleHolder
     /// Роли пользователя
     /// </summary>
     public IReadOnlyList<Role.Role> Roles { get; set; }
+    /// <summary>
+    /// Подтвержденный пользователь
+    /// </summary>
+    public bool IsVerified { get; set; }
+    /// <summary>
+    /// Является ли пользователь администратором
+    /// </summary>
+    public bool IsAdmin { get; set; }
 }

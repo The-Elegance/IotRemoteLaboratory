@@ -16,6 +16,9 @@ public class AuthService
     private readonly HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA512;
 
 
+    #region Constructors
+
+
     public AuthService(RolesRepository rolesRepository, UsersRepository usersRepository, IJwtService jwtService, IConfiguration configuration)
     {
         _rolesRepository = rolesRepository;
@@ -23,6 +26,12 @@ public class AuthService
         _jwtService = jwtService;
         _configuration = configuration;
     }
+
+
+    #endregion Constructors
+
+
+    #region Authorization Methods
 
     public async Task<Result<string>> RegisterUserAsync(RegisterUserDto registerUserDto)
     {
@@ -42,10 +51,31 @@ public class AuthService
     {
         var res = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
 
-        if (res.Value == null)
+        var user = res.Value;
+
+        if (user == null || !user.IsVerified)
             return Result.Fail<string>("Такого пользователя не существует");
 
+        if (IsPasswordVerified(loginUserDto.Password, user.PasswordHash))
+            return Result.Fail<string>("Неправильный пароль");
+
+        var claims = new List<Claim>
+        {
+            new Claim("Id", user.Id.ToString()),
+        };
+        claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
+
+        return Result.Ok(_jwtService.GenerateAccessToken(claims));
+    }
+
+    public async Task<Result<string>> LoginAdminUserAsync(LoginUserDto loginUserDto) 
+    {
+        var res = await _usersRepository.GetUserByEmailAsync(loginUserDto.Email);
+
         var user = res.Value;
+
+        if (user == null || !user.IsAdmin)
+            return Result.Fail<string>("Такого пользователя не существует");
 
         if (IsPasswordVerified(loginUserDto.Password, user.PasswordHash))
             return Result.Fail<string>("Неправильный пароль");
@@ -60,10 +90,105 @@ public class AuthService
     }
 
 
+    #endregion Authorization Methods
+
+
+    #region Un/confirm Methods
+
+
+    public async Task<Result<string>> ConfirmVerification(Guid who, Guid whom)
+    {
+       var adminUser = await _usersRepository.GetUserById(who);
+
+        if (adminUser == null)
+            return Result.Fail<string>("У вас недостаточно прав.");
+
+        var user = await _usersRepository.GetUserById(whom);
+
+        if (user == null)
+            return Result.Fail<string>("Такого пользователя не существует");
+
+
+        if (user.IsVerified)
+            return Result.Fail<string>("Данный пользователь уже имеет верификацию");
+
+        user.IsVerified = true;
+
+        await _usersRepository.CreateOrUpdateAsync(user);
+
+        return Result.Ok("Успешно");
+    }
+
+    public async Task<Result<string>> ConfirmAdmin(Guid who, Guid whom)
+    {
+        var adminUser = await _usersRepository.GetUserById(who);
+
+        if (adminUser == null)
+            return Result.Fail<string>("У вас недостаточно прав.");
+
+        var user = await _usersRepository.GetUserById(whom);
+
+        if (user == null || !user.IsAdmin)
+            return Result.Fail<string>("Такого пользователя не существует");
+
+        if (user.IsVerified)
+            return Result.Fail<string>("Данный пользователь уже является администратором");
+
+        user.IsAdmin = true;
+        user.IsVerified = true;
+
+        await _usersRepository.CreateOrUpdateAsync(user);
+
+        return Result.Ok("Успешно");
+    }
+
+    public async Task<Result<string>> UnconfirmVerification(Guid id)
+    {
+        var user = await _usersRepository.GetUserById(id);
+
+        if (user == null)
+            return Result.Fail<string>("Такого пользователя не существует");
+
+        if (user.IsVerified)
+            return Result.Fail<string>("Данный пользователь не имеет верификацию");
+
+        user.IsVerified = false;
+
+        await _usersRepository.CreateOrUpdateAsync(user);
+
+        return Result.Ok("Успешно");
+    }
+
+    public async Task<Result<string>> UnconfirmAdmin(Guid id)
+    {
+        var user = await _usersRepository.GetUserById(id);
+
+        if (user == null)
+            return Result.Fail<string>("Такого пользователя не существует");
+
+        if (!user.IsVerified)
+            return Result.Fail<string>("Данный пользователь не является администратором");
+
+        user.IsAdmin = false;
+        user.IsVerified = false;
+
+        await _usersRepository.CreateOrUpdateAsync(user);
+
+        return Result.Ok("Успешно");
+    }
+
+
+    #endregion Un/confirm Methods
+
+
     public Task<User?> UserProfile(Guid id) 
     {
         return _usersRepository.GetUserById(id);
     }
+
+
+    #region Private Methods
+
 
     private async Task<User> ConvertDto(RegisterUserDto userDto)
     {
@@ -95,4 +220,7 @@ public class AuthService
         return Rfc2898DeriveBytes.Pbkdf2(password.AsSpan(),
             Convert.FromBase64String(salt!), iteration, _hashAlgorithmName, length);
     }
+
+
+    #endregion Private Methods
 }
