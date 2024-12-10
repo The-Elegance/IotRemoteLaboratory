@@ -1,0 +1,48 @@
+﻿@page "/ListUser"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text.Json;
+@using IotRemoteLab.Common.Components.Form
+@using IotRemoteLab.Domain.Team
+@using IotRemoteLab.Domain.User
+@using IotRemoteLab.Domain.Role
+
+
+@inject ModalService _modalService
+@inject ConfirmService ComfirmService;
+@inject HttpClient _httpClient
+
+<h3>List Users</h3>
+
+<Table @ref="_userTable" TItem="User" PageSize="5" Total="_total" DataSource="_users" @bind-SelectedRows="_selectedRows">
+@*     <PropertyColumn Property="c=>c.Id">
+        <a>@context.Name</a>
+    </PropertyColumn>
+    <PropertyColumn Property="c=>c.Name">
+        <a>@context.Name</a>
+    </PropertyColumn>
+    <PropertyColumn Property="c=>c.Users">
+        @foreach (var user in context.Users)
+        {
+            var color = user.Name.Length > 5 ? "geekblue" : "green";
+            <Tag Color="@color">@user.Name</Tag>
+        }
+    </PropertyColumn> *@
+</Table>
+
+@code {
+    ITable _userTable;
+    List<User> _users = new();
+
+    protected override Task OnInitializedAsync() => UpdateList();
+
+    async Task UpdateList()
+    {
+        _users = await _httpClient.GetFromJsonAsync<List<User?>>("api/v1/stands");
+    }
+
+    List<User> mockDb = new();
+    IEnumerable<User> _selectedRows = [];
+
+    int _total;
+}

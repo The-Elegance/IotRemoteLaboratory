@@ -31,8 +31,6 @@
     </PropertyColumn>
  </Table>
 
-@* HideColumnsByName="@(new []{"Users"})" *@
-
 
  @code
 {
@@ -47,33 +45,6 @@
     IEnumerable<Team> _selectedRows = [];
     
     int _total;
-
-    // void definitions(string propertyName, IFieldColumn column)
-    // {
-    //     if (propertyName == "Users")
-    //     {
-    //         var tagCol = ((Column<IReadOnlyList<User>>)column);
-
-    //         tagCol.CellRender = cellData =>
-
-    //         @<span>
-    //         @{
-    //             var value = cellData.FieldValue;
-
-    //             foreach (var user in value)
-    //             {
-    //                 // var color = user.Name.Length > 5 ? "geekblue" : "green";
-    //                 <Tag>@user.Name</Tag>
-    //             }
-    //         }
-    //         </span>;
-
-    //         return;
-    //     }
-
-    //     column.Sortable = true;
-    //     column.Filterable = true;
-    // }
 
     protected override void OnInitialized()
     {
