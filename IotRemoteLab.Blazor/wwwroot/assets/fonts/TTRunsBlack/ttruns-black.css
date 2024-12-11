@@ -1,0 +1,9 @@
+@font-face {
+	font-family: 'TTRuns-Black';
+	src: url('./fonts/ttruns-black.eot'); /* IE 9 Compatibility Mode */
+	src: url('./fonts/ttruns-black.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('./fonts/ttruns-black.woff2') format('woff2'), /* Super Modern Browsers */
+		url('./fonts/ttruns-black.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('./fonts/ttruns-black.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('./fonts/ttruns-black.svg#ttruns-black') format('svg'); /* Chrome < 4, Legacy iOS */
+}
