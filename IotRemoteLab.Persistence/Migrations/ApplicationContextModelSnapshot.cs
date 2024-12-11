@@ -208,6 +208,9 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.Property<long>("McuId")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("ScheduleBaseId")
+                        .HasColumnType("uuid");
+
                     b.Property<long>("SerialPortSpeed")
                         .HasColumnType("bigint");
 
@@ -224,6 +227,8 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.HasIndex("BenchboardId");
 
                     b.HasIndex("McuId");
+
+                    b.HasIndex("ScheduleBaseId");
 
                     b.ToTable("Stands");
                 });
@@ -308,21 +313,6 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.ToTable("RoleUser");
                 });
 
-            modelBuilder.Entity("ScheduleStand", b =>
-                {
-                    b.Property<Guid>("ScheduleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<long>("StandId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ScheduleId", "StandId");
-
-                    b.HasIndex("StandId");
-
-                    b.ToTable("ScheduleStand");
-                });
-
             modelBuilder.Entity("StandUart", b =>
                 {
                     b.Property<long>("StandId")
@@ -401,6 +391,10 @@ namespace IotRemoteLab.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IotRemoteLab.Domain.Schedule.ScheduleBase", null)
+                        .WithMany("Stands")
+                        .HasForeignKey("ScheduleBaseId");
+
                     b.Navigation("Benchboard");
 
                     b.Navigation("Mcu");
@@ -419,23 +413,6 @@ namespace IotRemoteLab.Persistence.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ScheduleStand", b =>
-                {
-                    b.HasOne("IotRemoteLab.Domain.Schedule.ScheduleBase", null)
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_ScheduleStand_Schedule");
-
-                    b.HasOne("IotRemoteLab.Domain.Stand.Stand", null)
-                        .WithMany()
-                        .HasForeignKey("StandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_ScheduleStand_Stand");
                 });
 
             modelBuilder.Entity("StandUart", b =>
@@ -492,6 +469,11 @@ namespace IotRemoteLab.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Holder");
+                });
+
+            modelBuilder.Entity("IotRemoteLab.Domain.Schedule.ScheduleBase", b =>
+                {
+                    b.Navigation("Stands");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.Benchboard", b =>
