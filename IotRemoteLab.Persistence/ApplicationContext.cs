@@ -59,22 +59,6 @@ public class ApplicationContext : DbContext
                     .OnDelete(DeleteBehavior.Cascade)
             );
 
-        modelBuilder.Entity<ScheduleBase>()
-            .HasMany(r => r.Stands)
-            .WithMany()
-            .UsingEntity<Dictionary<string, object>>(
-                "ScheduleStand",
-                r => r.HasOne<Stand>()
-                    .WithMany()
-                    .HasForeignKey("StandId")
-                    .HasConstraintName("FK_ScheduleStand_Stand")
-                    .OnDelete(DeleteBehavior.Cascade),
-                a => a.HasOne<ScheduleBase>()
-                    .WithMany()
-                    .HasForeignKey("ScheduleId")
-                    .HasConstraintName("FK_ScheduleStand_Schedule")
-                    .OnDelete(DeleteBehavior.Cascade)
-            );
 
         modelBuilder.Entity<TeamHolderSchedule>();
         modelBuilder.Entity<UserHolderSchedule>();
