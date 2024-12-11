@@ -283,7 +283,12 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.Property<string>("Surname")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("TeamId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Users");
                 });
@@ -316,21 +321,6 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.HasIndex("UartId");
 
                     b.ToTable("StandUart");
-                });
-
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.Property<Guid>("TeamId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("TeamId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TeamUser");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Schedule", b =>
@@ -383,6 +373,13 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.Navigation("Mcu");
                 });
 
+            modelBuilder.Entity("IotRemoteLab.Domain.User.User", b =>
+                {
+                    b.HasOne("IotRemoteLab.Domain.Team.Team", null)
+                        .WithMany("Users")
+                        .HasForeignKey("TeamId");
+                });
+
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.HasOne("IotRemoteLab.Domain.Role.Role", null)
@@ -415,23 +412,6 @@ namespace IotRemoteLab.Persistence.Migrations
                         .HasConstraintName("FK_StandUart_Uart");
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.HasOne("IotRemoteLab.Domain.Team.Team", null)
-                        .WithMany()
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_TeamUser_Team");
-
-                    b.HasOne("IotRemoteLab.Domain.User.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_TeamUser_User");
-                });
-
             modelBuilder.Entity("IotRemoteLab.Domain.Schedule", b =>
                 {
                     b.Navigation("Stands");
@@ -440,6 +420,11 @@ namespace IotRemoteLab.Persistence.Migrations
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.Benchboard", b =>
                 {
                     b.Navigation("Ports");
+                });
+
+            modelBuilder.Entity("IotRemoteLab.Domain.Team.Team", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

@@ -80,7 +80,7 @@ public class ScheduleRepository : IScheduleRepository
     public async Task<Result<Schedule[]>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var a = _applicationContext.Schedule.Where(schedule =>
-            schedule.Team.Members.SingleOrDefault(user => user.Id == userId) != null);
+            schedule.Team.Users.SingleOrDefault(user => user.Id == userId) != null);
         return await a.ToArrayAsync(cancellationToken: cancellationToken);
     }
     

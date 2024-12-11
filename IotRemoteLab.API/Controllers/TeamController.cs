@@ -27,7 +27,7 @@ public class TeamController : ControllerBase
         {
             Id = Guid.NewGuid(),
             Name = dto.TeamName,
-            Members = a
+            Users = a
         };
         
         _applicationContext.Teams.Add(team);

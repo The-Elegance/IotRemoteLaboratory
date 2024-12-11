@@ -43,23 +43,6 @@ public class ApplicationContext : DbContext
                     .OnDelete(DeleteBehavior.Cascade)
             );
 
-        modelBuilder.Entity<Team>()
-            .HasMany(r => r.Members)
-            .WithMany()
-            .UsingEntity<Dictionary<string, object>>(
-                "TeamUser",
-                r => r.HasOne<User>()
-                    .WithMany()
-                    .HasForeignKey("UserId")
-                    .HasConstraintName("FK_TeamUser_User")
-                    .OnDelete(DeleteBehavior.Cascade),
-                a => a.HasOne<Team>()
-                    .WithMany()
-                    .HasForeignKey("TeamId")
-                    .HasConstraintName("FK_TeamUser_Team")
-                    .OnDelete(DeleteBehavior.Cascade)
-            );
-
         base.OnModelCreating(modelBuilder);
     }
 }
