@@ -1,15 +1,14 @@
-using System.Security.Claims;
+using Asp.Versioning;
 using IotRemoteLab.API.Repositories;
-using IotRemoteLab.Application;
 using IotRemoteLab.Domain.Role;
-using IotRemoteLab.Domain.Schedule;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers;
 
-[Route("api/schedule")]
 [Authorize]
+[ApiVersion(1.0)]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class ScheduleController : ControllerBase
 {
     private readonly IScheduleRepository _scheduleRepository;
@@ -96,5 +95,18 @@ public class ScheduleController : ControllerBase
     {
         throw new NotImplementedException();
     }
-    
+
+    [Authorize(Roles = Roles.Student)]
+    [HttpPost("take")]
+    public Task<IActionResult> TakeTime() 
+    {
+        throw new NotImplementedException();
+    }
+
+    [Authorize(Roles = Roles.Admin)]
+    [HttpPost("class")]
+    public Task<IActionResult> AddClass() 
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -13,13 +13,10 @@ using IotRemoteLab.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
-
 builder.Services.AddControllers();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,7 +48,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
 
 builder.Services.AddAuthentication(options =>
     {
@@ -148,8 +144,6 @@ builder.Services.AddApiVersioning(options =>
 {
     options.ReportApiVersions = true;
 });
-
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 

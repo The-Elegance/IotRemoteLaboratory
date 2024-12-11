@@ -9,12 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Controllers
 {
+    [Authorize]
     [ApiVersion(1.0)]
-    //[Authorize]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class StandsController : ControllerBase
     {
-        private Random random = new();
         private ApplicationContext _context;
 
 
@@ -24,7 +23,7 @@ namespace IotRemoteLab.API.Controllers
         }
 
 
-        #region Methods
+        #region Crud Methods
 
 
         [HttpGet]
