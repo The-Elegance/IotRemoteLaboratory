@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IRolesRepository, RolesRepository>();
-//builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddSingleton<IUpperIotService, UpperNodeRedService>();

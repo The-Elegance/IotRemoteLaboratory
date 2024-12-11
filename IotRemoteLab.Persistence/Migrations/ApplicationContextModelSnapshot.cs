@@ -37,36 +37,26 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("IotRemoteLab.Domain.Schedule.ScheduleBase", b =>
+            modelBuilder.Entity("IotRemoteLab.Domain.Schedule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
-
                     b.Property<DateTime>("End")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("HolderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Start")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("TeamId");
+
                     b.ToTable("Schedule");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ScheduleBase");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.Benchboard", b =>
@@ -208,7 +198,7 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.Property<long>("McuId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid?>("ScheduleBaseId")
+                    b.Property<Guid?>("ScheduleId")
                         .HasColumnType("uuid");
 
                     b.Property<long>("SerialPortSpeed")
@@ -228,7 +218,7 @@ namespace IotRemoteLab.Persistence.Migrations
 
                     b.HasIndex("McuId");
 
-                    b.HasIndex("ScheduleBaseId");
+                    b.HasIndex("ScheduleId");
 
                     b.ToTable("Stands");
                 });
@@ -253,7 +243,7 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.ToTable("Uart");
                 });
 
-            modelBuilder.Entity("IotRemoteLab.Domain.Team", b =>
+            modelBuilder.Entity("IotRemoteLab.Domain.Team.Team", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -268,7 +258,7 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("IotRemoteLab.Domain.User", b =>
+            modelBuilder.Entity("IotRemoteLab.Domain.User.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -343,22 +333,15 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.ToTable("TeamUser");
                 });
 
-            modelBuilder.Entity("IotRemoteLab.Domain.Schedule.TeamHolderSchedule", b =>
+            modelBuilder.Entity("IotRemoteLab.Domain.Schedule", b =>
                 {
-                    b.HasBaseType("IotRemoteLab.Domain.Schedule.ScheduleBase");
+                    b.HasOne("IotRemoteLab.Domain.Team.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasIndex("HolderId");
-
-                    b.HasDiscriminator().HasValue("TeamHolderSchedule");
-                });
-
-            modelBuilder.Entity("IotRemoteLab.Domain.Schedule.UserHolderSchedule", b =>
-                {
-                    b.HasBaseType("IotRemoteLab.Domain.Schedule.ScheduleBase");
-
-                    b.HasIndex("HolderId");
-
-                    b.HasDiscriminator().HasValue("UserHolderSchedule");
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("IotRemoteLab.Domain.Stand.Benchboards.BenchboardPort", b =>
@@ -391,9 +374,9 @@ namespace IotRemoteLab.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IotRemoteLab.Domain.Schedule.ScheduleBase", null)
+                    b.HasOne("IotRemoteLab.Domain.Schedule", null)
                         .WithMany("Stands")
-                        .HasForeignKey("ScheduleBaseId");
+                        .HasForeignKey("ScheduleId");
 
                     b.Navigation("Benchboard");
 
@@ -408,7 +391,7 @@ namespace IotRemoteLab.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IotRemoteLab.Domain.User", null)
+                    b.HasOne("IotRemoteLab.Domain.User.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -434,14 +417,14 @@ namespace IotRemoteLab.Persistence.Migrations
 
             modelBuilder.Entity("TeamUser", b =>
                 {
-                    b.HasOne("IotRemoteLab.Domain.Team", null)
+                    b.HasOne("IotRemoteLab.Domain.Team.Team", null)
                         .WithMany()
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TeamUser_Team");
 
-                    b.HasOne("IotRemoteLab.Domain.User", null)
+                    b.HasOne("IotRemoteLab.Domain.User.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -449,29 +432,7 @@ namespace IotRemoteLab.Persistence.Migrations
                         .HasConstraintName("FK_TeamUser_User");
                 });
 
-            modelBuilder.Entity("IotRemoteLab.Domain.Schedule.TeamHolderSchedule", b =>
-                {
-                    b.HasOne("IotRemoteLab.Domain.Team", "Holder")
-                        .WithMany()
-                        .HasForeignKey("HolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Holder");
-                });
-
-            modelBuilder.Entity("IotRemoteLab.Domain.Schedule.UserHolderSchedule", b =>
-                {
-                    b.HasOne("IotRemoteLab.Domain.User", "Holder")
-                        .WithMany()
-                        .HasForeignKey("HolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Holder");
-                });
-
-            modelBuilder.Entity("IotRemoteLab.Domain.Schedule.ScheduleBase", b =>
+            modelBuilder.Entity("IotRemoteLab.Domain.Schedule", b =>
                 {
                     b.Navigation("Stands");
                 });
