@@ -15,34 +15,43 @@
 <h3>List Users</h3>
 
 <Table @ref="_userTable" TItem="User" PageSize="5" Total="_total" DataSource="_users" @bind-SelectedRows="_selectedRows">
-@*     <PropertyColumn Property="c=>c.Id">
-        <a>@context.Name</a>
-    </PropertyColumn>
     <PropertyColumn Property="c=>c.Name">
         <a>@context.Name</a>
     </PropertyColumn>
-    <PropertyColumn Property="c=>c.Users">
-        @foreach (var user in context.Users)
-        {
-            var color = user.Name.Length > 5 ? "geekblue" : "green";
-            <Tag Color="@color">@user.Name</Tag>
-        }
-    </PropertyColumn> *@
+    <PropertyColumn Property="c=>c.Surname">
+        <a>@context.Surname</a>
+    </PropertyColumn>
+    <PropertyColumn Property="c=>c.Email">
+        <a>@context.Email</a>
+    </PropertyColumn>
+    <PropertyColumn Property="c=>c.GroupNumber">
+        <a>@context.GroupNumber</a>
+    </PropertyColumn>
 </Table>
 
 @code {
     ITable _userTable;
-    List<User> _users = new();
-
-    protected override Task OnInitializedAsync() => UpdateList();
-
-    async Task UpdateList()
+    List<User> _users = new List<User>
     {
-        _users = await _httpClient.GetFromJsonAsync<List<User?>>("api/v1/stands");
-    }
+       new User { Id = Guid.NewGuid(), Email ="0", PasswordHash = "0", Name = "Name1", Surname = "0", GroupNumber = "0", Roles = new List<Role> { } },
+       new User { Id = Guid.NewGuid(), Email ="1", PasswordHash = "1", Name = "Name222", Surname = "1", GroupNumber = "1", Roles = new List<Role> { } },
+       new User { Id = Guid.NewGuid(), Email ="2", PasswordHash = "2", Name = "Name33", Surname = "2", GroupNumber = "2", Roles = new List<Role> { } }
+    };
+
+    // protected override Task OnInitializedAsync() => UpdateList();
+
+    // async Task UpdateList()
+    // {
+    //     _users = await _httpClient.GetFromJsonAsync<List<User?>>("api/v1/stands");
+    // }
 
     List<User> mockDb = new();
     IEnumerable<User> _selectedRows = [];
 
     int _total;
+
+    protected override void OnInitialized()
+    {
+        mockDb = Enumerable.Range(0, _users.Count).Select(i => _users[i]).ToList();
+    }
 }

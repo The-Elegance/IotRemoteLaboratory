@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.Application", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.AdminPanel", "IotRemoteLab.AdminPanel\IotRemoteLab.AdminPanel.csproj", "{134F7521-96FC-427A-9486-FD2E4209FD57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotRemoteLab.Common", "IotRemoteLab.Common\IotRemoteLab.Common.csproj", "{85B5ECAB-EA57-4307-84ED-A3C19A076C48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IotRemoteLab.Common", "IotRemoteLab.Common\IotRemoteLab.Common.csproj", "{85B5ECAB-EA57-4307-84ED-A3C19A076C48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
