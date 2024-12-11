@@ -79,4 +79,9 @@ public class UsersRepository
             .Users
             .SingleOrDefaultAsync(user => user.Id == id);
     }
+
+    public Task<List<User>> GetUsersAsync() 
+    {
+        return _applicationContext.Users.ToListAsync();
+    }
 }

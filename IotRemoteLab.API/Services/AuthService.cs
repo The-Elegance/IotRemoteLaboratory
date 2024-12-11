@@ -181,12 +181,6 @@ public class AuthService
     #endregion Un/confirm Methods
 
 
-    public Task<User?> UserProfile(Guid id) 
-    {
-        return _usersRepository.GetUserById(id);
-    }
-
-
     #region Private Methods
 
 

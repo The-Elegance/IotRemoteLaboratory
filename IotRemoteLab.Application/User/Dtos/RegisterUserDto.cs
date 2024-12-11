@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using IotRemoteLab.Domain.Role;
+using System.ComponentModel.DataAnnotations;
 
 namespace IotRemoteLab.Application.User.Dtos;
 
@@ -10,4 +11,5 @@ public record RegisterUserDto(
     string MiddleName, 
     Guid UniversityId, 
     Guid AcademyGroupId, 
-    string? keyword);
+    string? keyword,
+    List<Role> roles);

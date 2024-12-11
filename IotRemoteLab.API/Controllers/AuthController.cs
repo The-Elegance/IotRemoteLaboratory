@@ -1,14 +1,11 @@
 ﻿using Asp.Versioning;
 using IotRemoteLab.API.Services;
 using IotRemoteLab.Application.User.Dtos;
-using IotRemoteLab.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace IotRemoteLab.API.Controllers;
 
-[Authorize(Roles = "Admin")]
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class AuthController : ControllerBase
@@ -30,10 +27,11 @@ public class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("login")]
-    public async Task<ActionResult<string>> Login([FromBody] LoginUserDto loginUserDto)
+    [HttpPost("register")]
+    public async Task<ActionResult<string>> Register([FromBody] RegisterUserDto registerUserDto)
     {
-        var result = await _authService.LoginUserAsync(loginUserDto);
+        var result = await _authService.RegisterUserAsync(registerUserDto);
+
         if (!result.IsSuccess)
             return BadRequest(result.Error);
 
@@ -41,11 +39,10 @@ public class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("register")]
-    public async Task<ActionResult<string>> Register([FromBody] RegisterUserDto registerUserDto)
+    [HttpPost("login")]
+    public async Task<ActionResult<string>> Login([FromBody] LoginUserDto loginUserDto)
     {
-        var result = await _authService.RegisterUserAsync(registerUserDto);
-
+        var result = await _authService.LoginUserAsync(loginUserDto);
         if (!result.IsSuccess)
             return BadRequest(result.Error);
 
@@ -63,6 +60,7 @@ public class AuthController : ControllerBase
         return Ok(result.Value);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("user/confirm/verification/{id:guid}")]
     public async Task<IActionResult> ConfirmUserVerificationAsync(Guid id)
     {
@@ -73,6 +71,7 @@ public class AuthController : ControllerBase
         return Ok(result.Value);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("user/confirm/admin/{id:guid}")]
     public async Task<IActionResult> ConfirmAdminUserAsync(Guid id)
     {
@@ -81,16 +80,5 @@ public class AuthController : ControllerBase
             return BadRequest(result.Error);
 
         return Ok(result.Value);
-    }
-
-    [HttpGet("profile/{id:guid}")]
-    public async Task<User?> GetUserProfile(Guid id)
-    {
-        var user = await _authService.UserProfile(id);
-        if (user != null)
-        {
-            user.PasswordHash = null;
-        }
-        return user;
     }
 }

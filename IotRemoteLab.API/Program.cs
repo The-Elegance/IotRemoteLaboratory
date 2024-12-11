@@ -1,29 +1,23 @@
 using IotRemoteLab.API;
 using IotRemoteLab.API.HostBuilderExtensions;
 using IotRemoteLab.API.Hubs;
-using IotRemoteLab.API.Services;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json.Serialization;
-using IotRemoteLab.API.Controllers;
-using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Identity;
+using IotRemoteLab.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddScoped<UsersRepository>();
-builder.Services.AddScoped<RolesRepository>();
-//builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddSingleton<IUpperIotService, UpperNodeRedService>();
+builder.Services.RegisterRepositories();
+builder.Services.RegisterServices();
+
 builder.Services.AddControllers();
 
 
@@ -148,7 +142,6 @@ catch { }
 builder.Services.AddCLI();
 
 builder.Services.AddSingleton<StandHubBroadcast>();
-builder.Services.AddSingleton<StandsService>();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning(options =>
