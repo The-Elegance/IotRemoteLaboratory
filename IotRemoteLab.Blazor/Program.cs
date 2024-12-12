@@ -3,7 +3,7 @@ using AntDesign;
 using IotRemoteLab.Blazor;
 using IotRemoteLab.Blazor.Providers;
 using IotRemoteLab.Blazor.Services;
-using IotRemoteLab.Blazor.Services.LocalStorage;
+using IotRemoteLab.Common.Services.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -23,7 +23,7 @@ builder.Services.AddScoped(sp => new HttpClient
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IAccessTokenProvider, AccessTokenProvider>();
-builder.Services.AddScoped<ILocalStorageService, DefaultLocalStorageService>();
+builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
 builder.Services.AddScoped<UserContext>();
 //builder.Services.AddBlazoredLocalStorageAsSingleton();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();

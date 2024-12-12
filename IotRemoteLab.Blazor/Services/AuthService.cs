@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 using IotRemoteLab.Application.User.Dtos;
 using IotRemoteLab.Blazor.Models;
-using IotRemoteLab.Blazor.Services.LocalStorage;
+using IotRemoteLab.Common.Services.LocalStorage;
 
 namespace IotRemoteLab.Blazor.Services;
 

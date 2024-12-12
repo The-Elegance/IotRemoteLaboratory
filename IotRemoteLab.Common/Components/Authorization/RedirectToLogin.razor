@@ -1,0 +1,17 @@
+@inject NavigationManager _navigation;
+
+@code {
+    [Parameter]
+    public string? DefaultRedirectTo { get; set; } = null;
+
+    protected override void OnInitialized()
+    {
+        var url = _navigation.Uri;
+        if (DefaultRedirectTo != null && url.Split('/')[3] == string.Empty)
+        {
+            url += DefaultRedirectTo; 
+        }
+
+        _navigation.NavigateTo($"Account/Login?returnUrl={Uri.EscapeDataString(url)}", forceLoad: true);
+    }
+}

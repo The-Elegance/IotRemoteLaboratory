@@ -1,4 +1,5 @@
 ﻿﻿@using System.Threading
+@using IotRemoteLab.Common.Components.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.SignalR.Client
 @implements IAsyncDisposable
@@ -9,7 +10,7 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    <RedirectToLogin />
+                    <RedirectToLogin DefaultRedirectTo="profile" />
                 </NotAuthorized>
                 @* <Authorizing> *@
                 @*     <span>Your spinner goes here</span> *@
