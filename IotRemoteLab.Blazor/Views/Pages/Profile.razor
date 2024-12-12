@@ -112,9 +112,6 @@ else
     protected async override Task OnInitializedAsync()
     {
         _user = await _context.GetUserProfileAsync();
-        _academyGroup = new AcademyGroup() 
-        {
-            Name = "test"
-        };// await _httpClient.GetFromJsonAsync<AcademyGroup?>($"university/academygroup/{_user.AcademyGroupId}");
+        _academyGroup = await _httpClient.GetFromJsonAsync<AcademyGroup?>($"university/academygroup/{_user.AcademyGroupId}");
     }
 }
