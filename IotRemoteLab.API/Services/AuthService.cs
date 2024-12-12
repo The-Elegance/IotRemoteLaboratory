@@ -134,6 +134,12 @@ public class AuthService
         if (user.IsVerified)
             return Result.Fail<string>("Данный пользователь уже является администратором");
 
+        var role = await _rolesRepository.GetByNameAsync(Roles.Student);
+
+        user.Roles = new List<Role>(user.Roles)
+        {
+            role.Value
+        };
         user.IsAdmin = true;
         user.IsVerified = true;
 
@@ -169,6 +175,9 @@ public class AuthService
         if (!user.IsVerified)
             return Result.Fail<string>("Данный пользователь не является администратором");
 
+        var userRoles = new List<Role>(user.Roles);
+        userRoles.Remove(userRoles.First(r => r.Name == Roles.Admin));
+
         user.IsAdmin = false;
         user.IsVerified = false;
 
@@ -197,7 +206,7 @@ public class AuthService
             UniversityId = userDto.UniversityId,
             AcademyGroupId = userDto.AcademyGroupId,
             PasswordHash = Convert.ToHexString(GenerateHash(userDto.Password)),
-            Roles = [] //new[] { role.Value }!
+            Roles = [role.Value] //new[] { role.Value }!
         };
     }
 
