@@ -1,4 +1,4 @@
-﻿using IotRemoteLab.Blazor.Services.LocalStorage;
+﻿using IotRemoteLab.Common.Services.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
 using System.Security.Claims;

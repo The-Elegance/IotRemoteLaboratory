@@ -1,51 +1,70 @@
-﻿<!-- Landing Page -->
-<!-- User Profile Sidebar here -->
-<!-- Stand Page -->
+﻿@using IotRemoteLab.Common.Services.LocalStorage
 @inherits LayoutComponentBase
+
+@inject ILocalStorageService _localStorage
+@inject NavigationManager _navigation
 
 <style>
     .layout-with-sidebar {
-        display: flex;
-        overflow-y: hidden;
+    display: flex;
+    overflow-y: hidden;
     }
 
     .logo {
-        height: 56px;
-        background: black;
+    height: 56px;
+    background: black;
     }
 
     .sidebar {
-        overflow: auto;
-        height: 100vh;
-        position: fixed;
-        left: 0;
-        background-color: #1f1f21;
+    overflow: auto;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    background-color: #1f1f21;
     }
 
     .site-layout {
-        background-color: #161618;
-        margin-left: 200px;
-        height: 100vh;
+    background-color: #161618;
+    margin-left: 200px;
+    height: 100vh;
+    }
+
+    .menu-container {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 20px 0;
+    height: calc(100% - 56px);
     }
 </style>
 
 
 <div class="layout-with-idebar">
     <Sider Class="sidebar">
-        <div class="logo" />
-        <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Inline" DefaultSelectedKeys=@(new[]{"4"})>
-            <MenuItem Key="profile" RouterLink="/profile">
-                <Icon Type="user" Theme="outline" />
-                <span class="nav-text">Профиль</span>
-            </MenuItem>
-            <MenuItem Key="schedule" RouterLink="/schedule">
-                <Icon Type="gear" Theme="outline" />
-                <span class="nav-text">Расписание</span>
-            </MenuItem>
-            <MenuItem Key="settings" RouterLink="/settings/profile">
-                <Icon Type="gear" Theme="outline" />
-                <span class="nav-text">Настройки</span>
-            </MenuItem>
+        <div class="logo">
+            <span style="blue">RTLab logo</span>
+        </div>
+        <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Inline" DefaultSelectedKeys=@(new[]{"4"}) Class="menu-container">
+            <div class="main-menu">
+                <MenuItem Key="profile" RouterLink="/profile">
+                    <Icon Type="user" Theme="outline" />
+                    <span class="nav-text">Профиль</span>
+                </MenuItem>
+                <MenuItem Icon="schedule" Key="schedule" RouterLink="/schedule">
+                    <Icon Type="gear" Theme="outline" />
+                    <span class="nav-text">Расписание</span>
+                </MenuItem>
+                @* <MenuItem Key="settings" RouterLink="/settings/profile"> *@
+                @*     <Icon Type="gear" Theme="outline" /> *@
+                @*     <span class="nav-text">Настройки</span> *@
+                @* </MenuItem> *@
+            </div>
+
+            <div class="additional-menu">
+                <MenuItem Icon="logout" Key="logout" OnClick="Logout">
+                    <Icon Type="gear" Theme="outline" />
+                    <span class="nav-text">Выйти</span>
+                </MenuItem>
+            </div>
         </Menu>
     </Sider>
     <Layout Class="site-layout">
@@ -57,5 +76,9 @@
 
 
 @code {
-
+    async Task Logout() 
+    {
+        await _localStorage.RemoveItemAsync("token");
+        _navigation.NavigateTo("Account/Login");
+    }
 }
