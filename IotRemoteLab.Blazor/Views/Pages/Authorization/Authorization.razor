@@ -53,14 +53,14 @@
     AuthorizationUserData data = new();
 
     [SupplyParameterFromQuery(Name = "returnUrl")]
-    string? _returnUrl { get; set; } = string.Empty;
+    string? _returnUrl { get; set; }
 
     async void Submit()
     {
         var response = await _authService.Login(Regex.Replace(data.Email, @"\s+", ""), data.Password);
         if (response)
         {
-            _navigation.NavigateTo(_returnUrl, true);
+            _navigation.NavigateTo(_returnUrl ?? string.Empty, true);
         }
     }
 }
