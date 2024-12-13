@@ -22,11 +22,11 @@ public class TeamController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTeam(Team team)
+    public async Task<IActionResult> CreateTeam([FromBody]Team team)
     {
         try
         {
-            _dbContext.Teams.Add(team);
+            await _dbContext.Teams.AddAsync(team);
             await _dbContext.SaveChangesAsync();
         }
         catch (Exception ex)

@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Domain.Role;
+using IotRemoteLab.Domain.Schedule;
+using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -52,7 +52,7 @@
         <div class="bottomContentWrapper">
             <div class="listContentWrapper">
                 <h2 class="listTitle">Ваша команда</h2>
-                <ul class="list">
+@*                 <ul class="list">
                     <li class="card">
                         <img class="avatar" src="./src/avatar.svg" />
                         <div class="info">
@@ -60,7 +60,32 @@
                             <span class="">РИ-310949</span>
                         </div>
                     </li>
-                </ul>
+                </ul> *@
+                
+                @if (_team == null)
+                {
+                    <Button Type="primary" OnClick="@ShowModalNewCommand">New Command</Button>
+                }
+                else
+                {
+                    foreach (User user in _team.Members)
+                    {
+                        <ul class="list">
+                            <li class="card">
+                                <img class="avatar" src="./src/avatar.svg" />
+                                <div class="info">
+                                    <span class="name">@($"{user.Name} {user.MiddleName}")</span>
+                                </div>
+                            </li>
+                        </ul>
+                    }
+
+                    if (_team.Members.Count < 5)
+                    {
+                        <Button Type="primary" OnClick="@ShowModalNewTeamUser">New User</Button>
+                    }
+                }
+                
             </div>
 
             <div class="listContentWrapper">
@@ -98,11 +123,47 @@ else
     <Spin Spinning />
 }
 
+<Modal Title="@("Новая команда")" style="width: 600px"
+       @bind-Visible="@_visibleNewTeam"
+       OnOk="@HandleOkNewTeam"
+       OnCancel="@HandleCancelNewTeam">
+
+    <Form Model="@modelNewTeam"
+          @ref="@_formNewTeam">
+        <IotFormItem Label="Название команды">
+            <Input @bind-Value="@context.Name" />
+        </IotFormItem>
+    </Form>
+</Modal>
+
+<Modal Title="@("Добавить пользователя в команду")" style="width: 600px"
+       @bind-Visible="@_visibleNewTeamUser"
+       OnOk="@HandleOkNewTeamUser"
+       OnCancel="@HandleCancelNewTeamUser">
+
+    <AntList Bordered DataSource="@_userByUniversity">
+         <ChildContent Context="item">
+             <ListItem>
+                 <span>@($"{item.Name} {item.MiddleName}")</span>
+                 <span><Button Type="primary" @onclick="() => AddUserToTeam(item)">+</Button></span>
+            </ListItem>
+        </ChildContent>
+    </AntList>
+
+</Modal>
 
 @code
-{
+ {
+    bool _visibleNewTeam = false;
+    public Team modelNewTeam = new Team();
+    private Form<Team> _formNewTeam;
+
+    bool _visibleNewTeamUser = false;
+
     User? _user;
     AcademyGroup? _academyGroup;
+    List<User> _userByUniversity = new();
+    public Team? _team;
     [Inject]
     public UserContext _context { get; set; }
     [Inject]
@@ -112,5 +173,64 @@ else
     {
         _user = await _context.GetUserProfileAsync();
         _academyGroup = await _httpClient.GetFromJsonAsync<AcademyGroup?>($"university/academygroup/{_user.AcademyGroupId}");
+        try
+        {
+            _team = await _httpClient.GetFromJsonAsync<Team>($"Team/byUser/{_user.Id}");
+        }
+        catch
+        {
+            _team = null;
+        }
+
+        _userByUniversity = await _httpClient.GetFromJsonAsync<List<User>>($"User/users/byUniversity/{_user.UniversityId}");
+        @* _userByUniversity.Remove(_user); *@
+    }
+
+    async Task HandleOkNewTeam(MouseEventArgs e)
+    {
+        // mockDb.Add(modelNew);
+        Guid guidTeam = Guid.NewGuid();
+        modelNewTeam.Id = guidTeam;
+        await _httpClient.PostAsJsonAsync<Team>("Team", modelNewTeam);
+
+        await _httpClient.PostAsync($"Team/member/{modelNewTeam.Id}/{_user.Id}", null);
+
+        Console.WriteLine("OK");
+        _formNewTeam.Submit();
+    }
+
+    async Task AddUserToTeam(User user)
+    {
+        var tem = await _httpClient.GetFromJsonAsync<Team>($"Team/byUser/{_user.Id}");
+        await _httpClient.PostAsync($"Team/member/{tem.Id}/{user.Id}", null);
+    }
+
+    async Task HandleOkNewTeamUser()
+    {
+    }
+
+    private void ShowModalNewCommand()
+    {
+        _visibleNewTeam = true;
+    }
+
+    private void ShowModalNewTeamUser()
+    {
+        _visibleNewTeamUser = true;
+    }
+
+    private void OnFinishNewCommand(EditContext editContext)
+    {
+        _visibleNewTeam = false;
+    }
+
+    private void HandleCancelNewTeam(MouseEventArgs e)
+    {
+        Console.WriteLine(e);
+    }
+
+    private void HandleCancelNewTeamUser(MouseEventArgs e)
+    {
+        Console.WriteLine(e);
     }
 }

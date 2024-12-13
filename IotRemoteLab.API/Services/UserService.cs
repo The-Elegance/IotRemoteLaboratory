@@ -1,5 +1,7 @@
 ﻿using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Domain;
+using IotRemoteLab.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Services
 {
@@ -21,6 +23,11 @@ namespace IotRemoteLab.API.Services
         {
             var users = await _usersRepository.GetUsersAsync();
             return users.Select(u => { u.PasswordHash = string.Empty; return u; }).ToList();
+        }
+
+        public Task<List<User>> GetUserByUniversity(Guid id) 
+        {
+            return _usersRepository._applicationContext.Users.Where(u => u.UniversityId == id).ToListAsync();
         }
     }
 }

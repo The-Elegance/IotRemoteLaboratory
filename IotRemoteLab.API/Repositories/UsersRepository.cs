@@ -6,7 +6,7 @@ namespace IotRemoteLab.API.Repositories;
 
 public class UsersRepository
 {
-    private readonly ApplicationContext _applicationContext;
+    public readonly ApplicationContext _applicationContext;
 
     public UsersRepository(ApplicationContext applicationContext)
     {
