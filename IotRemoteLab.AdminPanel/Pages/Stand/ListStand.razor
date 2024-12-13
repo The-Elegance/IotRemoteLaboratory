@@ -1,15 +1,18 @@
 ﻿@page "/ListStand"
 
-@using AntDesign
-@using AntDesign.TableModels
 @using System.ComponentModel.DataAnnotations
-
 @using System.Text.Json;
 @using IotRemoteLab.Common.Components.Form
 @using IotRemoteLab.Domain.Stand
 @using IotRemoteLab.Domain.Stand.Benchboards
 
-<h1>List stands</h1>
+@inject ModalService _modalService
+@inject ConfirmService ComfirmService;
+@inject HttpClient _httpClient
+
+<h1>Список всех стендов</h1>
+
+@* Таблица всех стендов *@
 
 <Table @ref="_standTable" TItem="Stand" PageSize="5" Total="_total" DataSource="_stands" @bind-SelectedRows="_selectedRows">
     <TitleTemplate>
@@ -27,6 +30,8 @@
     </ColumnDefinitions>
 </Table>
 
+ @* Модалка для удаления по кнопке сверху таблицы *@
+
 <Modal Title="@("Confirm")"
        Visible="@_visibleFlagDeleteAll"
        OnOk="@HandleOkDeleteAll"
@@ -34,26 +39,20 @@
     <p>@_modalTextDeleteAll</p>
 </Modal>
 
-<Modal Title="@("New")"
+@* Модалка и форма для создания нового элемента *@
+
+<Modal Title="@("New")" style="width: 600px"
        @bind-Visible="@_visibleNew"
        OnOk="@HandleOkNew"
        OnCancel="@HandleCancelNew">
-    @FormTemplateNew()
-</Modal>
 
-<Modal Title="@("Edit")" style="width: 600px;"
-       @bind-Visible="@_visibleEdit"
-       OnOk="@HandleOkEdit"
-       OnCancel="@HandleCancelEdit">
-    <Form Model="@modelEdit"
-          OnFinish="OnFinishEdit"
-          OnFinishFailed="OnFinishFailedEdit"
-          @ref="@_formEdit">
-
+    <Form Model="@modelNew"
+          @ref="@_formNew">
         <IotFormGroup Bordered="false">
+
             <IotFormItem Label="Mcu">
                 <Select Mode="default"
-                        DataSource="@listMcu"
+                        DataSource="@_mcus"
                         @bind-Value="@context.Mcu"
                         LabelName="@nameof(Mcu.Name)">
                 </Select>
@@ -71,7 +70,101 @@
             {
                 <IotFormItem Label="Benchboard">
                     <Select Mode="default"
-                            DataSource="@listBench"
+                            DataSource="@_benches"
+                            @bind-Value="@context.Benchboard"
+                            LabelName="@nameof(Benchboard.Name)">
+                    </Select>
+                </IotFormItem>
+            }
+            else
+            {
+                context.Benchboard = null;
+            }
+
+            <IotFormItem Label="HasLighting">
+                <Switch @bind-Value="@context.HasLighting" />
+            </IotFormItem>
+
+            @if (context.HasLighting == true)
+            {
+                <IotFormItem Label="LightingBrightnessLevel">
+                    <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
+                </IotFormItem>
+                <IotFormItem Label="LightingRaspberryPiPort">
+                    <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
+                </IotFormItem>
+            }
+            else
+            {
+                context.LightingBrightnessLevel = 0;
+                context.LightingRaspberryPiPort = 0;
+            }
+
+            <IotFormItem Label="HasSerialPort">
+                <Switch @bind-Value="@context.HasSerialPort" />
+            </IotFormItem>
+
+            @if (context.HasSerialPort == true)
+            {
+                <IotFormItem Label="SerialPortSpeed">
+                    <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
+                </IotFormItem>
+            }
+            else
+            {
+                context.SerialPortSpeed = 0;
+            }
+
+            <IotFormItem Label="HasWebcam" Required>
+                <Switch @bind-Value="@context.HasWebcam" />
+            </IotFormItem>
+
+            @if (context.HasWebcam == true)
+            {
+                <IotFormItem Label="WebcamUrl">
+                    <Input @bind-Value="@context.WebcamUrl" />
+                </IotFormItem>
+            }
+            else
+            {
+                context.WebcamUrl = "";
+            }
+        </IotFormGroup>
+    </Form>
+</Modal>
+
+@* Модалка и форма для редактирования элемента *@
+
+<Modal Title="@("Edit")" style="width: 600px;"
+       @bind-Visible="@_visibleEdit"
+       OnOk="@HandleOkEdit"
+       OnCancel="HandleCancelEdit">
+
+    <Form Model="@modelEdit"
+          @ref="@_formEdit">
+        <IotFormGroup Bordered="false">
+
+            <IotFormItem Label="Mcu">
+                <Select Mode="default"
+                        DataSource="@_mcus"
+                        @bind-Value="@context.Mcu"
+                        LabelName="@nameof(Mcu.Name)">
+                </Select>
+            </IotFormItem>
+
+            <IotFormItem Label="Url">
+                <Input @bind-Value="@context.Url" />
+            </IotFormItem>
+
+            <IotFormItem Label="HasBenchboard">
+                <Switch @bind-Value="@context.HasBenchboard" />
+            </IotFormItem>
+
+            @if (context.HasBenchboard == true)
+            {
+                <IotFormItem Label="Benchboard">
+                    <Select Mode="default"
+                            DataSource="@_benches"
                             @bind-Value="@context.Benchboard"
                             LabelName="@nameof(Benchboard.Name)">
                     </Select>
@@ -117,37 +210,12 @@
     </Form>
 </Modal>
 
-@inject ModalService _modalService
-@inject ConfirmService ComfirmService;
-@inject HttpClient _httpClient
 @code
 {
-    static Benchboard _bench = new Benchboard { Id = 1, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } };
-    static McuFramework _mcuFram = new McuFramework { Id = 1, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" };
-    static Mcu _mcu = new Mcu { Id = 1, Name = "Mcu1", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" };
-
     List<Stand> _stands = new();
-
-    List<Benchboard> listBench = new List<Benchboard>
-                {
-        new Benchboard { Id = 1, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } },
-        new Benchboard { Id = 2, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } },
-        new Benchboard { Id = 3, Name = "Benchboard1", Ports = new List<BenchboardPort> { new BenchboardPort { Id = 1, McuPort = "PA_5", RaspberryPiPort = 5, Type = BenchboardPortType.Output } } }
-                };
-
-    List<McuFramework> listFram = new List<McuFramework>
-                {
-        new McuFramework { Id = 1, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" },
-        new McuFramework { Id = 2, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" },
-        new McuFramework { Id = 3, Name = "McuFramework1", Pattern = "Pattern", CodeFileExtension = "cpp", CodeFileName = "0" }
-                };
-
-    List<Mcu> listMcu = new List<Mcu>
-                {
-        new Mcu { Id = 1, Name = "Mcu1", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" },
-        new Mcu { Id = 2, Name = "Mcu2", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" },
-        new Mcu { Id = 3, Name = "Mcu3", Framework = _mcuFram, AssemblyScriptFile = "AssemblyScriptFile", DeployScriptFile = "DeployScriptFile" }
-                };
+    List<Benchboard> _benches = new ();
+    List<McuFramework> _frams = new ();
+    List<Mcu> _mcus = new();
 
     List<Stand> mockDb = new();
     IEnumerable<Stand> _selectedRows = [];
@@ -160,26 +228,29 @@
     bool _visibleFlagDelete = false;
     string _modalTextDelete = "";
 
+    bool _visibleNew = false;
+    private Form<Stand> _formNew;
+    public Stand modelNew = new Stand();
 
-    [Parameter]
-    public string Id { get; set; }
+    bool _visibleEdit = false;
+    private Form<Stand> _formEdit;
+    public Stand modelEdit = new Stand();
 
-
-    protected override Task OnInitializedAsync()
-    {
-        return UpdateList();
-    }
+    protected override Task OnInitializedAsync() => UpdateList();
 
     async Task UpdateList()
     {
-        _stands = await _httpClient.GetFromJsonAsync<List<Stand?>>("stands");
+        _stands = await _httpClient.GetFromJsonAsync<List<Stand?>>("api/v1/stands");
+
+        _benches = await _httpClient.GetFromJsonAsync<List<Benchboard?>>("api/Benchboards");
+
+        _mcus = await _httpClient.GetFromJsonAsync<List<Mcu?>>("api/Mcu");
     }
 
     private void ShowModalDeleteAll()
     {
         _visibleFlagDeleteAll = true;
         _modalTextDeleteAll = $"Are you sure delete {_selectedRows.Count()} rows?";
-
     }
 
     private async Task HandleOkDeleteAll(MouseEventArgs e)
@@ -188,170 +259,12 @@
         _selectedRows = [];
         _standTable.ReloadData();
         _visibleFlagDeleteAll = false;
-
     }
 
     private void HandleCancelDeleteAll(MouseEventArgs e)
     {
-        Console.WriteLine("Clicked cancel button");
         _visibleFlagDeleteAll = false;
     }
-
-    RenderFragment FormTemplateNew()
-    {
-        return
-    @<Form Model="@modelNew"
-               LabelColSpan="8"
-               WrapperColSpan="16"
-               OnFinish="OnFinishNew"
-               OnFinishFailed="OnFinishFailedNew"
-               @ref="@_formNew">
-        <FormItem Label="Mcu">
-            <Select Mode="default"
-                    DataSource="@listMcu"
-                    @bind-Value="@context.Mcu"
-                    LabelName="@nameof(Mcu.Name)">
-            </Select>
-        </FormItem>
-        <FormItem Label="Url">
-            <Input @bind-Value="@context.Url" />
-        </FormItem>
-        <FormItem Label="HasBenchboard">
-            <Switch @bind-Value="@context.HasBenchboard" />
-        </FormItem>
-        @{
-    if (context.HasBenchboard == true)
-    {
-            <FormItem Label="Benchboard">
-                <Select Mode="default"
-                        DataSource="@listBench"
-                        @bind-Value="@context.Benchboard"
-                        LabelName="@nameof(Benchboard.Name)">
-                </Select>
-            </FormItem>
-    }
-        }
-        <FormItem Label="HasLighting">
-            <Switch @bind-Value="@context.HasLighting" />
-        </FormItem>
-        @{
-    if (context.HasLighting == true)
-    {
-            <FormItem Label="LightingBrightnessLevel">
-                <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
-            </FormItem>
-            <FormItem Label="LightingRaspberryPiPort">
-                <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
-            </FormItem>
-    }
-        }
-        <FormItem Label="HasSerialPort">
-            <Switch @bind-Value="@context.HasSerialPort" />
-        </FormItem>
-        @{
-    if (context.HasSerialPort == true)
-    {
-            <FormItem Label="SerialPortSpeed">
-                <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
-            </FormItem>
-    }
-        }
-        <FormItem Label="HasWebcam">
-            <Switch @bind-Value="@context.HasWebcam" />
-        </FormItem>
-        @{
-    if (context.HasWebcam == true)
-    {
-            <FormItem Label="WebcamUrl">
-                <Input @bind-Value="@context.WebcamUrl" />
-            </FormItem>
-    }
-        }
-    </Form>
-        ;
-    }
-
-    RenderFragment FormTemplateEdit()
-    {
-        return
-    @<Form Model="@modelEdit"
-               LabelColSpan="8"
-               WrapperColSpan="16"
-               OnFinish="OnFinishEdit"
-               OnFinishFailed="OnFinishFailedEdit"
-               @ref="@_formEdit">
-        <FormItem Label="Mcu">
-            <Select Mode="default"
-                    DataSource="@listMcu"
-                    @bind-Value="@context.Mcu"
-                    LabelName="@nameof(Mcu.Name)">
-            </Select>
-        </FormItem>
-        <FormItem Label="Url">
-            <Input @bind-Value="@context.Url" />
-        </FormItem>
-        <FormItem Label="HasBenchboard">
-            <Switch @bind-Value="@context.HasBenchboard" />
-        </FormItem>
-        @{
-    if (context.HasBenchboard == true)
-    {
-            <FormItem Label="Benchboard">
-                <Select Mode="default"
-                        DataSource="@listBench"
-                        @bind-Value="@context.Benchboard"
-                        LabelName="@nameof(Benchboard.Name)">
-                </Select>
-            </FormItem>
-    }
-        }
-        <FormItem Label="HasLighting">
-            <Switch @bind-Value="@context.HasLighting" />
-        </FormItem>
-        @{
-    if (context.HasLighting == true)
-    {
-            <FormItem Label="LightingBrightnessLevel">
-                <AntDesign.InputNumber @bind-Value="@context.LightingBrightnessLevel" />
-            </FormItem>
-            <FormItem Label="LightingRaspberryPiPort">
-                <AntDesign.InputNumber @bind-Value="@context.LightingRaspberryPiPort" />
-            </FormItem>
-    }
-        }
-        <FormItem Label="HasSerialPort">
-            <Switch @bind-Value="@context.HasSerialPort" />
-        </FormItem>
-        @{
-    if (context.HasSerialPort == true)
-    {
-            <FormItem Label="SerialPortSpeed">
-                <AntDesign.InputNumber @bind-Value="@context.SerialPortSpeed" />
-            </FormItem>
-    }
-        }
-        <FormItem Label="HasWebcam">
-            <Switch @bind-Value="@context.HasWebcam" />
-        </FormItem>
-        @{
-    if (context.HasWebcam == true)
-    {
-            <FormItem Label="WebcamUrl">
-                <Input @bind-Value="@context.WebcamUrl" />
-            </FormItem>
-    }
-        }
-    </Form>
-        ;
-    }
-
-    bool _visibleNew = false;
-    private Form<Stand> _formNew;
-    public Stand modelNew = new Stand();
-
-    bool _visibleEdit = false;
-    private Form<Stand> _formEdit;
-    public Stand modelEdit = new Stand();
 
     private void ShowModalNew()
     {
@@ -364,18 +277,34 @@
         modelEdit = row;
     }
 
-    private async Task HandleOkNew(MouseEventArgs e)
+    private Stand test = new Stand
     {
-        mockDb.Add(modelNew);
+        Mcu = new Mcu { Id = 2, Name = "STM32L1512", Framework = new McuFramework { Id = 2, Name = "STM322", CodeFileName = "0", CodeFileExtension = "0", Pattern = "0" }, AssemblyScriptFile = "0", DeployScriptFile = "0" },
+        Url = "0",
+        HasBenchboard = true,
+        Benchboard = new Benchboard { Id = 2, Name = "Stand2" },
+        HasLighting = true,
+        LightingBrightnessLevel = 1,
+        LightingRaspberryPiPort = 1,
+        HasSerialPort = true,
+        SerialPortSpeed = 1,
+        HasWebcam = true,
+        WebcamUrl = "0",
+        AvailableUarts = new List<Uart> { }
+    };
+
+    async Task HandleOkNew(MouseEventArgs e)
+    {
+        // mockDb.Add(modelNew);
+        await _httpClient.PostAsJsonAsync<Stand>("api/v1/stands", modelNew);
         _standTable.ReloadData();
-        await Task.Delay(1000);
+        Console.WriteLine("OK");
         _formNew.Submit();
     }
 
     private async Task HandleOkEdit(MouseEventArgs e)
     {
         _standTable.ReloadData();
-        await Task.Delay(1000);
         _formNew.Submit();
     }
 
@@ -399,16 +328,6 @@
         _visibleEdit = false;
     }
 
-    private void OnFinishFailedNew(EditContext editContext)
-    {
-        Console.WriteLine($"Failed:{JsonSerializer.Serialize(modelNew)}");
-    }
-
-    private void OnFinishFailedEdit(EditContext editContext)
-    {
-        Console.WriteLine($"Failed:{JsonSerializer.Serialize(modelEdit)}");
-    }
-
     void definitions(string propertyName, IFieldColumn column)
     {
         if (propertyName == "Mcu")
@@ -416,16 +335,14 @@
             var tagCol = ((Column<Mcu>)column);
 
             tagCol.CellRender = cellData =>
-    @<span>
-        @{
-    var value = cellData.FieldValue;
-        }
+            @<span>
+                @{
+                    var value = cellData.FieldValue;
+                 }
 
-        <Tag>@value.Name</Tag>
-
-    </span>
-    ;
-
+                <Tag>@value.Name</Tag>
+            </span>
+            ;
             return;
         }
 
