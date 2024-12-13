@@ -1,12 +1,10 @@
-﻿@using IotRemoteLab.Blazor.Services.LocalStorage
+﻿@using IotRemoteLab.Blazor.Services
+@using IotRemoteLab.Blazor.Services.LocalStorage
 @using IotRemoteLab.Domain
-@using IotRemoteLab.Domain.Stand
-@using IotRemoteLab.Domain.Schedule
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using System.ComponentModel
 
-@inject ModalService _modalService
-@inject ConfirmService ComfirmService;
-@inject HttpClient _httpClient
-    
 @page "/profile"
 
 
@@ -22,114 +20,98 @@
     }
 </style>
 
-
-<div class="profile">
-    <div class="accountBioAccountHeader">
-        <div class="leftContent">
-            <img src="" class="profilePic">
-            <div class="profileInfo">
-                <span class="welcomeTitle">Добро пожаловать, <span class="userName">@($"{_user.Name} {_user.Surname}")</span></span>
-                <ul class="userInfo">
-                    <li class="group">
-                        <span>Ваша группа:</span>
-                        <span class="value">@_user.GroupNumber</span>
-                    </li>
-                    <li class="role">
-                        <span>Ваша роль:</span>
-                        <span class="value">Студент</span>
-                    </li>
-                    <li class="mailContact">
-                        <span>Почта:</span>
-                        <span class="value">@_user.Email</span>
-                    </li>
-                </ul>
+@if (_user != null)
+{
+    <div class="profile">
+        <div class="accountBioAccountHeader">
+            <div class="leftContent">
+                <img src="" class="profilePic">
+                <div class="profileInfo">
+                    <span class="welcomeTitle">Добро пожаловать, <span class="userName">@($"{_user.Name} {_user.MiddleName}")</span></span>
+                    <ul class="userInfo">
+                        <li class="group">
+                            <span>Ваша группа:</span>
+                            <span class="value">@_academyGroup.Name</span>
+                        </li>
+                        <li class="role">
+                            <span>Ваша роль:</span>
+                            <span class="value">Студент</span>
+                        </li>
+                        <li class="mailContact">
+                            <span>Почта:</span>
+                            <span class="value">@_user.Email</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
+            <button class="changeBtn">
+                <img class="all-iconssettings" alt="" src="./src/Settings.svg" />
+                <span class="BtnText">Изменить данные профиля</span>
+            </button>
         </div>
-        <button class="changeBtn">
-            <img class="all-iconssettings" alt="" src="./src/Settings.svg" />
-            <span class="BtnText">Изменить данные профиля</span>
-        </button>
-    </div>
 
-    <div class="bottomContentWrapper">
-        <div class="listContentWrapper">
-            <h2 class="listTitle">Ваша команда</h2>
-            <ul class="list">
-                @foreach (var user in _members)
-                {
+        <div class="bottomContentWrapper">
+            <div class="listContentWrapper">
+                <h2 class="listTitle">Ваша команда</h2>
+                <ul class="list">
                     <li class="card">
                         <img class="avatar" src="./src/avatar.svg" />
                         <div class="info">
-                            <span class="name">@($"{user.Name} {user.Surname}")</span>
-                            <span class="">@($"{user.GroupNumber}")</span>
+                            <span class="name">Шапошников Игорь Викторович</span>
+                            <span class="">РИ-310949</span>
                         </div>
                     </li>
-                }
-            </ul>
-        </div>
+                </ul>
+            </div>
 
-        <div class="listContentWrapper">
-            <h2 class="listTitle">Список стендов</h2>
-            <div class="listWrapper">
-                <span class="available">Доступные стенды</span>
-                <ul class="list">
-                    @foreach (var stand in _stands)
-                    {
+            <div class="listContentWrapper">
+                <h2 class="listTitle">Список стендов</h2>
+                <div class="listWrapper">
+                    <span class="available">Доступные стенды</span>
+                    <ul class="list">
                         <li class="card">
+                            <img class="avatar" src="./src/avatar.svg" />
                             <div class="info">
-                                <span class="name">@($"{stand.Id}")</span>
+                                <span class="name">Название стенда</span>
                                 <span class="">Доступ до 13:00 28.09.2024</span>
                             </div>
                         </li>
-                    }
-                </ul>
-            </div>
-            <div class="listWrapper">
-                <span class="available">Недоступные стенды</span>
-                <ul class="list">
-                    <li class="card">
-                        <img class="avatar" src="./src/avatar.svg" />
-                        <div class="info">
-                            <span class="name">Название стенда</span>
-                            <span class="">Доступ до 13:00 28.09.2024</span>
-                        </div>
-                    </li>
-                </ul>
+                    </ul>
+                </div>
+                <div class="listWrapper">
+                    <span class="available">Недоступные стенды</span>
+                    <ul class="list">
+                        <li class="card">
+                            <img class="avatar" src="./src/avatar.svg" />
+                            <div class="info">
+                                <span class="name">Название стенда</span>
+                                <span class="">Доступ до 13:00 28.09.2024</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <Spin Spinning />
+}
 
 
 @code
 {
+    User? _user;
+    AcademyGroup? _academyGroup;
+    [Inject]
+    public UserContext _context { get; set; }
+    [Inject]
+    public HttpClient _httpClient { get; set; }
 
-    private User _user = new ();
-    private static Team _team = new ();
-    private ICollection<User> _members;
-    private ICollection<User> _test;
-    private List<Stand> _stands = new();
-
-    private TeamHolderSchedule _holder = new()
+    protected async override Task OnInitializedAsync()
     {
-        Holder = _team,
-
-    };
-
-    protected override Task OnInitializedAsync() => UpdateList();
-
-    async Task UpdateList()
-    {
-        _user = await _httpClient.GetFromJsonAsync<User?>("Team/userById/af9a52fb-33ed-48e2-b538-bfc67c08f946");
-        _team = await _httpClient.GetFromJsonAsync<Team?>("Team/byUser/af9a52fb-33ed-48e2-b538-bfc67c08f946");
-        _stands = await _httpClient.GetFromJsonAsync<List<Stand?>>("stands");
-
-        _members = _team.Members;
-    }
-
-
-    protected async override void OnInitialized()
-    {
-        base.OnInitialized();
+        _user = await _context.GetUserAsync();
+        _academyGroup = await _httpClient.GetFromJsonAsync<AcademyGroup?>($"university/academygroup/{_user.AcademyGroupId}");
     }
 }

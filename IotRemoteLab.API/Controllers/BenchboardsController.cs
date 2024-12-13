@@ -1,10 +1,14 @@
-﻿using IotRemoteLab.Domain.Stand.Benchboards;
+﻿using Asp.Versioning;
+using IotRemoteLab.Domain.Role;
+using IotRemoteLab.Domain.Stand.Benchboards;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IotRemoteLab.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Authorize(Roles = Roles.Admin)]
+    [ApiVersion(1.0)]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class BenchboardsController : ControllerBase
     {
         #region Benchboard

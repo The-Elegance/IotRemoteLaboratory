@@ -11,7 +11,7 @@ public class IotServiceController
 {
     private readonly Dictionary<IotServiceType, IUpperIotService> _uppersIotServices;
 
-    public IotServiceController(IUsersRepository usersRepository,
+    public IotServiceController(UsersRepository usersRepository,
         IScheduleRepository repository, IEnumerable<IUpperIotService> upperIotServices)
     {
         _uppersIotServices = upperIotServices.ToDictionary(k => k.Type);

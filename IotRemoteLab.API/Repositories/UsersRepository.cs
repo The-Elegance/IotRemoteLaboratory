@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IotRemoteLab.API.Repositories;
 
-public class UsersRepository : IUsersRepository
+public class UsersRepository
 {
     private readonly ApplicationContext _applicationContext;
 
@@ -30,7 +30,7 @@ public class UsersRepository : IUsersRepository
 
         if (user != null)
             return null;
-        
+
         await _applicationContext.Users.AddAsync(entity, cancellationToken);
         await _applicationContext.SaveChangesAsync(cancellationToken);
         return null;
@@ -49,10 +49,10 @@ public class UsersRepository : IUsersRepository
 
         _applicationContext.Users.Update(entity);
         await _applicationContext.SaveChangesAsync(cancellationToken);
-        
+
         return entity;
     }
-    
+
     public async Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var user = await GetByIdAsync(id, cancellationToken);
@@ -67,13 +67,21 @@ public class UsersRepository : IUsersRepository
 
     public async Task<Result<User?>> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        
-        
-        
-        
         return await _applicationContext
                 .Users
                 .Include(u => u.Roles)
                 .SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
+    }
+
+    public Task<User?> GetUserById(Guid id)
+    {
+        return _applicationContext
+            .Users
+            .SingleOrDefaultAsync(user => user.Id == id);
+    }
+
+    public Task<List<User>> GetUsersAsync() 
+    {
+        return _applicationContext.Users.ToListAsync();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using IotRemoteLab.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IotRemoteLab.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241204092438_UserMiddleName")]
+    partial class UserMiddleName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,12 +309,6 @@ namespace IotRemoteLab.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("MiddleName")
                         .HasColumnType("text");
 
@@ -331,6 +328,8 @@ namespace IotRemoteLab.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AcademyGroupId");
+
+                    b.HasIndex("UniversityId");
 
                     b.ToTable("Users");
                 });
@@ -465,11 +464,21 @@ namespace IotRemoteLab.Persistence.Migrations
 
             modelBuilder.Entity("IotRemoteLab.Domain.User", b =>
                 {
-                    b.HasOne("IotRemoteLab.Domain.AcademyGroup", null)
+                    b.HasOne("IotRemoteLab.Domain.AcademyGroup", "AcademyGroup")
                         .WithMany("Users")
                         .HasForeignKey("AcademyGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("IotRemoteLab.Domain.University", "University")
+                        .WithMany()
+                        .HasForeignKey("UniversityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AcademyGroup");
+
+                    b.Navigation("University");
                 });
 
             modelBuilder.Entity("RoleUser", b =>

@@ -1,0 +1,67 @@
+﻿@using IotRemoteLab.Blazor.Models
+
+
+<div>
+    <Form @ref="_form" Model="@Model" ValidateOnChange="true">
+        <DataAnnotationsValidator />
+
+        <IotFormGroup Bordered="false">
+            <IotFormItem Label="Email" ValidationFor="(() => context.Email)" DirectionColumn Required>
+                <Input @bind-Value="@context.Email" />
+            </IotFormItem>
+
+            <IotFormItem Label="Password" ValidationFor="(() => context.Password)" DirectionColumn Required>
+                <InputPassword @bind-Value="@context.Password" />
+            </IotFormItem>
+        </IotFormGroup>
+    </Form>
+
+    <Button OnClick="Next" HtmlType="submit">Продолжить</Button>
+</div>
+
+
+@code {
+    Form<RegistrationUserData> _form;
+
+
+    #region Parameters
+
+
+    [Parameter, EditorRequired]
+    public RegistrationUserData Model { get; set; }
+
+    [Parameter]
+    public EventCallback<RegistrationUserData> NextStep { get; set; }
+
+    [Parameter]
+    public Action ToNextStep { get; set; }
+
+
+    #endregion Parameters
+
+
+    #region Private Methods
+
+
+    void Next()
+    {
+        FieldIdentifier[] fieldIdentifiers = [_form.EditContext.Field("Email"), _form.EditContext.Field("Password")];
+        var isValid = true;
+
+        foreach (var fieldIdentifier in fieldIdentifiers)
+        {
+            _form.EditContext.NotifyFieldChanged(fieldIdentifier);
+            isValid &= !_form.EditContext.GetValidationMessages(fieldIdentifier).Any();
+        }
+
+        if (!isValid) 
+        {
+            return;
+        }
+
+        ToNextStep?.Invoke();
+    }
+
+
+    #endregion Private Methods
+}

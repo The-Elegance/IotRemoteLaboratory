@@ -1,0 +1,127 @@
+﻿@using IotRemoteLab.Blazor.Models
+@using IotRemoteLab.Domain
+
+@inject HttpClient _httpClient;
+
+<div>
+    <Form @ref="_form" Model="@Model">
+        <DataAnnotationsValidator />
+
+        <IotFormGroup Bordered="false">
+            <IotFormItem Label="Имя" ValidationFor="() => context.Name" DirectionColumn Required>
+                <Input @bind-Value="@context.Name" />
+            </IotFormItem>
+
+            <IotFormItem Label="Фамилия" ValidationFor="() => context.Surname" DirectionColumn Required>
+                <Input @bind-Value="@context.Surname" />
+            </IotFormItem>
+
+            <IotFormItem Label="Отчество" ValidationFor="() => context.MiddleName" DirectionColumn Required>
+                <Input @bind-Value="@context.MiddleName" />
+            </IotFormItem>
+
+            <IotFormItem Label="Университет" ValidationFor="() => context.UniversityId" DirectionColumn Required>
+                <Select @bind-Value="@context.UniversityId"
+                        TItemValue="Guid"
+                        Loading="@_isUniversitiesLoading"
+                        TItem="University"
+                        DataSource="@_universities"
+                        LabelName="@nameof(University.Name)"
+                        ValueName="@nameof(University.Id)"
+                        DefaultActiveFirstOption="false"
+                        OnSelectedItemChanged="OnSelectedUniversityChanged"
+                        Placeholder="Выберите учебное заведение" />
+            </IotFormItem>
+
+            <IotFormItem Label="Учебная группа" ValidationFor="() => context.AcademyGroupId" DirectionColumn Required>
+                <Select @bind-Value="@context.AcademyGroupId"
+                        TItemValue="Guid"
+                        Loading="@_isAcademyGroupsLoading"
+                        TItem="AcademyGroup"
+                        DataSource="@_academyGroups"
+                        LabelName="@nameof(AcademyGroup.Name)"
+                        ValueName="@nameof(AcademyGroup.Id)"
+                        DefaultActiveFirstOption="false"
+                        Placeholder="Выберите учебную группу" />
+            </IotFormItem>
+
+            <IotFormItem Label="Кодовое слово" DirectionColumn>
+                <Input @bind-Value="@context.Keyword" />
+            </IotFormItem>
+        </IotFormGroup>
+    </Form>
+
+    <Button OnClick="Next">Отправить заявку</Button>
+    <Button OnClick="Prev">Back</Button>
+</div>
+
+
+@code {
+    Form<RegistrationUserData> _form;
+
+    bool _isUniversitiesLoading;
+    bool _isAcademyGroupsLoading;
+
+
+    IEnumerable<University> _universities;
+    IEnumerable<AcademyGroup> _academyGroups;
+    University? _selectedUniversity;
+
+
+    #region Parameters
+
+
+    [Parameter, EditorRequired]
+    public RegistrationUserData Model { get; set; }
+
+    [Parameter]
+    public EventCallback<RegistrationUserData> SendRegistrationRequest { get; set; }
+
+    [Parameter]
+    public Action ToNextStep { get; set; }
+
+    [Parameter]
+    public Action ToPrevStep { get; set; }
+
+
+    #endregion Parameters
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isUniversitiesLoading = true;
+        _universities = await _httpClient.GetFromJsonAsync<List<University>>("university") ?? [];
+        _isUniversitiesLoading = false;
+    }
+
+
+    #region Private Methods
+
+
+    async Task OnSelectedUniversityChanged(University university)
+    {
+        _isAcademyGroupsLoading = true;
+        _academyGroups = await _httpClient.GetFromJsonAsync<List<AcademyGroup>>($"university/{university.Id}/academygroups") ?? [];
+        _isAcademyGroupsLoading = false;
+    }
+
+
+    Task Next()
+    {
+        if (!_form.Validate())
+        {
+            return Task.CompletedTask;
+        }
+
+        ToNextStep?.Invoke();
+        return SendRegistrationRequest.InvokeAsync(Model);
+    }
+
+    void Prev()
+    {
+        ToPrevStep?.Invoke();
+    }
+
+
+    #endregion Private Methods
+}

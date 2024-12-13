@@ -5,6 +5,7 @@ using IotRemoteLab.Blazor.Providers;
 using IotRemoteLab.Blazor.Services;
 using IotRemoteLab.Blazor.Services.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -17,23 +18,28 @@ builder.Services.AddAntDesign();
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-	BaseAddress = new Uri("https://localhost:7216/api/v1/")
+    BaseAddress = new Uri("https://localhost:7216/api/v1/")
 });
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddSingleton<IAccessTokenProvider, AccessTokenProvider>();
-builder.Services.AddSingleton<ILocalStorageService, DefaultLocalStorageService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAccessTokenProvider, AccessTokenProvider>();
+builder.Services.AddScoped<ILocalStorageService, DefaultLocalStorageService>();
+builder.Services.AddScoped<UserContext>();
 //builder.Services.AddBlazoredLocalStorageAsSingleton();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthorizationCore();
 
-builder.Services.AddScoped(sp => {
-	var navigationManager = sp.GetRequiredService<NavigationManager>();
-	return new HubConnectionBuilder()
-	  .WithUrl("https://localhost:7216/stand-hub")
-	  .WithAutomaticReconnect()
-	  .Build();
+builder.Services.AddScoped(sp =>
+{
+    var navigationManager = sp.GetRequiredService<NavigationManager>();
+    return new HubConnectionBuilder()
+      .WithUrl("https://localhost:7216/stand-hub")
+      .WithAutomaticReconnect()
+      .Build();
 });
 
 builder.Services.AddScoped<MonacoEditorService>();
 builder.Services.AddSingleton<JanusWebRtcService>();
 
-await builder.Build().RunAsync();
+var app = builder.Build().RunAsync();

@@ -1,30 +1,22 @@
 using IotRemoteLab.API;
 using IotRemoteLab.API.HostBuilderExtensions;
 using IotRemoteLab.API.Hubs;
-using IotRemoteLab.API.Services;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json.Serialization;
-using IotRemoteLab.API.Controllers;
-using IotRemoteLab.API.Repositories;
 using IotRemoteLab.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using IotRemoteLab.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-builder.Services.AddScoped<IRolesRepository, RolesRepository>();
-//builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddSingleton<IUpperIotService, UpperNodeRedService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.RegisterRepositories();
+builder.Services.RegisterServices();
 builder.Services.AddControllers();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -57,7 +49,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -86,6 +77,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
                                                                                   //x => x.MigrationsAssembly("IotRemoteLab.Persistence")
         );
 });
+
 
 builder.Services.AddSignalR();
 
@@ -146,7 +138,6 @@ catch { }
 builder.Services.AddCLI();
 
 builder.Services.AddSingleton<StandHubBroadcast>();
-builder.Services.AddSingleton<StandsService>();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning(options =>

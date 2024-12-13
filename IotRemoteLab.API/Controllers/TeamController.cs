@@ -1,15 +1,15 @@
 ﻿using Asp.Versioning;
-using IotRemoteLab.Application;
 using IotRemoteLab.Domain;
-using IotRemoteLab.Domain.Stand;
+using IotRemoteLab.Domain.Role;
 using IotRemoteLab.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace IotRemoteLab.API.Controllers;
 
-
+[Authorize(Roles = Roles.Student)]
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class TeamController : ControllerBase
