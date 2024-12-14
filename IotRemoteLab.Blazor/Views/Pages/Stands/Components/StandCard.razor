@@ -1,0 +1,26 @@
+﻿@using IotRemoteLab.Domain.Stand
+<style>
+    .stand-card {
+        width: 500px;
+        height: 300px;
+        background-color: cadetblue;
+        border-radius: 10px;
+        margin: auto;
+    }
+
+    .stand-card__name {
+        color: #fff;
+        font-size: 16px;
+    }
+</style>
+
+<div class="stand-card">
+    <p class="stand-card__name">@Model.Mcu.Name</p>
+
+    <a href="@($"/stand/{Model.Id}")">Перейти на страницу стенда</a>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public Stand Model { get; set; }
+}

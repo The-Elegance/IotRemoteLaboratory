@@ -1,0 +1,77 @@
+﻿@page "/stands"
+
+@using IotRemoteLab.Blazor.Views.Pages.Stands.Components
+@using IotRemoteLab.Domain.Stand
+
+@inject HttpClient _httpClient;
+
+<style>
+    .stands {
+        display: grid;
+        grid-template-rows: auto auto auto;
+    }
+
+    .stands-header {
+        display: grid;
+        grid-template-columns: auto auto;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .stands-content {
+        height: 100%;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: auto;
+        max-width: 1010px;
+    }
+
+    .header-title {
+        color: #fff;
+        font-weight: 600;
+        font-size: 24px;
+    }
+</style>
+
+<div class="stands">
+    <div class="stands-header">
+        <div class="header-title">
+            Стенды
+        </div>
+
+        <div class="header-additional">
+            <Button>Записаться</Button>
+        </div>
+    </div>
+
+    <div class="stands-content">
+        @if (_isLoading)
+        {
+            <Spin Spinning />
+        }
+        else if (!_isLoading && _stands.Count == 0) 
+        {
+            <Empty Description="@("Стенды не найдены")"></Empty>
+        }
+        else
+        {
+            @foreach (var stand in _stands)
+            {
+                <StandCard Model="@stand" />
+            }
+        }
+    </div>
+</div>
+
+@code {
+    List<Stand> _stands = [];
+    bool _isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        _stands = await _httpClient.GetFromJsonAsync<List<Stand>>("stands") ?? [];
+        _isLoading = false;
+    }
+}
