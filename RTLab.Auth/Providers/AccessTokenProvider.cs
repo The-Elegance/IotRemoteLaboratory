@@ -1,6 +1,6 @@
-using Blazored.LocalStorage;
+using IotRemoteLab.Common.Services.LocalStorage;
 
-namespace IotRemoteLab.Blazor.Providers;
+namespace RTLab.Auth.Providers;
 
 public class AccessTokenProvider : IAccessTokenProvider
 {

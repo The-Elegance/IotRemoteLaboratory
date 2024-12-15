@@ -1,4 +1,4 @@
-using IotRemoteLab.Blazor.Providers;
+using RTLab.Auth.Providers;
 
 namespace IotRemoteLab.Blazor.Services;
 

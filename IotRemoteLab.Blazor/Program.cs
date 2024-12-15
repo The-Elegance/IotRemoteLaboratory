@@ -1,7 +1,5 @@
 //using Blazored.LocalStorage;
-using AntDesign;
 using IotRemoteLab.Blazor;
-using IotRemoteLab.Blazor.Providers;
 using IotRemoteLab.Blazor.Services;
 using IotRemoteLab.Common.Services.LocalStorage;
 using Microsoft.AspNetCore.Components;
@@ -9,6 +7,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
+using RTLab.Auth.Providers;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
