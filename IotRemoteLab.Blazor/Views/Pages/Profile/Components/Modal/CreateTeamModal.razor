@@ -1,0 +1,50 @@
+﻿@using IotRemoteLab.Common.Components.Modal
+@using IotRemoteLab.Domain
+
+@inherits ModalBase<Team>
+
+@inject HttpClient _httpClient
+@inject IMessageService _messageService
+
+<Modal Title="@("Новая команда")" style="width: 600px"
+       @bind-Visible="@_visibleNewTeam"
+       OnOk="@CreateTeam"
+       OnCancel="OnCancel">
+
+    <Form Model="@_team"
+          @ref="@_formNewTeam">
+        <IotFormItem Label="Название команды">
+            <Input @bind-Value="@context.Name" />
+        </IotFormItem>
+    </Form>
+</Modal>
+
+@code {
+    bool _visibleNewTeam;
+
+    Team _team;
+    Form<Team> _formNewTeam;
+
+
+    [Parameter]
+    public Guid LeaderId { get; set; }
+
+    async Task CreateTeam(MouseEventArgs e)
+    {
+        _team.Id = Guid.NewGuid();
+        var response = await _httpClient.PostAsJsonAsync<Team>("Team", _team);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await _httpClient.PostAsync($"Team/member/{_team.Id}/{LeaderId}", null);
+            await _messageService.Success($"Команда {_team.Name} была успешно создана.");
+        }
+        else
+        {
+            var message = await response.Content.ReadAsStringAsync();
+            await _messageService.Error($"Не удалось создать команду; {response.StatusCode}; {message}");
+        }
+
+        Visible = false;
+    }
+}

@@ -1,0 +1,71 @@
+﻿@using IotRemoteLab.Common.Components.Modal
+@using IotRemoteLab.Domain
+
+@inject HttpClient _httpClient
+@inherits ModalBase<User>
+
+<Modal Title="@("Добавить пользователя в команду")" style="width: 600px"
+@bind-Visible="@Visible" OnOk="OnOkHandle"
+OnCancel="OnCancel">
+
+    <Select @bind-Value="@_selectedUser"
+    TItemValue="User"
+    TItem="User"
+    Placeholder="Имя студента"
+    DataSource="_studentsByUniversity"
+    LabelProperty="@((user) => $"{user.Surname} {user.Name} {user.MiddleName}")"
+    Loading="_isLoading"
+    EnableSearch
+    EnableVirtualization
+    AllowClear />
+</Modal>
+@code {
+    bool _isLoading;
+    List<User> _studentsByUniversity = [];
+    User? _selectedUser = null;
+
+
+    #region Parameters
+
+
+    [Parameter, EditorRequired]
+    public Team Team { get; set; }
+
+    [Parameter, EditorRequired]
+    public Guid UniversityId { get; set; }
+
+
+    #endregion Parameters
+
+
+    // TODO: Вынести отсюда
+    class UserComparater : IEqualityComparer<User>
+    {
+        bool IEqualityComparer<User>.Equals(User? x, User? y)
+        {
+            return x?.Id == y?.Id;
+        }
+
+        int IEqualityComparer<User>.GetHashCode(User obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        _studentsByUniversity = await _httpClient.GetFromJsonAsync<List<User>>($"user/byUniversity/{UniversityId}") ?? [];
+
+        _studentsByUniversity = _studentsByUniversity.Except(Team.Members, new UserComparater()).ToList();
+        _isLoading = false;
+    }
+
+    protected override async void OnOkHandle()
+    {
+        await _httpClient.PostAsync($"Team/member/{Team.Id}/{_selectedUser.Id}", null);
+        OnOk?.Invoke(_selectedUser);
+        Visible = false;
+    }
+}

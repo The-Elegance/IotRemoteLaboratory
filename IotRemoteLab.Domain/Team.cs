@@ -9,5 +9,5 @@ public class Team : IScheduleHolder
     public Guid Id { get; set; }
     [Required]
     public string Name { get; set; }
-    public ICollection<User> Members { get; set; }
+    public ICollection<User> Members { get; set; } = [];
 }

@@ -16,7 +16,6 @@ namespace IotRemoteLab.API.Controllers
     {
         private ApplicationContext _context;
 
-
         public StandsController(ApplicationContext context)
         {
             _context = context;
@@ -24,7 +23,6 @@ namespace IotRemoteLab.API.Controllers
 
 
         #region Crud Methods
-
 
         [HttpGet]
         public async Task<IEnumerable<Stand>> GetStands()

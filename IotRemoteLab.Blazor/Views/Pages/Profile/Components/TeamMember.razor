@@ -1,15 +1,70 @@
-﻿<style>
+﻿@using IotRemoteLab.Domain
+
+@inject HttpClient _httpClient
+
+<style>
     .team-member {
-        padding: 16px;
+        padding: 12px 16px;
         background-color: #333333;
         border-radius: 10px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .team-member__logo {
+        height: 40px;
+        width: 40px;
+        background-color: #167ffc;
+        border-radius: 50%;
+    }
+
+    .team-member__info {
+        display: grid;
+        grid-auto-rows: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .team-member-info__name {
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        line-height: 1.2;
+    }
+
+    .team-member-info__academy-group {
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        line-height: 1.2;
     }
 </style>
 
 <div class="team-member">
-    <h3>TeamMember</h3>
+    <div class="team-member__logo">
+    </div>
+
+    <div class="team-member__info">
+        <div class="team-member-info__name">
+            @($"{Member.Surname} {Member.Name} {Member.MiddleName}")
+        </div>
+
+        <div class="team-member-info__academy-group">
+            @_academyGroup?.Name
+        </div>
+    </div>
 </div>
 
 @code {
+    AcademyGroup? _academyGroup;
 
+    [Parameter, EditorRequired]
+    public User Member { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _academyGroup = await _httpClient.GetFromJsonAsync<AcademyGroup?>($"university/academygroup/{Member.AcademyGroupId}");
+    }
 }

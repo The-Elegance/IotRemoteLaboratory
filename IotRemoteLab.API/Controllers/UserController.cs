@@ -44,5 +44,19 @@ namespace IotRemoteLab.API.Controllers
         {
             return _userService.GetUsersAsync();
         }
+
+        [Authorize(Roles = "Student, Admin")]
+        [HttpGet("byUniversity/{universityId:guid}")]
+        public Task<List<User>> GetUsersByUniversity([FromRoute]Guid universityId) 
+        {
+            return _userService.GetUserByUniversity(universityId);
+        }
+
+        [Authorize(Roles = "Student, Admin")]
+        [HttpGet("{userId:guid}/team")]
+        public Task<Team> GetTeamByUser(Guid id) 
+        {
+            return _userService.GetTeamByUser(id);
+        }
     }
 }

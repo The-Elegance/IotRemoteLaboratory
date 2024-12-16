@@ -1,21 +1,19 @@
-﻿@using IotRemoteLab.Blazor.Services
+﻿@page "/profile"
+
+
+@using IotRemoteLab.Blazor.Services
 @using IotRemoteLab.Blazor.Views.Pages.Profile.Components
+@using IotRemoteLab.Blazor.Views.Pages.Profile.Components.Modal
 @using IotRemoteLab.Domain
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using System.ComponentModel
-
-@page "/profile"
 
 
 <style>
     .profile {
         max-height: 100%;
         height: 100%;
-    }
-
-    .accountBioAccountHeader {
-        margin-bottom: 10px;
     }
 
     .content {
@@ -48,17 +46,6 @@
         border-radius: 10px;
     }
 
-    .team__header {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 16px;
-        color: #fff;
-    }
-
-    .team__members {
-        gap: 10px;
-    }
-
     .profile-content {
         height: calc(100% - 264px - 16px);
     }
@@ -69,12 +56,49 @@
         height: 100%;
     }
 
+
+
+    .team-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+    }
+
+    .team-header__title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #fff;
+    }
+
+    .team-header__additional {
+    }
+
+    .team-members {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 </style>
 
-@if (_user != null)
+
+@if (_isLoading)
 {
+    <Spin Spinning />
+}
+else
+{
+    @if (_team != null && _user != null)
+    {
+        <AddTeamMemberModal OnOk="OnTeamMemberAdded" Team="@_team" UniversityId="@_user.UniversityId" @bind-Visible="_addTeamMemberVisible" />
+    }
+    else if (_team == null && _user != null)
+    {
+        <CreateTeamModal OnOk="OnTeamCreated" LeaderId="_user.Id" />
+    }
+
+
     <div class="profile">
-        <div class="accountBioAccountHeader">
+        <div class="profile-header">
             <div class="leftContent">
                 <img src="" class="profilePic">
                 <div class="profileInfo">
@@ -88,10 +112,6 @@
                             <span>Ваша роль:</span>
                             <span class="value">Студент</span>
                         </li>
-                        <li class="mailContact">
-                            <span>Почта:</span>
-                            <span class="value">@_user.Email</span>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -100,7 +120,7 @@
         <div class="profile-content">
 
             <div class="profile-events">
-                
+
                 <div class="events-header">
                     События
                 </div>
@@ -108,30 +128,54 @@
             </div>
 
             <div class="profile-team">
-                <div class="team__header">Ваша команда: TeamName</div>
 
-                <div class="team__members">
+                @if (_team == null)
+                {
+                    <Button OnClick="() => { _createTeamVisible = true; }">Создать команду</Button>
+                }
+                else
+                {
+                    <div class="team-header">
+                        <div class="team-header__title">
+                            Ваша команда: @_team.Name
+                        </div>
 
-                    <TeamMember />
-                    <TeamMember />
-                    <TeamMember />
+                        <div class="team-header__additional">
+                            @if (_team.Members.Count < 5)
+                            {
+                                <Tooltip Title="Добавить участников">
+                                    <Button OnClick="OpenAddTeamMember" Type="@ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.UserAdd" />
+                                </Tooltip>
+                            }
+                        </div>
+                    </div>
 
-                </div>
+                    <div class="team-members">
+
+                        @foreach (var member in _team.Members)
+                        {
+                            <TeamMember Member="member" />
+                        }
+                    </div>
+                }
             </div>
 
         </div>
     </div>
 }
-else
-{
-    <Spin Spinning />
-}
 
 
 @code
 {
+    bool _isLoading;
+    bool _addTeamMemberVisible;
+    bool _createTeamVisible;
+
     User? _user;
     AcademyGroup? _academyGroup;
+    Team _team;
+
+
     [Inject]
     public UserContext _context { get; set; }
     [Inject]
@@ -139,7 +183,30 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+        _isLoading = true;
+
         _user = await _context.GetUserProfileAsync();
         _academyGroup = await _httpClient.GetFromJsonAsync<AcademyGroup?>($"university/academygroup/{_user.AcademyGroupId}");
+        _team = await _httpClient.GetFromJsonAsync<Team?>($"user/{_user.Id}/team");
+
+        _isLoading = false;
+    }
+
+
+    void OnTeamMemberAdded(User user)
+    {
+        _team.Members.Add(user);
+        StateHasChanged();
+    }
+
+    void OnTeamCreated(Team team)
+    {
+        _team = team;
+        StateHasChanged();
+    }
+
+    void OpenAddTeamMember()
+    {
+        _addTeamMemberVisible = true;
     }
 }
